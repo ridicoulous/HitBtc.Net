@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30804.86
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HitBtc.Net", "HitBtc.Net.csproj", "{323C810A-F2A7-4AA9-90BE-BEFC23AC34EE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{323C810A-F2A7-4AA9-90BE-BEFC23AC34EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{323C810A-F2A7-4AA9-90BE-BEFC23AC34EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{323C810A-F2A7-4AA9-90BE-BEFC23AC34EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{323C810A-F2A7-4AA9-90BE-BEFC23AC34EE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6DB20DE5-A0C4-4829-BAA6-0721E3FE1884}
+	EndGlobalSection
+EndGlobal
