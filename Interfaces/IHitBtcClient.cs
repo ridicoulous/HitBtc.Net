@@ -16,13 +16,13 @@ namespace HitBtc.Net.Interfaces
         /// </summary>
         /// <param name="currencies">Comma-separated list of currency codes. Optional parameter</param>
         /// <returns></returns>
-        Task<WebCallResult<HitBtcCurrency>> GetCurrenciesAsync(params string[] currencies);
+        Task<WebCallResult<IEnumerable<HitBtcCurrency>>> GetCurrenciesAsync(params string[] currencies);
         /// <summary>
         /// Get a list of all currencies or specified currencies (GET /api/2/public/currency)
         /// </summary>
         /// <param name="currencies">Comma-separated list of currency codes. Optional parameter</param>
         /// <returns></returns>
-        WebCallResult<HitBtcCurrency> GetCurrencies(params string[] currencies);
+        WebCallResult<IEnumerable<HitBtcCurrency>> GetCurrencies(params string[] currencies);
 
         #endregion
     }
