@@ -32,13 +32,13 @@ namespace HitBtc.Net.Objects.MarketData
         /// Lowest price for the period
         /// </summary>
         [JsonProperty("min")]
-        public decimal Min { get; set; }
+        public decimal Low { get; set; }
 
         /// <summary>
         /// Highest price for the period
         /// </summary>
         [JsonProperty("max")]
-        public decimal Max { get; set; }
+        public decimal High { get; set; }
 
         /// <summary>
         /// Volume in base currency

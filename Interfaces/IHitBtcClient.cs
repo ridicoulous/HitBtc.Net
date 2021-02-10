@@ -1,5 +1,6 @@
 ﻿using CryptoExchange.Net.Objects;
 using HitBtc.Net.Objects.MarketData;
+using HitBtc.Net.Objects.Trading;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -158,7 +159,7 @@ namespace HitBtc.Net.Interfaces
         /// <param name="limit">Default value: 100, Max value: 1000</param>
         /// <param name="offset">Default value: 0, Max value: 100000</param>
         /// <returns>Returns trades information for a symbol with a symbol Id</returns>
-        WebCallResult<IEnumerable<HitBtcTrade>> GetTrade(
+        WebCallResult<IEnumerable<Objects.MarketData.HitBtcTrade>> GetTrade(
             string symbol,
             string sort = "DESC",
             string by = "timestamp",
@@ -180,7 +181,7 @@ namespace HitBtc.Net.Interfaces
         /// <param name="limit">Default value: 100, Max value: 1000</param>
         /// <param name="offset">Default value: 0, Max value: 100000</param>
         /// <returns>Returns trades information for a symbol with a symbol Id</returns>
-        Task<WebCallResult<IEnumerable<HitBtcTrade>>> GetTradeAsync(
+        Task<WebCallResult<IEnumerable<Objects.MarketData.HitBtcTrade>>> GetTradeAsync(
             string symbol,
             string sort = "DESC",
             string by = "timestamp",
@@ -246,7 +247,7 @@ namespace HitBtc.Net.Interfaces
         /// <param name="limit">Default value: 100, Max value: 1000</param>
         /// <param name="offset">Default value: 0, Max value: 100000</param>
         /// <returns>Returns trades information for a symbol with a symbol Id</returns>
-        WebCallResult<IEnumerable<HitBtcTrade>> GetTrade(
+        WebCallResult<IEnumerable<Objects.MarketData.HitBtcTrade>> GetTrade(
             string symbol,
             string sort = "DESC",
             string by = "timestamp",
@@ -268,7 +269,7 @@ namespace HitBtc.Net.Interfaces
         /// <param name="limit">Default value: 100, Max value: 1000</param>
         /// <param name="offset">Default value: 0, Max value: 100000</param>
         /// <returns>Returns trades information for a symbol with a symbol Id</returns>
-        Task<WebCallResult<IEnumerable<HitBtcTrade>>> GetTradeAsync(
+        Task<WebCallResult<IEnumerable<Objects.MarketData.HitBtcTrade>>> GetTradeAsync(
             string symbol,
             string sort = "DESC",
             string by = "timestamp",
@@ -322,6 +323,7 @@ namespace HitBtc.Net.Interfaces
         /// Get candles for all symbols or for specified symbols (GET /api/2/public/candles)
         /// You can optionally use comma-separated list of symbols. 
         /// If it is not provided, null or empty, the request returns candles for all symbols.
+        /// The result contains candles with non-zero volume only (no trades = no candles). 
         /// </summary>
         /// <param name="period">Accepted values: M1(one minute), M3, M5, M15, M30, H1(one hour), H4, D1(one day), D7, 1M (one month)
         /// Default value: M30(30 minutes)</param>
@@ -346,6 +348,7 @@ namespace HitBtc.Net.Interfaces
         /// Get candles for all symbols or for specified symbols (GET /api/2/public/candles)
         /// You can optionally use comma-separated list of symbols. 
         /// If it is not provided, null or empty, the request returns candles for all symbols.
+        /// The result contains candles with non-zero volume only (no trades = no candles). 
         /// </summary>
         /// <param name="period">Accepted values: M1(one minute), M3, M5, M15, M30, H1(one hour), H4, D1(one day), D7, 1M (one month)
         /// Default value: M30(30 minutes)</param>
@@ -367,7 +370,7 @@ namespace HitBtc.Net.Interfaces
             params string[] symbols);
 
         /// <summary>
-        /// Get candles for a certain symbol
+        /// Get candles for a certain symbol. The result contains candles with non-zero volume only (no trades = no candles). 
         /// </summary>
         /// <param name="symbol">The certain symbol</param>
         /// <param name="period">Accepted values: M1(one minute), M3, M5, M15, M30, H1(one hour), H4, D1(one day), D7, 1M (one month)
@@ -389,7 +392,7 @@ namespace HitBtc.Net.Interfaces
             int offset = 0);
 
         /// <summary>
-        /// Get candles for a certain symbol
+        /// Get candles for a certain symbol.  The result contains candles with non-zero volume only (no trades = no candles). 
         /// </summary>
         /// <param name="symbol">The certain symbol</param>
         /// <param name="period">Accepted values: M1(one minute), M3, M5, M15, M30, H1(one hour), H4, D1(one day), D7, 1M (one month)
@@ -411,5 +414,66 @@ namespace HitBtc.Net.Interfaces
             int offset = 0);
 
         #endregion
+        #region Trading
+        /// <summary>
+        /// Returns the user's trading balance. 
+        /// Requires the "Orderbook, History, Trading balance" API key Access Right.
+        /// </summary>
+        /// <returns></returns>
+        WebCallResult<HitBtcTradingBalance> GetTradingBalance();
+
+        /// <summary>
+        /// Returns the user's trading balance. 
+        /// Requires the "Orderbook, History, Trading balance" API key Access Right.
+        /// </summary>
+        /// <returns></returns>
+        Task<WebCallResult<HitBtcTradingBalance>> GetTradingBalanceAsync();
+
+        /// <summary>
+        /// Return array of active orders. (GET /api/2/order)
+        /// Requires the "Place/cancel orders" API key Access Right.
+        /// </summary>
+        /// <param name="symbol">Optional parameter to filter active orders by symbol</param>
+        /// <returns>Array of orders</returns>
+        WebCallResult<IEnumerable<HitBtcOrder>> GetActiveOrders(string symbol = null);
+
+        /// <summary>
+        /// Return array of active orders. (GET /api/2/order)
+        /// Requires the "Place/cancel orders" API key Access Right.
+        /// </summary>
+        /// <param name="symbol">Optional parameter to filter active orders by symbol</param>
+        /// <returns>Array of orders</returns>
+        Task<WebCallResult<IEnumerable<HitBtcOrder>>> GetActiveOrdersAsync(string symbol = null);
+
+        /// <summary>
+        /// Get active order by clientOrderId. (GET /api/2/order/{clientOrderId})
+        /// Requires the "Place/cancel orders" API key Access Right.
+        /// </summary>
+        /// <param name="clientOrderId"></param>
+        /// <param name="wait">Time in milliseconds (optional parameter)
+        /// Max value: 60000
+        /// Default value: none
+        /// While using long polling request: if order is filled, 
+        /// cancelled or expired order info will be returned instantly.
+        /// For other order statuses, actual order info will be returned after specified wait time.</param>
+        /// <returns>Order</returns>
+        WebCallResult<HitBtcOrder> GetActiveOrderByClientOrderId(string clientOrderId, long? wait = null);
+
+        /// <summary>
+        /// Get active order by clientOrderId. (GET /api/2/order/{clientOrderId}) 
+        /// Requires the "Place/cancel orders" API key Access Right.
+        /// </summary>
+        /// <param name="clientOrderId"></param>
+        /// <param name="wait">Time in milliseconds (optional parameter)
+        /// Max value: 60000
+        /// Default value: none
+        /// While using long polling request: if order is filled, 
+        /// cancelled or expired order info will be returned instantly.
+        /// For other order statuses, actual order info will be returned after specified wait time.</param>
+        /// <returns>Order</returns>
+        Task<WebCallResult<HitBtcOrder>> GetActiveOrderByClientOrderIdAsync(string clientOrderId, long? wait = null);
+        #endregion Trading
+
     }
+
 }
