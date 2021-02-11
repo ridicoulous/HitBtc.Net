@@ -5,15 +5,15 @@ using HitBtc.Net.Enums;
 
 namespace HitBtc.Net.Converters
 {
-    public class HitBtcTradeSideConverter : BaseConverter<HitBtcTradeSideEnum>
+    public class HitBtcTradeSideConverter : BaseConverter<HitBtcTradeSide>
     {
         public HitBtcTradeSideConverter() : this(true) { }
         public HitBtcTradeSideConverter(bool quotes) : base(quotes) { }
 
-        protected override List<KeyValuePair<HitBtcTradeSideEnum, string>> Mapping => new List<KeyValuePair<HitBtcTradeSideEnum, string>>
+        protected override List<KeyValuePair<HitBtcTradeSide, string>> Mapping => new List<KeyValuePair<HitBtcTradeSide, string>>
         {
-            new KeyValuePair<HitBtcTradeSideEnum, string>(HitBtcTradeSideEnum.Buy, "buy"),
-            new KeyValuePair<HitBtcTradeSideEnum, string>(HitBtcTradeSideEnum.Sell, "sell"),
+            new KeyValuePair<HitBtcTradeSide, string>(HitBtcTradeSide.Buy, "buy"),
+            new KeyValuePair<HitBtcTradeSide, string>(HitBtcTradeSide.Sell, "sell"),
         };
     }
 }

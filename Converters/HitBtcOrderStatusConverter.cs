@@ -4,19 +4,19 @@ using HitBtc.Net.Enums;
 
 namespace HitBtc.Net.Converters
 {
-    public class HitBtcOrderStatusConverter : BaseConverter<HitBtcOrderStatusEnum>
+    public class HitBtcOrderStatusConverter : BaseConverter<HitBtcOrderStatus>
     {
         public HitBtcOrderStatusConverter() : this(true) { }
         public HitBtcOrderStatusConverter(bool quotes) : base(quotes) { }
 
-        protected override List<KeyValuePair<HitBtcOrderStatusEnum, string>> Mapping => new List<KeyValuePair<HitBtcOrderStatusEnum, string>>
+        protected override List<KeyValuePair<HitBtcOrderStatus, string>> Mapping => new List<KeyValuePair<HitBtcOrderStatus, string>>
         {
-            new KeyValuePair<HitBtcOrderStatusEnum, string>(HitBtcOrderStatusEnum.New, "new"),
-            new KeyValuePair<HitBtcOrderStatusEnum, string>(HitBtcOrderStatusEnum.Filled, "filled"),
-            new KeyValuePair<HitBtcOrderStatusEnum, string>(HitBtcOrderStatusEnum.Canceled, "canceled"),
-            new KeyValuePair<HitBtcOrderStatusEnum, string>(HitBtcOrderStatusEnum.Expired, "expired"),
-            new KeyValuePair<HitBtcOrderStatusEnum, string>(HitBtcOrderStatusEnum.Suspended, "suspended"),
-            new KeyValuePair<HitBtcOrderStatusEnum, string>(HitBtcOrderStatusEnum.PartiallyFilled, "partiallyFilled"),
+            new KeyValuePair<HitBtcOrderStatus, string>(HitBtcOrderStatus.New, "new"),
+            new KeyValuePair<HitBtcOrderStatus, string>(HitBtcOrderStatus.Filled, "filled"),
+            new KeyValuePair<HitBtcOrderStatus, string>(HitBtcOrderStatus.Canceled, "canceled"),
+            new KeyValuePair<HitBtcOrderStatus, string>(HitBtcOrderStatus.Expired, "expired"),
+            new KeyValuePair<HitBtcOrderStatus, string>(HitBtcOrderStatus.Suspended, "suspended"),
+            new KeyValuePair<HitBtcOrderStatus, string>(HitBtcOrderStatus.PartiallyFilled, "partiallyFilled"),
         };
     }
 }

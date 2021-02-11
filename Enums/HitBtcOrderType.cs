@@ -7,7 +7,7 @@ namespace HitBtc.Net.Enums
     /// <summary>
     /// Accepted values: limit, market, stopLimit, stopMarket
     /// </summary>
-    public enum HitBtcOrderTypeEnum
+    public enum HitBtcOrderType
     {
 
         Limit,

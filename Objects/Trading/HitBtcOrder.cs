@@ -30,20 +30,20 @@ namespace HitBtc.Net.Objects.Trading
         /// Trade side. Accepted values: sell or buy
         /// </summary>
         [JsonProperty("side"), JsonConverter(typeof(HitBtcTradeSideConverter))]
-        public HitBtcTradeSideEnum Side { get; set; }
+        public HitBtcTradeSide Side { get; set; }
 
         /// <summary>
         /// Order state
         /// Accepted values: new, suspended, partiallyFilled, filled, canceled, expired
         /// </summary>
         [JsonProperty("status"), JsonConverter(typeof(HitBtcOrderStatusConverter))]
-        public HitBtcOrderStatusEnum Status { get; set; }
+        public HitBtcOrderStatus Status { get; set; }
 
         /// <summary>
         /// Accepted values: limit, market, stopLimit, stopMarket
         /// </summary>
         [JsonProperty("type"), JsonConverter(typeof(HitBtcOrderTypeConverter))]
-        public HitBtcOrderTypeEnum Type { get; set; }
+        public HitBtcOrderType Type { get; set; }
 
         /// <summary>
         /// Time in Force is a special instruction used when placing a trade to indicate how long an order will remain active before it is executed or expired.
@@ -54,7 +54,7 @@ namespace HitBtc.Net.Objects.Trading
         /// GTD - ''Good-Till-Date''. The date is specified in expireTime.
         /// </summary>
         [JsonProperty("timeInForce")]
-        public HitBtcOrderTimeInForceEnum TimeInForce { get; set; }
+        public HitBtcOrderTimeInForce TimeInForce { get; set; }
 
         /// <summary>
         /// Order quantity

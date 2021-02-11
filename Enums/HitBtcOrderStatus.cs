@@ -8,11 +8,18 @@ namespace HitBtc.Net.Enums
     /// Order state
     /// Accepted values: new, suspended, partiallyFilled, filled, canceled, expired
     /// </summary>
-    public enum HitBtcTradeSideEnum
+    public enum HitBtcOrderStatus
     {
-        Sell,
+        New,
 
-        Buy,
+        Suspended,
 
+        PartiallyFilled,
+
+        Filled,
+
+        Canceled,
+
+        Expired
     }
 }

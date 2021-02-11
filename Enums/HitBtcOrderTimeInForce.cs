@@ -8,7 +8,7 @@ namespace HitBtc.Net.Enums
     /// Time in Force is a special instruction used when placing a trade to indicate 
     /// how long an order will remain active before it is executed or expired.
     /// </summary>
-    public enum HitBtcOrderTimeInForceEnum
+    public enum HitBtcOrderTimeInForce
     {
         /// <summary>
         ///  GTC - ''Good-Till-Cancelled'' order won't be closed until it is filled.

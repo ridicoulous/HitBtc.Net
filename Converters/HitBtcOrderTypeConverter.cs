@@ -5,17 +5,17 @@ using HitBtc.Net.Enums;
 
 namespace HitBtc.Net.Converters
 {
-    public class HitBtcOrderTypeConverter : BaseConverter<HitBtcOrderTypeEnum>
+    public class HitBtcOrderTypeConverter : BaseConverter<HitBtcOrderType>
     {
         public HitBtcOrderTypeConverter() : this(true) { }
         public HitBtcOrderTypeConverter(bool quotes) : base(quotes) { }
 
-        protected override List<KeyValuePair<HitBtcOrderTypeEnum, string>> Mapping => new List<KeyValuePair<HitBtcOrderTypeEnum, string>>
+        protected override List<KeyValuePair<HitBtcOrderType, string>> Mapping => new List<KeyValuePair<HitBtcOrderType, string>>
         {
-            new KeyValuePair<HitBtcOrderTypeEnum, string>(HitBtcOrderTypeEnum.Limit, "limit"),
-            new KeyValuePair<HitBtcOrderTypeEnum, string>(HitBtcOrderTypeEnum.Market, "market"),
-            new KeyValuePair<HitBtcOrderTypeEnum, string>(HitBtcOrderTypeEnum.StopLimit, "stopLimit"),
-            new KeyValuePair<HitBtcOrderTypeEnum, string>(HitBtcOrderTypeEnum.StopMarket, "stopMarket"),
+            new KeyValuePair<HitBtcOrderType, string>(HitBtcOrderType.Limit, "limit"),
+            new KeyValuePair<HitBtcOrderType, string>(HitBtcOrderType.Market, "market"),
+            new KeyValuePair<HitBtcOrderType, string>(HitBtcOrderType.StopLimit, "stopLimit"),
+            new KeyValuePair<HitBtcOrderType, string>(HitBtcOrderType.StopMarket, "stopMarket"),
         };
     }
 }

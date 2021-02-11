@@ -37,7 +37,7 @@ namespace HitBtc.Net.Objects.Trading
         /// Trade side. Accepted values: sell or buy
         /// </summary>
         [JsonProperty("side"), JsonConverter(typeof(HitBtcTradeSideConverter))]
-        public HitBtcTradeSideEnum Side { get; set; }
+        public HitBtcTradeSide Side { get; set; }
 
         /// <summary>
         /// Trade quantity
