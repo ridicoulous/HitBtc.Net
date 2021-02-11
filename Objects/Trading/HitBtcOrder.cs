@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Text;
+using HitBtc.Net.Enums;
+using HitBtc.Net.Converters;
 
 namespace HitBtc.Net.Objects.Trading
 {
@@ -29,21 +29,21 @@ namespace HitBtc.Net.Objects.Trading
         /// <summary>
         /// Trade side. Accepted values: sell or buy
         /// </summary>
-        [JsonProperty("side")]
-        public string Side { get; set; }
+        [JsonProperty("side"), JsonConverter(typeof(HitBtcTradeSideConverter))]
+        public HitBtcTradeSideEnum Side { get; set; }
 
         /// <summary>
         /// Order state
         /// Accepted values: new, suspended, partiallyFilled, filled, canceled, expired
         /// </summary>
-        [JsonProperty("status")]
-        public string Status { get; set; }
+        [JsonProperty("status"), JsonConverter(typeof(HitBtcOrderStatusConverter))]
+        public HitBtcOrderStatusEnum Status { get; set; }
 
         /// <summary>
         /// Accepted values: limit, market, stopLimit, stopMarket
         /// </summary>
-        [JsonProperty("type")]
-        public string Type { get; set; }
+        [JsonProperty("type"), JsonConverter(typeof(HitBtcOrderTypeConverter))]
+        public HitBtcOrderTypeEnum Type { get; set; }
 
         /// <summary>
         /// Time in Force is a special instruction used when placing a trade to indicate how long an order will remain active before it is executed or expired.
@@ -54,7 +54,7 @@ namespace HitBtc.Net.Objects.Trading
         /// GTD - ''Good-Till-Date''. The date is specified in expireTime.
         /// </summary>
         [JsonProperty("timeInForce")]
-        public string TimeInForce { get; set; }
+        public HitBtcOrderTimeInForceEnum TimeInForce { get; set; }
 
         /// <summary>
         /// Order quantity
