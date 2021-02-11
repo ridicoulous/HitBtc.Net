@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using HitBtc.Net.Converters;
+using HitBtc.Net.Enums;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -29,8 +31,8 @@ namespace HitBtc.Net.Objects.MarketData
         /// Trade side
         /// Accepted values: sell or buy
         /// </summary>
-        [JsonProperty("side")]
-        public string Side { get; set; }
+        [JsonProperty("side"), JsonConverter(typeof(HitBtcTradeSideConverter))]
+        public HitBtcTradeSide Side { get; set; }
 
         /// <summary>
         /// Trade timestamp
