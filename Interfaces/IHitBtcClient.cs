@@ -1,4 +1,5 @@
 ﻿using CryptoExchange.Net.Objects;
+using HitBtc.Net.Objects.MarginTrading;
 using HitBtc.Net.Objects.MarketData;
 using HitBtc.Net.Objects.Trading;
 using System;
@@ -472,8 +473,254 @@ namespace HitBtc.Net.Interfaces
         /// For other order statuses, actual order info will be returned after specified wait time.</param>
         /// <returns>Order</returns>
         Task<WebCallResult<HitBtcOrder>> GetActiveOrderByClientOrderIdAsync(string clientOrderId, long? wait = null);
-        #endregion Trading
 
+        /// <summary>
+        /// Create new order or Update existing order. (POST /api/2/order,  PUT /api/2/order/{clientOrderId})
+        /// Requires the "Place/cancel orders" API key Access Right.
+        /// </summary>
+        /// <param name="order"></param>
+        /// <returns></returns>
+        WebCallResult<HitBtcOrder> PlaceOrder(HitbtcPlaceOrderRequest order);
+
+        /// <summary>
+        /// Create new order or Update existing order. (POST /api/2/order,  PUT /api/2/order/{clientOrderId})
+        /// Requires the "Place/cancel orders" API key Access Right.
+        /// </summary>
+        /// <param name="order"></param>
+        /// <returns></returns>
+        Task<WebCallResult<HitBtcOrder>> PlaceOrderAsync(HitbtcPlaceOrderRequest order);
+
+
+        /// <summary>
+        /// Cancel all active orders, or all active orders for a specified symbol. (DELETE /api/2/order)
+        /// Requires the "Place/cancel orders" API key Access Right.
+        /// </summary>
+        /// <param name="symbol">Optional parameter to filter active orders by symbol</param>
+        /// <returns>Response: Array of orders</returns>
+        WebCallResult<IEnumerable<HitBtcOrder>> CancelOrders(string symbol = null);
+
+        /// <summary>
+        /// Cancel all active orders, or all active orders for a specified symbol. (DELETE /api/2/order)
+        /// Requires the "Place/cancel orders" API key Access Right.
+        /// </summary>
+        /// <param name="symbol">Optional parameter to filter active orders by symbol</param>
+        /// <returns>Response: Array of orders</returns>
+        Task<WebCallResult<IEnumerable<HitBtcOrder>>> CancelOrdersAsync(string symbol = null);
+
+        /// <summary>
+        /// Cancel order by clientOrderId. (DELETE /api/2/order/{clientOrderId})
+        /// Requires the "Place/cancel orders" API key Access Right.
+        /// </summary>
+        /// <param name="symbol">Order unique identifier as assigned by trader. </param>
+        /// <returns>order</returns>
+        WebCallResult<HitBtcOrder> CancelOrderByClientOrderId(string clientOrderId);
+
+        /// <summary>
+        /// Cancel order by clientOrderId. (DELETE /api/2/order/{clientOrderId})
+        /// Requires the "Place/cancel orders" API key Access Right.
+        /// </summary>
+        /// <param name="symbol">Order unique identifier as assigned by trader. </param>
+        /// <returns>order</returns>
+        Task<WebCallResult<HitBtcOrder>> CancelOrderByClientOrderIdAsync(string clientOrderId);
+
+        /// <summary>
+        /// Get personal trading commission rate.
+        /// Requires the "Place/cancel orders" API key Access Right.
+        /// </summary>
+        /// <param name="symbol"></param>
+        /// <returns></returns>
+        WebCallResult<HitBtcTradingCommission> GetTradingCommission(string symbol);
+
+        /// <summary>
+        /// Get personal trading commission rate.
+        /// Requires the "Place/cancel orders" API key Access Right.
+        /// </summary>
+        /// <param name="symbol"></param>
+        /// <returns></returns>
+        Task<WebCallResult<HitBtcTradingCommission>> GetTradingCommissionAsync(string symbol);
+        #endregion Trading
+        #region MarginTrading
+        /// <summary>
+        /// Get Isolated Margin Accounts (GET /api/2/margin/account)
+        /// Requires the "Place/cancel orders" API key Access Right.
+        /// </summary>
+        /// <returns>Returns user Isolated Margin Account details.</returns>
+        WebCallResult<IEnumerable<HitBtcIsolatedMarginAccount>> GetIsolatedMarginAccounts();
+
+        /// <summary>
+        /// Get Isolated Margin Accounts (GET /api/2/margin/account)
+        /// Requires the "Place/cancel orders" API key Access Right.
+        /// </summary>
+        /// <returns>Returns user Isolated Margin Account details.</returns>
+        Task<WebCallResult<IEnumerable<HitBtcIsolatedMarginAccount>>> GetIsolatedMarginAccountsAsync();
+
+        /// <summary>
+        /// Closes all positions and then closes all Isolated Margin Accounts. 
+        /// This will completely free up any balance reserved for margin purposes.
+        /// (DELETE /api/2/margin/account)
+        /// Requires the "Place/cancel orders" API key Access Right.
+        /// </summary>
+        /// <returns>Returns list of the closed Isolated Margin Accounts.</returns>
+        WebCallResult<IEnumerable<HitBtcIsolatedMarginAccount>> CloseAllIsolatedMarginAccounts();
+
+        /// <summary>
+        /// Closes all positions and then closes all Isolated Margin Accounts. 
+        /// This will completely free up any balance reserved for margin purposes.
+        /// (DELETE /api/2/margin/account)
+        /// Requires the "Place/cancel orders" API key Access Right.
+        /// </summary>
+        /// <returns>Returns list of the closed Isolated Margin Accounts.</returns>
+        Task<WebCallResult<IEnumerable<HitBtcIsolatedMarginAccount>>> CloseAllIsolatedMarginAccountsAsync();
+
+        /// <summary>
+        /// Get Isolated Margin Account by symbol (GET /api/2/margin/account/{symbol})
+        /// Requires the "Place/cancel orders" API key Access Right.
+        /// </summary>
+        /// <param name="symbol">the symbol</param>
+        /// <returns>Returns Isolated Margin Account details.</returns>
+        WebCallResult<HitBtcIsolatedMarginAccount> GetIsolatedMarginAccount(string symbol);
+
+
+        /// <summary>
+        /// Get Isolated Margin Account by symbol (GET /api/2/margin/account/{symbol})
+        /// Requires the "Place/cancel orders" API key Access Right.
+        /// </summary>
+        /// <param name="symbol">the symbol</param>
+        /// <returns>Returns Isolated Margin Account details.</returns>
+        Task<WebCallResult<HitBtcIsolatedMarginAccount>> GetIsolatedMarginAccountAsync(string symbol);
+
+        /// <summary>
+        /// Creates or updates margin account. 
+        /// Setting margin balance to zero will lead to closing margin account
+        /// and retrieval all formerly reserved funds to the trading account.
+        /// (PUT /api/2/margin/account/{symbol)
+        /// Requires the "Place/cancel orders" API key Access Right.
+        /// </summary>
+        /// <param name="symbol">Trading symbol.
+        /// Where base currency is the currency of funds reserved on the trading account for positions 
+        /// and quote currency is the currency of funds reserved on a margin account (e.g. "BTCUSD").</param>
+        /// <param name="marginBalance">Amount of currency reserved.</param>
+        /// <param name="strictValidate">The value indicating whether the marginBalance going to be checked
+        /// for correct non exponential format and currency precision.</param>
+        /// <returns>Returns margin account details.</returns>
+        WebCallResult<HitBtcIsolatedMarginAccount> SetIsolatedMarginAccount(
+            string symbol, 
+            decimal marginBalance,
+            bool strictValidate);
+
+        /// <summary>
+        /// Creates or updates margin account. 
+        /// Setting margin balance to zero will lead to closing margin account
+        /// and retrieval all formerly reserved funds to the trading account.
+        /// (PUT /api/2/margin/account/{symbol)
+        /// Requires the "Place/cancel orders" API key Access Right.
+        /// </summary>
+        /// <param name="symbol">Trading symbol.
+        /// Where base currency is the currency of funds reserved on the trading account for positions 
+        /// and quote currency is the currency of funds reserved on a margin account (e.g. "BTCUSD").</param>
+        /// <param name="marginBalance">Amount of currency reserved.</param>
+        /// <param name="strictValidate">The value indicating whether the marginBalance going to be checked
+        /// for correct non exponential format and currency precision.</param>
+        /// <returns>Returns margin account details.</returns>
+        Task<WebCallResult<HitBtcIsolatedMarginAccount>> SetIsolatedMarginAccountAsync(
+            string symbol,
+            decimal marginBalance,
+            bool strictValidate);
+
+        /// <summary>
+        /// Closes Isolated Margin Account by symbol.
+        /// This will completely free up any balance reserved for margin purposes.
+        /// (DELETE /api/2/margin/account/{symbol})
+        /// Requires the "Place/cancel orders" API key Access Right.
+        /// </summary>
+        /// <param name="symbol">the symbol</param>
+        /// <returns>Returns closed Isolated Margin Account.</returns>
+        WebCallResult<HitBtcIsolatedMarginAccount> CloseIsolatedMarginAccount(string symbol);
+
+        /// <summary>
+        /// Closes Isolated Margin Account by symbol. 
+        /// This will completely free up any balance reserved for margin purposes.
+        /// (DELETE /api/2/margin/account/{symbol})
+        /// Requires the "Place/cancel orders" API key Access Right.
+        /// </summary>
+        /// <param name="symbol">the symbol</param>
+        /// <returns>Returns closed Isolated Margin Account.</returns>
+        Task<WebCallResult<HitBtcIsolatedMarginAccount>> CloseIsolatedMarginAccountAsync(string symbol);
+
+        /// <summary>
+        /// Get Margin Positions (GET /api/2/margin/position)
+        /// Requires the "Place/cancel orders" API key Access Right.
+        /// </summary>
+        /// <returns>Returns a list of open positions.</returns>
+        WebCallResult<IEnumerable<HitBtcPosition>> GetMarginPositions();
+
+        /// <summary>
+        /// Get Margin Positions (GET /api/2/margin/position)
+        /// Requires the "Place/cancel orders" API key Access Right.
+        /// </summary>
+        /// <returns>Returns a list of open positions.</returns>
+        Task<WebCallResult<IEnumerable<HitBtcPosition>>> GetMarginPositionsAsync();
+
+        /// <summary>
+        /// Closes all open positions. (DELETE /api/2/margin/position)
+        /// Requires the "Place/cancel orders" API key Access Right.
+        /// </summary>
+        /// <returns>Returns a list of the successfully closed margin positions.</returns>
+        WebCallResult<IEnumerable<HitBtcPosition>> CloseMarginPositions();
+
+        /// <summary>
+        /// Closes all open positions. (DELETE /api/2/margin/position)
+        /// Requires the "Place/cancel orders" API key Access Right.
+        /// </summary>
+        /// <returns>Returns a list of the successfully closed margin positions.</returns>
+        Task<WebCallResult<IEnumerable<HitBtcPosition>>> CloseMarginPositionsAsync();
+
+        /// <summary>
+        /// Returns opened position for the requested symbol. (GET /api/2/margin/position/{symbol})
+        /// Requires the "Place/cancel orders" API key Access Right.
+        /// </summary>
+        /// <returns></returns>
+        WebCallResult<HitBtcPosition> GetMarginPosition(string symbol);
+
+        /// <summary>
+        /// Returns opened position for the requested symbol. (GET /api/2/margin/position/{symbol})
+        /// Requires the "Place/cancel orders" API key Access Right.
+        /// </summary>
+        /// <returns></returns>
+        Task<WebCallResult<HitBtcPosition>> GetMarginPositionAsync(string symbol);
+        #endregion MarginTrading
+  
+        /// <summary>
+        /// Closes open position by symbol. (DELETE /api/2/margin/position/{symbol})
+        /// Requires the "Place/cancel orders" API key Access Right.
+        /// </summary>
+        /// <param name="symbol">Trading symbol.</param>
+        /// <param name="price">Optional parameter.
+        /// if a price is defined, then close order would be an limit order with the specified price,
+        /// instead, close order would be a market order with the market price.</param>
+        /// <param name="strictValidate">Optional parameter.
+        /// The value indicating whether the price going to be checked for incrementation within the symbol’s tick size step.See the symbol's tickSize.</param>
+        /// <returns>Returns  the successfully closed margin position.</returns>
+        WebCallResult<HitBtcPosition> CloseMarginPosition(
+            string symbol,
+            decimal? price = null,
+            bool strictValidate = false);
+
+        /// <summary>
+        /// Closes open position by symbol. (DELETE /api/2/margin/position/{symbol})
+        /// Requires the "Place/cancel orders" API key Access Right.
+        /// </summary>
+        /// <param name="symbol">Trading symbol.</param>
+        /// <param name="price">Optional parameter.
+        /// if a price is defined, then close order would be an limit order with the specified price,
+        /// instead, close order would be a market order with the market price.</param>
+        /// <param name="strictValidate">Optional parameter.
+        /// The value indicating whether the price going to be checked for incrementation within the symbol’s tick size step.See the symbol's tickSize.</param>
+        /// <returns>Returns  the successfully closed margin position.</returns>
+        Task<WebCallResult<HitBtcPosition>> CloseMarginPositionAsync(
+            string symbol,
+            decimal? price = null,
+            bool strictValidate = false);
     }
 
 }
