@@ -5,6 +5,9 @@ using System;
 
 namespace HitBtc.Net.Objects.Trading
 {
+    /// <summary>
+    /// This class contains fields needed to placing different types of orders
+    /// </summary>
     public class HitbtcPlaceOrderRequest
     {
 

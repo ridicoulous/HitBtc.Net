@@ -479,7 +479,7 @@ namespace HitBtc.Net.Interfaces
         /// Requires the "Place/cancel orders" API key Access Right.
         /// </summary>
         /// <param name="order"></param>
-        /// <returns></returns>
+        /// <returns>Returns the successfully created or updated order.</returns>
         WebCallResult<HitBtcOrder> PlaceOrder(HitbtcPlaceOrderRequest order);
 
         /// <summary>
@@ -487,7 +487,7 @@ namespace HitBtc.Net.Interfaces
         /// Requires the "Place/cancel orders" API key Access Right.
         /// </summary>
         /// <param name="order"></param>
-        /// <returns></returns>
+        /// <returns>Returns the successfully created or updated order.</returns>
         Task<WebCallResult<HitBtcOrder>> PlaceOrderAsync(HitbtcPlaceOrderRequest order);
 
 
@@ -496,7 +496,7 @@ namespace HitBtc.Net.Interfaces
         /// Requires the "Place/cancel orders" API key Access Right.
         /// </summary>
         /// <param name="symbol">Optional parameter to filter active orders by symbol</param>
-        /// <returns>Response: Array of orders</returns>
+        /// <returns>Returns a list of cancelled orders.</returns>
         WebCallResult<IEnumerable<HitBtcOrder>> CancelOrders(string symbol = null);
 
         /// <summary>
@@ -504,23 +504,23 @@ namespace HitBtc.Net.Interfaces
         /// Requires the "Place/cancel orders" API key Access Right.
         /// </summary>
         /// <param name="symbol">Optional parameter to filter active orders by symbol</param>
-        /// <returns>Response: Array of orders</returns>
+        /// <returns>Returns a list of cancelled orders.</returns>
         Task<WebCallResult<IEnumerable<HitBtcOrder>>> CancelOrdersAsync(string symbol = null);
 
         /// <summary>
         /// Cancel order by clientOrderId. (DELETE /api/2/order/{clientOrderId})
         /// Requires the "Place/cancel orders" API key Access Right.
         /// </summary>
-        /// <param name="symbol">Order unique identifier as assigned by trader. </param>
-        /// <returns>order</returns>
+        /// <param name="clientOrderId">Order unique identifier as assigned by trader. </param>
+        /// <returns>Returns the cancelled order.</returns>
         WebCallResult<HitBtcOrder> CancelOrderByClientOrderId(string clientOrderId);
 
         /// <summary>
         /// Cancel order by clientOrderId. (DELETE /api/2/order/{clientOrderId})
         /// Requires the "Place/cancel orders" API key Access Right.
         /// </summary>
-        /// <param name="symbol">Order unique identifier as assigned by trader. </param>
-        /// <returns>order</returns>
+        /// <param name="clientOrderId">Order unique identifier as assigned by trader. </param>
+        /// <returns>Returns the cancelled order.</returns>
         Task<WebCallResult<HitBtcOrder>> CancelOrderByClientOrderIdAsync(string clientOrderId);
 
         /// <summary>
@@ -721,6 +721,91 @@ namespace HitBtc.Net.Interfaces
             string symbol,
             decimal? price = null,
             bool strictValidate = false);
+
+        /// <summary>
+        /// Get Active Margin Orders. (GET /api/2/margin/order)
+        /// Requires the "Place/cancel orders" API key Access Right.
+        /// </summary>
+        /// <param name="symbol">Optional parameter. Parameter to filter active orders by symbol</param>
+        /// <returns>Returns an array of the active margin orders.</returns>
+        WebCallResult<IEnumerable<HitBtcOrder>> GetMarginOrders(string symbol = null);
+
+        /// <summary>
+        /// Get Active Margin Orders. (GET /api/2/margin/order)
+        /// Requires the "Place/cancel orders" API key Access Right.
+        /// </summary>
+        /// <param name="symbol">Optional parameter. Parameter to filter active orders by symbol</param>
+        /// <returns>Returns an array of the active margin orders.</returns>
+        Task<WebCallResult<IEnumerable<HitBtcOrder>>> GetMarginOrdersAsync(string symbol = null);
+
+        /// <summary>
+        /// Returns an active order by clientOrderId. (GET /api/2/margin/order/{clientOrderId})
+        /// Requires the "Place/cancel orders" API key Access Right.
+        /// </summary>
+        /// <param name="clientOrderId"></param>
+        /// <returns></returns>
+        WebCallResult<HitBtcOrder> GetMarginOrder(string clientOrderId);
+
+        /// <summary>
+        /// Returns an active order by clientOrderId. (GET /api/2/margin/order/{clientOrderId})
+        /// Requires the "Place/cancel orders" API key Access Right.
+        /// </summary>
+        /// <param name="clientOrderId"></param>
+        /// <returns></returns>
+        Task<WebCallResult<HitBtcOrder>> GetMarginOrderAsync(string clientOrderId);
+
+        /// <summary>
+        /// Create/Update Margin Order. (POST /api/2/margin/order, PUT /api/2/margin/order/{clientOrderId})
+        /// Requires the Isolated Margin Account for the order symbol.
+        /// Requires the "Place/cancel orders" API key Access Right.
+        /// </summary>
+        /// <param name="order"></param>
+        /// <returns></returns>
+        WebCallResult<HitBtcOrder> PlaceMarginOrder(HitbtcPlaceOrderRequest order);
+
+        /// <summary>
+        /// Create/Update Margin Order. (POST /api/2/margin/order, PUT /api/2/margin/order/{clientOrderId})
+        /// Requires the Isolated Margin Account for the order symbol.
+        /// Requires the "Place/cancel orders" API key Access Right.
+        /// </summary>
+        /// <param name="order"></param>
+        /// <returns></returns>
+        Task<WebCallResult<HitBtcOrder>> PlaceMarginOrderAsync(HitbtcPlaceOrderRequest order);
+
+        /// <summary>
+        /// Cancels all active margin orders, or all active margin orders for the specified symbol.
+        /// (DELETE /api/2/margin/order)
+        /// Requires the "Place/cancel orders" API key Access Right.
+        /// </summary>
+        /// <param name="symbol">Optional parameter to filter active margin orders by symbol</param>
+        /// <returns>Returns a list of cancelled margin orders.</returns>
+        WebCallResult<IEnumerable<HitBtcOrder>> CancelMarginOrders(string symbol = null);
+
+        /// <summary>
+        /// Cancels all active margin orders, or all active margin orders for the specified symbol.
+        /// (DELETE /api/2/margin/order)
+        /// Requires the "Place/cancel orders" API key Access Right.
+        /// </summary>
+        /// <param name="symbol">Optional parameter to filter active margin orders by symbol</param>
+        /// <returns>Returns a list of cancelled margin orders.</returns>
+        Task<WebCallResult<IEnumerable<HitBtcOrder>>> CancelMarginOrdersAsync(string symbol = null);
+
+        /// <summary>
+        /// Cancel margin order by clientOrderId. (DELETE /api/2/margin/order/{clientOrderId})
+        /// Requires the "Place/cancel orders" API key Access Right.
+        /// </summary>
+        /// <param name="clientOrderId">Order unique identifier as assigned by trader. </param>
+        /// <returns>Returns the successfully cancelled margin order.</returns>
+        WebCallResult<HitBtcOrder> CancelMarginOrderByClientOrderId(string clientOrderId);
+
+        /// <summary>
+        /// Cancel margin order by clientOrderId. (DELETE /api/2/margin/order/{clientOrderId})
+        /// Requires the "Place/cancel orders" API key Access Right.
+        /// </summary>
+        /// <param name="clientOrderId">Order unique identifier as assigned by trader. </param>
+        /// <returns>Returns the successfully cancelled margin order.</returns>
+        Task<WebCallResult<HitBtcOrder>> CancelMarginOrderByClientOrderIdAsync(string clientOrderId);
+
     }
 
 }
