@@ -5,6 +5,7 @@ using HitBtc.Net.Objects.Trading;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace HitBtc.Net.Interfaces
@@ -18,7 +19,7 @@ namespace HitBtc.Net.Interfaces
         /// </summary>
         /// <param name="currencies">Comma-separated list of currency codes. Optional parameter</param>
         /// <returns></returns>
-        Task<WebCallResult<IEnumerable<HitBtcCurrency>>> GetCurrenciesAsync(params string[] currencies);
+        Task<WebCallResult<IEnumerable<HitBtcCurrency>>> GetCurrenciesAsync(CancellationToken ct = default, params string[] currencies);
         /// <summary>
         /// Get a list of all currencies or specified currencies (GET /api/2/public/currency)
         /// </summary>
@@ -31,7 +32,7 @@ namespace HitBtc.Net.Interfaces
         /// </summary>
         /// <param name="currency">currency codes (GET /api/2/public/currency/{currency})</param>
         /// <returns></returns>
-        Task<WebCallResult<HitBtcCurrency>> GetCurrencyAsync(string currency);
+        Task<WebCallResult<HitBtcCurrency>> GetCurrencyAsync(string currency, CancellationToken ct = default);
 
         /// <summary>
         /// Returns the data for a certain currency. (GET /api/2/public/currency)
@@ -48,7 +49,7 @@ namespace HitBtc.Net.Interfaces
         /// </summary>
         /// <param name="symbols">Comma-separated list of symbol codes. Optional parameter</param>
         /// <returns></returns>
-        Task<WebCallResult<IEnumerable<HitBtcSymbol>>> GetSymbolsAsync(params string[] symbols);
+        Task<WebCallResult<IEnumerable<HitBtcSymbol>>> GetSymbolsAsync(CancellationToken ct = default, params string[] symbols);
 
         /// <summary>
         /// Return the actual list of currency symbols (currency pairs) traded on exchange.
@@ -65,7 +66,7 @@ namespace HitBtc.Net.Interfaces
         /// </summary>
         /// <param name="symbol">certain symbol</param>
         /// <returns></returns>
-        Task<WebCallResult<HitBtcSymbol>> GetSymbolAsync(string symbol);
+        Task<WebCallResult<HitBtcSymbol>> GetSymbolAsync(string symbol, CancellationToken ct = default);
 
         /// <summary>
         /// Returns the data for a certain symbol.
@@ -79,7 +80,7 @@ namespace HitBtc.Net.Interfaces
         /// </summary>
         /// <param name="symbols">Comma-separated list of symbol codes. Optional parameter</param>
         /// <returns></returns>
-        Task<WebCallResult<IEnumerable<HitBtcTicker>>> GetTickersAsync(params string[] symbols);
+        Task<WebCallResult<IEnumerable<HitBtcTicker>>> GetTickersAsync(CancellationToken ct = default, params string[] symbols);
 
         /// <summary>
         /// Get tickers for all symbols or for specified symbols
@@ -93,14 +94,14 @@ namespace HitBtc.Net.Interfaces
         /// </summary>
         /// <param name="symbol"></param>
         /// <returns></returns>
-        Task<WebCallResult<HitBtcTicker>> GetTickerAsync(string symbol);
+        Task<WebCallResult<HitBtcTicker>> GetTickerAsync(string symbol, CancellationToken ct = default);
 
         /// <summary>
         /// Get ticker for a certain symbol
         /// </summary>
         /// <param name="symbol"></param>
         /// <returns></returns>
-        Task<WebCallResult<HitBtcTicker>> GetTicker(string symbol);
+        WebCallResult<HitBtcTicker> GetTicker(string symbol);
 
         #region Trades
         /// <summary>
@@ -145,6 +146,7 @@ namespace HitBtc.Net.Interfaces
             DateTime? till = null,
             int limit = 100,
             int offset = 0,
+            CancellationToken ct = default,
             params string[] symbols);
 
         /// <summary>
@@ -160,7 +162,7 @@ namespace HitBtc.Net.Interfaces
         /// <param name="limit">Default value: 100, Max value: 1000</param>
         /// <param name="offset">Default value: 0, Max value: 100000</param>
         /// <returns>Returns trades information for a symbol with a symbol Id</returns>
-        WebCallResult<IEnumerable<Objects.MarketData.HitBtcTrade>> GetTrade(
+        WebCallResult<IEnumerable<HitBtcPublicTrade>> GetTrade(
             string symbol,
             string sort = "DESC",
             string by = "timestamp",
@@ -182,14 +184,15 @@ namespace HitBtc.Net.Interfaces
         /// <param name="limit">Default value: 100, Max value: 1000</param>
         /// <param name="offset">Default value: 0, Max value: 100000</param>
         /// <returns>Returns trades information for a symbol with a symbol Id</returns>
-        Task<WebCallResult<IEnumerable<Objects.MarketData.HitBtcTrade>>> GetTradeAsync(
+        Task<WebCallResult<IEnumerable<HitBtcPublicTrade>>> GetTradeAsync(
             string symbol,
             string sort = "DESC",
             string by = "timestamp",
             DateTime? from = null,
             DateTime? till = null,
             int limit = 100,
-            int offset = 0);
+            int offset = 0,
+            CancellationToken ct = default);
 
         /// <summary>
         /// Get trades for all symbols or for specified symbols (GET /api/2/public/trades)
@@ -233,6 +236,7 @@ namespace HitBtc.Net.Interfaces
             long? till = null,
             int limit = 100,
             int offset = 0,
+            CancellationToken ct = default,
             params string[] symbols);
 
         /// <summary>
@@ -248,7 +252,7 @@ namespace HitBtc.Net.Interfaces
         /// <param name="limit">Default value: 100, Max value: 1000</param>
         /// <param name="offset">Default value: 0, Max value: 100000</param>
         /// <returns>Returns trades information for a symbol with a symbol Id</returns>
-        WebCallResult<IEnumerable<Objects.MarketData.HitBtcTrade>> GetTrade(
+        WebCallResult<IEnumerable<HitBtcPublicTrade>> GetTrade(
             string symbol,
             string sort = "DESC",
             string by = "timestamp",
@@ -270,14 +274,15 @@ namespace HitBtc.Net.Interfaces
         /// <param name="limit">Default value: 100, Max value: 1000</param>
         /// <param name="offset">Default value: 0, Max value: 100000</param>
         /// <returns>Returns trades information for a symbol with a symbol Id</returns>
-        Task<WebCallResult<IEnumerable<Objects.MarketData.HitBtcTrade>>> GetTradeAsync(
+        Task<WebCallResult<IEnumerable<HitBtcPublicTrade>>> GetTradeAsync(
             string symbol,
             string sort = "DESC",
             string by = "timestamp",
             long? from = null,
             long? till = null,
             int limit = 100,
-            int offset = 0);
+            int offset = 0,
+            CancellationToken ct = default);
         #endregion Trades
 
         /// <summary>
@@ -288,7 +293,10 @@ namespace HitBtc.Net.Interfaces
         /// <param name="symbol">Comma-separated list of symbol codes. Optional parameter. 
         /// If it is not provided, null or empty, the request returns an Order Book for all symbols.</param>
         /// <returns></returns>
-        Task<WebCallResult<HitBtcOrderBooksResponse>> GetOrderBooksAsync(int limit = 100, params string[] symbol);
+        Task<WebCallResult<HitBtcOrderBooksResponse>> GetOrderBooksAsync(
+            int limit = 100,
+            CancellationToken ct = default, 
+            params string[] symbol);
 
         /// <summary>
         /// Get Order Book for all symbols or for specified symbols
@@ -308,7 +316,11 @@ namespace HitBtc.Net.Interfaces
         /// Default value: 100, Set 0 to view full list of Order Book levels.</param>
         /// <param name="volume">Desired volume for market depth search. Please note that if the <c>volume</c> is specified, the <c>limit</c> will be ignored, <c>askAveragePrice</c>  and <c>bidAveragePrice<c> are returned in response.</param>
         /// <returns></returns>
-        Task<WebCallResult<HitBtcOrderBook>> GetOrderBookAsync(string symbol, int limit = 100, decimal? volume = null);
+        Task<WebCallResult<HitBtcOrderBook>> GetOrderBookAsync(
+            string symbol,
+            int limit = 100, 
+            decimal? volume = null,
+            CancellationToken ct = default);
 
         /// <summary>
         /// Get Order Book for a certain symbol
@@ -368,6 +380,7 @@ namespace HitBtc.Net.Interfaces
             DateTime? till = null,
             int limit = 100,
             int offset = 0,
+            CancellationToken ct = default,
             params string[] symbols);
 
         /// <summary>
@@ -412,7 +425,8 @@ namespace HitBtc.Net.Interfaces
             DateTime? from = null,
             DateTime? till = null,
             int limit = 100,
-            int offset = 0);
+            int offset = 0,
+            CancellationToken ct = default);
 
         #endregion
         #region Trading
@@ -428,7 +442,7 @@ namespace HitBtc.Net.Interfaces
         /// Requires the "Orderbook, History, Trading balance" API key Access Right.
         /// </summary>
         /// <returns></returns>
-        Task<WebCallResult<HitBtcTradingBalance>> GetTradingBalanceAsync();
+        Task<WebCallResult<HitBtcTradingBalance>> GetTradingBalanceAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Return array of active orders. (GET /api/2/order)
@@ -444,7 +458,7 @@ namespace HitBtc.Net.Interfaces
         /// </summary>
         /// <param name="symbol">Optional parameter to filter active orders by symbol</param>
         /// <returns>Array of orders</returns>
-        Task<WebCallResult<IEnumerable<HitBtcOrder>>> GetActiveOrdersAsync(string symbol = null);
+        Task<WebCallResult<IEnumerable<HitBtcOrder>>> GetActiveOrdersAsync(string symbol = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get active order by clientOrderId. (GET /api/2/order/{clientOrderId})
@@ -472,7 +486,10 @@ namespace HitBtc.Net.Interfaces
         /// cancelled or expired order info will be returned instantly.
         /// For other order statuses, actual order info will be returned after specified wait time.</param>
         /// <returns>Order</returns>
-        Task<WebCallResult<HitBtcOrder>> GetActiveOrderByClientOrderIdAsync(string clientOrderId, long? wait = null);
+        Task<WebCallResult<HitBtcOrder>> GetActiveOrderByClientOrderIdAsync(
+            string clientOrderId, 
+            long? wait = null,
+            CancellationToken ct = default);
 
         /// <summary>
         /// Create new order or Update existing order. (POST /api/2/order,  PUT /api/2/order/{clientOrderId})
@@ -488,7 +505,7 @@ namespace HitBtc.Net.Interfaces
         /// </summary>
         /// <param name="order"></param>
         /// <returns>Returns the successfully created or updated order.</returns>
-        Task<WebCallResult<HitBtcOrder>> PlaceOrderAsync(HitbtcPlaceOrderRequest order);
+        Task<WebCallResult<HitBtcOrder>> PlaceOrderAsync(HitbtcPlaceOrderRequest order, CancellationToken ct = default);
 
 
         /// <summary>
@@ -505,7 +522,7 @@ namespace HitBtc.Net.Interfaces
         /// </summary>
         /// <param name="symbol">Optional parameter to filter active orders by symbol</param>
         /// <returns>Returns a list of cancelled orders.</returns>
-        Task<WebCallResult<IEnumerable<HitBtcOrder>>> CancelOrdersAsync(string symbol = null);
+        Task<WebCallResult<IEnumerable<HitBtcOrder>>> CancelOrdersAsync(string symbol = null, CancellationToken ct = default);
 
         /// <summary>
         /// Cancel order by clientOrderId. (DELETE /api/2/order/{clientOrderId})
@@ -521,7 +538,7 @@ namespace HitBtc.Net.Interfaces
         /// </summary>
         /// <param name="clientOrderId">Order unique identifier as assigned by trader. </param>
         /// <returns>Returns the cancelled order.</returns>
-        Task<WebCallResult<HitBtcOrder>> CancelOrderByClientOrderIdAsync(string clientOrderId);
+        Task<WebCallResult<HitBtcOrder>> CancelOrderByClientOrderIdAsync(string clientOrderId, CancellationToken ct = default);
 
         /// <summary>
         /// Get personal trading commission rate.
@@ -552,7 +569,7 @@ namespace HitBtc.Net.Interfaces
         /// Requires the "Place/cancel orders" API key Access Right.
         /// </summary>
         /// <returns>Returns user Isolated Margin Account details.</returns>
-        Task<WebCallResult<IEnumerable<HitBtcIsolatedMarginAccount>>> GetIsolatedMarginAccountsAsync();
+        Task<WebCallResult<IEnumerable<HitBtcIsolatedMarginAccount>>> GetIsolatedMarginAccountsAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Closes all positions and then closes all Isolated Margin Accounts. 
@@ -570,7 +587,7 @@ namespace HitBtc.Net.Interfaces
         /// Requires the "Place/cancel orders" API key Access Right.
         /// </summary>
         /// <returns>Returns list of the closed Isolated Margin Accounts.</returns>
-        Task<WebCallResult<IEnumerable<HitBtcIsolatedMarginAccount>>> CloseAllIsolatedMarginAccountsAsync();
+        Task<WebCallResult<IEnumerable<HitBtcIsolatedMarginAccount>>> CloseAllIsolatedMarginAccountsAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Get Isolated Margin Account by symbol (GET /api/2/margin/account/{symbol})
@@ -587,7 +604,7 @@ namespace HitBtc.Net.Interfaces
         /// </summary>
         /// <param name="symbol">the symbol</param>
         /// <returns>Returns Isolated Margin Account details.</returns>
-        Task<WebCallResult<HitBtcIsolatedMarginAccount>> GetIsolatedMarginAccountAsync(string symbol);
+        Task<WebCallResult<HitBtcIsolatedMarginAccount>> GetIsolatedMarginAccountAsync(string symbol, CancellationToken ct = default);
 
         /// <summary>
         /// Creates or updates margin account. 
@@ -625,7 +642,8 @@ namespace HitBtc.Net.Interfaces
         Task<WebCallResult<HitBtcIsolatedMarginAccount>> SetIsolatedMarginAccountAsync(
             string symbol,
             decimal marginBalance,
-            bool strictValidate);
+            bool strictValidate,
+            CancellationToken ct = default);
 
         /// <summary>
         /// Closes Isolated Margin Account by symbol.
@@ -645,7 +663,7 @@ namespace HitBtc.Net.Interfaces
         /// </summary>
         /// <param name="symbol">the symbol</param>
         /// <returns>Returns closed Isolated Margin Account.</returns>
-        Task<WebCallResult<HitBtcIsolatedMarginAccount>> CloseIsolatedMarginAccountAsync(string symbol);
+        Task<WebCallResult<HitBtcIsolatedMarginAccount>> CloseIsolatedMarginAccountAsync(string symbol, CancellationToken ct = default);
 
         /// <summary>
         /// Get Margin Positions (GET /api/2/margin/position)
@@ -659,7 +677,7 @@ namespace HitBtc.Net.Interfaces
         /// Requires the "Place/cancel orders" API key Access Right.
         /// </summary>
         /// <returns>Returns a list of open positions.</returns>
-        Task<WebCallResult<IEnumerable<HitBtcPosition>>> GetMarginPositionsAsync();
+        Task<WebCallResult<IEnumerable<HitBtcPosition>>> GetMarginPositionsAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Closes all open positions. (DELETE /api/2/margin/position)
@@ -673,7 +691,7 @@ namespace HitBtc.Net.Interfaces
         /// Requires the "Place/cancel orders" API key Access Right.
         /// </summary>
         /// <returns>Returns a list of the successfully closed margin positions.</returns>
-        Task<WebCallResult<IEnumerable<HitBtcPosition>>> CloseMarginPositionsAsync();
+        Task<WebCallResult<IEnumerable<HitBtcPosition>>> CloseMarginPositionsAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Returns opened position for the requested symbol. (GET /api/2/margin/position/{symbol})
@@ -687,7 +705,7 @@ namespace HitBtc.Net.Interfaces
         /// Requires the "Place/cancel orders" API key Access Right.
         /// </summary>
         /// <returns></returns>
-        Task<WebCallResult<HitBtcPosition>> GetMarginPositionAsync(string symbol);
+        Task<WebCallResult<HitBtcPosition>> GetMarginPositionAsync(string symbol, CancellationToken ct = default);
         #endregion MarginTrading
   
         /// <summary>
@@ -720,7 +738,8 @@ namespace HitBtc.Net.Interfaces
         Task<WebCallResult<HitBtcPosition>> CloseMarginPositionAsync(
             string symbol,
             decimal? price = null,
-            bool strictValidate = false);
+            bool strictValidate = false,
+            CancellationToken ct = default);
 
         /// <summary>
         /// Get Active Margin Orders. (GET /api/2/margin/order)
@@ -736,7 +755,7 @@ namespace HitBtc.Net.Interfaces
         /// </summary>
         /// <param name="symbol">Optional parameter. Parameter to filter active orders by symbol</param>
         /// <returns>Returns an array of the active margin orders.</returns>
-        Task<WebCallResult<IEnumerable<HitBtcOrder>>> GetMarginOrdersAsync(string symbol = null);
+        Task<WebCallResult<IEnumerable<HitBtcOrder>>> GetMarginOrdersAsync(string symbol = null, CancellationToken ct = default);
 
         /// <summary>
         /// Returns an active order by clientOrderId. (GET /api/2/margin/order/{clientOrderId})
@@ -752,7 +771,7 @@ namespace HitBtc.Net.Interfaces
         /// </summary>
         /// <param name="clientOrderId"></param>
         /// <returns></returns>
-        Task<WebCallResult<HitBtcOrder>> GetMarginOrderAsync(string clientOrderId);
+        Task<WebCallResult<HitBtcOrder>> GetMarginOrderAsync(string clientOrderId, CancellationToken ct = default);
 
         /// <summary>
         /// Create/Update Margin Order. (POST /api/2/margin/order, PUT /api/2/margin/order/{clientOrderId})
@@ -770,7 +789,7 @@ namespace HitBtc.Net.Interfaces
         /// </summary>
         /// <param name="order"></param>
         /// <returns></returns>
-        Task<WebCallResult<HitBtcOrder>> PlaceMarginOrderAsync(HitbtcPlaceOrderRequest order);
+        Task<WebCallResult<HitBtcOrder>> PlaceMarginOrderAsync(HitbtcPlaceOrderRequest order, CancellationToken ct = default);
 
         /// <summary>
         /// Cancels all active margin orders, or all active margin orders for the specified symbol.
@@ -788,7 +807,7 @@ namespace HitBtc.Net.Interfaces
         /// </summary>
         /// <param name="symbol">Optional parameter to filter active margin orders by symbol</param>
         /// <returns>Returns a list of cancelled margin orders.</returns>
-        Task<WebCallResult<IEnumerable<HitBtcOrder>>> CancelMarginOrdersAsync(string symbol = null);
+        Task<WebCallResult<IEnumerable<HitBtcOrder>>> CancelMarginOrdersAsync(string symbol = null, CancellationToken ct = default);
 
         /// <summary>
         /// Cancel margin order by clientOrderId. (DELETE /api/2/margin/order/{clientOrderId})
@@ -804,7 +823,7 @@ namespace HitBtc.Net.Interfaces
         /// </summary>
         /// <param name="clientOrderId">Order unique identifier as assigned by trader. </param>
         /// <returns>Returns the successfully cancelled margin order.</returns>
-        Task<WebCallResult<HitBtcOrder>> CancelMarginOrderByClientOrderIdAsync(string clientOrderId);
+        Task<WebCallResult<HitBtcOrder>> CancelMarginOrderByClientOrderIdAsync(string clientOrderId, CancellationToken ct = default);
 
     }
 
