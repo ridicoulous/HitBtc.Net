@@ -7,7 +7,7 @@ using System.Text;
 
 namespace HitBtc.Net.Objects.MarketData
 {
-    public class HitBtcTrade
+    public class HitBtcPublicTrade
     {
         /// <summary>
         /// Trade identifier

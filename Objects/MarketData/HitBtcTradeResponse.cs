@@ -6,6 +6,6 @@ namespace HitBtc.Net.Objects.MarketData
 {
     public class HitBtcTradeResponse
     {
-        public Dictionary<string, List<HitBtcTrade>> Body { get; set; }
+        public Dictionary<string, List<HitBtcPublicTrade>> Body { get; set; }
     }
 }

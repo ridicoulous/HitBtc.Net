@@ -1,5 +1,6 @@
 ﻿using HitBtc.Net.Converters;
 using HitBtc.Net.Enums;
+using HitBtc.Net.Objects.MarketData;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -7,14 +8,8 @@ using System.Text;
 
 namespace HitBtc.Net.Objects.Trading
 {
-    public class HitBtcTrade
+        public class HitBtcTrade : HitBtcPublicTrade
     {
-        /// <summary>
-        /// Trade unique identifier as assigned by exchange
-        /// </summary>
-        [JsonProperty("id")]
-        public long Id { get; set; }
-
         /// <summary>
         /// Order unique identifier as assigned by exchange
         /// </summary>
@@ -34,24 +29,6 @@ namespace HitBtc.Net.Objects.Trading
         public string Symbol { get; set; }
 
         /// <summary>
-        /// Trade side. Accepted values: sell or buy
-        /// </summary>
-        [JsonProperty("side"), JsonConverter(typeof(HitBtcTradeSideConverter))]
-        public HitBtcTradeSide Side { get; set; }
-
-        /// <summary>
-        /// Trade quantity
-        /// </summary>
-        [JsonProperty("quantity")]
-        public decimal Quantity { get; set; }
-
-        /// <summary>
-        /// Trade price
-        /// </summary>
-        [JsonProperty("price")]
-        public decimal Price { get; set; }
-
-        /// <summary>
         /// Trade commission
         /// Can be negative(''rebate'' - reward paid to a trader).
         /// See fee currency in the symbol config.
@@ -65,10 +42,5 @@ namespace HitBtc.Net.Objects.Trading
         [JsonProperty("liquidation")]
         public bool Liquidation { get; set; }
 
-        /// <summary>
-        /// Trade timestamp
-        /// </summary>
-        [JsonProperty("timestamp")]
-        public DateTime Timestamp { get; set; }
     }
 }
