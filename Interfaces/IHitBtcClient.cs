@@ -103,187 +103,43 @@ namespace HitBtc.Net.Interfaces
         /// <returns></returns>
         WebCallResult<HitBtcTicker> GetTicker(string symbol);
 
-        #region Trades
-        /// <summary>
-        /// Get trades for all symbols or for specified symbols (GET /api/2/public/trades)
-        /// </summary>
-        /// <param name="sort">Sort direction. Accepted values: ASC, DESC. Default value: DESC</param>
-        /// <param name="by">Defines filter type. Accepted values: id, timestamp. Default value: timestamp</param>
-        /// <param name="from">Interval initial value (optional parameter) 
-        /// If sorting by timestamp is used, then Datetime, otherwise Number of index value</param>
-        /// <param name="till">Interval end value (optional parameter)
-        /// If sorting by timestamp is used, then Datetime, otherwise Number of index value</param>
-        /// <param name="limit">Default value: 100, Max value: 1000</param>
-        /// <param name="offset">Default value: 0, Max value: 100000</param>
-        /// <param name="symbols">Comma-separated list of symbol codes. Optional parameter</param>
-        /// <returns></returns>
-        WebCallResult<HitBtcTradeResponse> GetTrades(
-            string sort = "DESC",
-            string by = "timestamp",
-            DateTime? from = null,
-            DateTime? till = null,
-            int limit = 100,
-            int offset = 0,
-            params string[] symbols);
-
-        /// <summary>
-        /// Get trades for all symbols or for specified symbols (GET /api/2/public/trades)
-        /// </summary>
-        /// <param name="sort">Sort direction. Accepted values: ASC, DESC. Default value: DESC</param>
-        /// <param name="by">Defines filter type. Accepted values: id, timestamp. Default value: timestamp</param>
-        /// <param name="from">Interval initial value (optional parameter) 
-        /// If sorting by timestamp is used, then Datetime, otherwise Number of index value</param>
-        /// <param name="till">Interval end value (optional parameter)
-        /// If sorting by timestamp is used, then Datetime, otherwise Number of index value</param>
-        /// <param name="limit">Default value: 100, Max value: 1000</param>
-        /// <param name="offset">Default value: 0, Max value: 100000</param>
-        /// <param name="symbols">Comma-separated list of symbol codes. Optional parameter</param>
-        /// <returns></returns>
-        Task<WebCallResult<HitBtcTradeResponse>> GetTradesAsync(
-            string sort = "DESC",
-            string by = "timestamp",
-            DateTime? from = null,
-            DateTime? till = null,
-            int limit = 100,
-            int offset = 0,
-            CancellationToken ct = default,
-            params string[] symbols);
-
         /// <summary>
         /// Get trades for all symbols or for specified symbols (GET /api/2/public/trades)
         /// </summary>
         /// <param name="symbol">symbol code.</param>
-        /// <param name="sort">Sort direction. Accepted values: ASC, DESC. Default value: DESC</param>
-        /// <param name="by">Defines filter type. Accepted values: id, timestamp. Default value: timestamp</param>
-        /// <param name="from">Interval initial value (optional parameter) 
-        /// If sorting by timestamp is used, then Datetime, otherwise Number of index value</param>
-        /// <param name="till">Interval end value (optional parameter)
-        /// If sorting by timestamp is used, then Datetime, otherwise Number of index value</param>
-        /// <param name="limit">Default value: 100, Max value: 1000</param>
-        /// <param name="offset">Default value: 0, Max value: 100000</param>
         /// <returns>Returns trades information for a symbol with a symbol Id</returns>
         WebCallResult<IEnumerable<HitBtcPublicTrade>> GetTrade(
             string symbol,
-            string sort = "DESC",
-            string by = "timestamp",
-            DateTime? from = null,
-            DateTime? till = null,
-            int limit = 100,
-            int offset = 0);
+            HitbtcPublicTradesFilterRequest filter = null);
 
         /// <summary>
         /// Get trades for all symbols or for specified symbols (GET /api/2/public/trades)
         /// </summary>
         /// <param name="symbol">symbol code.</param>
-        /// <param name="sort">Sort direction. Accepted values: ASC, DESC. Default value: DESC</param>
-        /// <param name="by">Defines filter type. Accepted values: id, timestamp. Default value: timestamp</param>
-        /// <param name="from">Interval initial value (optional parameter) 
-        /// If sorting by timestamp is used, then Datetime, otherwise Number of index value</param>
-        /// <param name="till">Interval end value (optional parameter)
-        /// If sorting by timestamp is used, then Datetime, otherwise Number of index value</param>
-        /// <param name="limit">Default value: 100, Max value: 1000</param>
-        /// <param name="offset">Default value: 0, Max value: 100000</param>
         /// <returns>Returns trades information for a symbol with a symbol Id</returns>
         Task<WebCallResult<IEnumerable<HitBtcPublicTrade>>> GetTradeAsync(
             string symbol,
-            string sort = "DESC",
-            string by = "timestamp",
-            DateTime? from = null,
-            DateTime? till = null,
-            int limit = 100,
-            int offset = 0,
+            HitbtcPublicTradesFilterRequest filter = null,
             CancellationToken ct = default);
 
         /// <summary>
         /// Get trades for all symbols or for specified symbols (GET /api/2/public/trades)
         /// </summary>
-        /// <param name="sort">Sort direction. Accepted values: ASC, DESC. Default value: DESC</param>
-        /// <param name="by">Defines filter type. Accepted values: id, timestamp. Default value: timestamp</param>
-        /// <param name="from">Interval initial value (optional parameter) 
-        /// If sorting by timestamp is used, then Datetime, otherwise Number of index value</param>
-        /// <param name="till">Interval end value (optional parameter)
-        /// If sorting by timestamp is used, then Datetime, otherwise Number of index value</param>
-        /// <param name="limit">Default value: 100, Max value: 1000</param>
-        /// <param name="offset">Default value: 0, Max value: 100000</param>
         /// <param name="symbols">Comma-separated list of symbol codes. Optional parameter</param>
         /// <returns></returns>
         WebCallResult<HitBtcTradeResponse> GetTrades(
-            string sort = "DESC",
-            string by = "timestamp",
-            long? from = null,
-            long? till = null,
-            int limit = 100,
-            int offset = 0,
+            HitbtcPublicTradesFilterRequest filter = null,
             params string[] symbols);
 
         /// <summary>
         /// Get trades for all symbols or for specified symbols (GET /api/2/public/trades)
         /// </summary>
-        /// <param name="sort">Sort direction. Accepted values: ASC, DESC. Default value: DESC</param>
-        /// <param name="by">Defines filter type. Accepted values: id, timestamp. Default value: timestamp</param>
-        /// <param name="from">Interval initial value (optional parameter) 
-        /// If sorting by timestamp is used, then Datetime, otherwise Number of index value</param>
-        /// <param name="till">Interval end value (optional parameter)
-        /// If sorting by timestamp is used, then Datetime, otherwise Number of index value</param>
-        /// <param name="limit">Default value: 100, Max value: 1000</param>
-        /// <param name="offset">Default value: 0, Max value: 100000</param>
         /// <param name="symbols">Comma-separated list of symbol codes. Optional parameter</param>
         /// <returns></returns>
         Task<WebCallResult<HitBtcTradeResponse>> GetTradesAsync(
-            string sort = "DESC",
-            string by = "timestamp",
-            long? from = null,
-            long? till = null,
-            int limit = 100,
-            int offset = 0,
+            HitbtcPublicTradesFilterRequest filter = null,
             CancellationToken ct = default,
             params string[] symbols);
-
-        /// <summary>
-        /// Get trades for all symbols or for specified symbols (GET /api/2/public/trades)
-        /// </summary>
-        /// <param name="symbol">symbol code.</param>
-        /// <param name="sort">Sort direction. Accepted values: ASC, DESC. Default value: DESC</param>
-        /// <param name="by">Defines filter type. Accepted values: id, timestamp. Default value: timestamp</param>
-        /// <param name="from">Interval initial value (optional parameter) 
-        /// If sorting by timestamp is used, then Datetime, otherwise Number of index value</param>
-        /// <param name="till">Interval end value (optional parameter)
-        /// If sorting by timestamp is used, then Datetime, otherwise Number of index value</param>
-        /// <param name="limit">Default value: 100, Max value: 1000</param>
-        /// <param name="offset">Default value: 0, Max value: 100000</param>
-        /// <returns>Returns trades information for a symbol with a symbol Id</returns>
-        WebCallResult<IEnumerable<HitBtcPublicTrade>> GetTrade(
-            string symbol,
-            string sort = "DESC",
-            string by = "timestamp",
-            long? from = null,
-            long? till = null,
-            int limit = 100,
-            int offset = 0);
-
-        /// <summary>
-        /// Get trades for all symbols or for specified symbols (GET /api/2/public/trades)
-        /// </summary>
-        /// <param name="symbol">symbol code.</param>
-        /// <param name="sort">Sort direction. Accepted values: ASC, DESC. Default value: DESC</param>
-        /// <param name="by">Defines filter type. Accepted values: id, timestamp. Default value: timestamp</param>
-        /// <param name="from">Interval initial value (optional parameter) 
-        /// If sorting by timestamp is used, then Datetime, otherwise Number of index value</param>
-        /// <param name="till">Interval end value (optional parameter)
-        /// If sorting by timestamp is used, then Datetime, otherwise Number of index value</param>
-        /// <param name="limit">Default value: 100, Max value: 1000</param>
-        /// <param name="offset">Default value: 0, Max value: 100000</param>
-        /// <returns>Returns trades information for a symbol with a symbol Id</returns>
-        Task<WebCallResult<IEnumerable<HitBtcPublicTrade>>> GetTradeAsync(
-            string symbol,
-            string sort = "DESC",
-            string by = "timestamp",
-            long? from = null,
-            long? till = null,
-            int limit = 100,
-            int offset = 0,
-            CancellationToken ct = default);
-        #endregion Trades
 
         /// <summary>
         /// Get Order Book for all symbols or for specified symbols

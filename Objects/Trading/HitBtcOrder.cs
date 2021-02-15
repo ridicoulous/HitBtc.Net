@@ -112,6 +112,12 @@ namespace HitBtc.Net.Objects.Trading
         public DateTime ExpireTime { get; set; }
 
         /// <summary>
+        /// Margin position Id
+        /// </summary>
+        [JsonProperty("positionId")]
+        public long PositionId { get; set; }
+
+        /// <summary>
         /// Optional list of trades
         /// </summary>
         [JsonProperty("tradesReport")]
