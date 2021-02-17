@@ -4,7 +4,7 @@ using System.Text;
 
 namespace HitBtc.Net.Objects.TradingHistory
 {
-    public class HitbtcOrdersFilterRequest
+    public class HitBtcOrdersFilterRequest
     {
 
         int limit;
@@ -13,7 +13,7 @@ namespace HitBtc.Net.Objects.TradingHistory
         /// <summary>
         /// Create filter with default parameters
         /// </summary>
-        public HitbtcOrdersFilterRequest() : this(null, null, null, 100, 0)
+        public HitBtcOrdersFilterRequest() : this(null, null, null, 100, 0)
         {
         }
 
@@ -21,7 +21,7 @@ namespace HitBtc.Net.Objects.TradingHistory
         /// use this to filter by client order Id
         /// </summary>
         /// <param name="clientOrderId"></param>
-        public HitbtcOrdersFilterRequest(string clientOrderId)
+        public HitBtcOrdersFilterRequest(string clientOrderId)
         {
             ClientOrderId = clientOrderId;
         }
@@ -34,7 +34,7 @@ namespace HitBtc.Net.Objects.TradingHistory
         /// <param name="till"></param>
         /// <param name="limit"></param>
         /// <param name="offset"></param>
-        public HitbtcOrdersFilterRequest(string symbol, DateTime? from, DateTime? till, int limit, int offset)
+        public HitBtcOrdersFilterRequest(string symbol, DateTime? from, DateTime? till, int limit, int offset)
         {
             Symbol = symbol;
             From = from;
