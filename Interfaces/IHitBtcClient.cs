@@ -2,6 +2,7 @@
 using HitBtc.Net.Objects.MarginTrading;
 using HitBtc.Net.Objects.MarketData;
 using HitBtc.Net.Objects.Trading;
+using HitBtc.Net.Objects.TradingHistory;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -562,7 +563,6 @@ namespace HitBtc.Net.Interfaces
         /// </summary>
         /// <returns></returns>
         Task<WebCallResult<HitBtcPosition>> GetMarginPositionAsync(string symbol, CancellationToken ct = default);
-        #endregion MarginTrading
   
         /// <summary>
         /// Closes open position by symbol. (DELETE /api/2/margin/position/{symbol})
@@ -680,6 +680,59 @@ namespace HitBtc.Net.Interfaces
         /// <param name="clientOrderId">Order unique identifier as assigned by trader. </param>
         /// <returns>Returns the successfully cancelled margin order.</returns>
         Task<WebCallResult<HitBtcOrder>> CancelMarginOrderByClientOrderIdAsync(string clientOrderId, CancellationToken ct = default);
+
+        #endregion MarginTrading
+
+        #region TradingHistory
+        /// <summary>
+        /// Get orders history (GET /api/2/history/order)
+        /// Requires the "Orderbook, History, Trading balance" API key Access Right.
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        WebCallResult<IEnumerable<HitBtcOrder>> GetOrdersHistory(HitbtcOrdersFilterRequest filter);
+
+        /// <summary>
+        /// Get orders history (GET /api/2/history/order)
+        /// Requires the "Orderbook, History, Trading balance" API key Access Right.
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        Task<WebCallResult<IEnumerable<HitBtcOrder>>> GetOrdersHistoryAsync(HitbtcOrdersFilterRequest filter, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get the user's trading history. (GET /api/2/history/trades)
+        /// Requires the "Orderbook, History, Trading balance" API key Access Right.
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        WebCallResult<IEnumerable<HitBtcTrade>> GetTradesHistory(HitbtcTradesFilterRequest filter);
+
+        /// <summary>
+        /// Get the user's trading history. (GET /api/2/history/trades)
+        /// Requires the "Orderbook, History, Trading balance" API key Access Right.
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        Task<WebCallResult<IEnumerable<HitBtcTrade>>> GetTradesHistoryAsync(HitbtcTradesFilterRequest filter, CancellationToken ct = default);
+
+        /// <summary>
+        /// Returns the user's trading order with a specified orderId. (GET /api/2/history/order/{orderId}/trades)
+        /// Requires the "Orderbook, History, Trading balance" API key Access Right.
+        /// </summary>
+        /// <param name="orderId">orderId is required in cause of clientOrderId can be non-unique during long period.</param>
+        /// <returns>list of the trades</returns>
+        WebCallResult<IEnumerable<HitBtcTrade>> GetTradesByOrderId(long orderId);
+
+        /// <summary>
+        /// Returns the user's trading order with a specified orderId. (GET /api/2/history/order/{orderId}/trades)
+        /// Requires the "Orderbook, History, Trading balance" API key Access Right.
+        /// </summary>
+        /// <param name="orderId">orderId is required in cause of clientOrderId can be non-unique during long period.</param>
+        /// <returns>list of the trades</returns>
+        Task<WebCallResult<IEnumerable<HitBtcTrade>>> GetTradesByOrderIdAsync(long orderId, CancellationToken ct = default);
+
+        #endregion TradingHistory
 
     }
 
