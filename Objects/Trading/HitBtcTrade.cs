@@ -1,6 +1,4 @@
-﻿using HitBtc.Net.Converters;
-using HitBtc.Net.Enums;
-using HitBtc.Net.Objects.MarketData;
+﻿using HitBtc.Net.Objects.MarketData;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -41,6 +39,19 @@ namespace HitBtc.Net.Objects.Trading
         /// </summary>
         [JsonProperty("liquidation")]
         public bool Liquidation { get; set; }
+
+        /// <summary>
+        /// this is an undocumented field
+        /// </summary>
+        [JsonProperty("pnl")]
+        public decimal Pnl { get; set; }
+
+        /// <summary>
+        /// this is an undocumented field
+        /// </summary>
+        [JsonProperty("taker")]
+        public bool Taker { get; set; }
+
 
     }
 }
