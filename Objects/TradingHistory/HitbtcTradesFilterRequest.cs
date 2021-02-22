@@ -5,21 +5,21 @@ using System.Text;
 
 namespace HitBtc.Net.Objects.TradingHistory
 {
-    public class HitbtcTradesFilterRequest : HitbtcPublicTradesFilterRequest
+    public class HitBtcTradesFilterRequest : HitbtcPublicTradesFilterRequest
     {
         private string margin;
-        public HitbtcTradesFilterRequest() : base()
+        public HitBtcTradesFilterRequest() : base()
         {
             Margin = "include";
 
         }
-        public HitbtcTradesFilterRequest(string symbol, string sort, long from, long till, int limit, int offset, string margin) : base(sort, from, till, limit, offset)
+        public HitBtcTradesFilterRequest(string symbol, string sort, long from, long till, int limit, int offset, string margin) : base(sort, from, till, limit, offset)
         {
             Symbol = symbol;
             Margin = margin;
         }
 
-        public HitbtcTradesFilterRequest(string symbol, string sort, DateTime? from, DateTime? till, int limit, int offset, string margin) : base(sort, from, till, limit, offset)
+        public HitBtcTradesFilterRequest(string symbol, string sort, DateTime? from, DateTime? till, int limit, int offset, string margin) : base(sort, from, till, limit, offset)
         {
             Symbol = symbol;
             Margin = margin;

@@ -1,4 +1,5 @@
 ﻿using CryptoExchange.Net.Objects;
+using HitBtc.Net.Objects.AccountManagement;
 using HitBtc.Net.Objects.MarginTrading;
 using HitBtc.Net.Objects.MarketData;
 using HitBtc.Net.Objects.Trading;
@@ -690,7 +691,7 @@ namespace HitBtc.Net.Interfaces
         /// </summary>
         /// <param name="filter"></param>
         /// <returns></returns>
-        WebCallResult<IEnumerable<HitBtcOrder>> GetOrdersHistory(HitbtcOrdersFilterRequest filter);
+        WebCallResult<IEnumerable<HitBtcOrder>> GetOrdersHistory(HitBtcOrdersFilterRequest filter);
 
         /// <summary>
         /// Get orders history (GET /api/2/history/order)
@@ -698,7 +699,7 @@ namespace HitBtc.Net.Interfaces
         /// </summary>
         /// <param name="filter"></param>
         /// <returns></returns>
-        Task<WebCallResult<IEnumerable<HitBtcOrder>>> GetOrdersHistoryAsync(HitbtcOrdersFilterRequest filter, CancellationToken ct = default);
+        Task<WebCallResult<IEnumerable<HitBtcOrder>>> GetOrdersHistoryAsync(HitBtcOrdersFilterRequest filter, CancellationToken ct = default);
 
         /// <summary>
         /// Get the user's trading history. (GET /api/2/history/trades)
@@ -706,7 +707,7 @@ namespace HitBtc.Net.Interfaces
         /// </summary>
         /// <param name="filter"></param>
         /// <returns></returns>
-        WebCallResult<IEnumerable<HitBtcTrade>> GetTradesHistory(HitbtcTradesFilterRequest filter);
+        WebCallResult<IEnumerable<HitBtcTrade>> GetTradesHistory(HitBtcTradesFilterRequest filter);
 
         /// <summary>
         /// Get the user's trading history. (GET /api/2/history/trades)
@@ -714,7 +715,7 @@ namespace HitBtc.Net.Interfaces
         /// </summary>
         /// <param name="filter"></param>
         /// <returns></returns>
-        Task<WebCallResult<IEnumerable<HitBtcTrade>>> GetTradesHistoryAsync(HitbtcTradesFilterRequest filter, CancellationToken ct = default);
+        Task<WebCallResult<IEnumerable<HitBtcTrade>>> GetTradesHistoryAsync(HitBtcTradesFilterRequest filter, CancellationToken ct = default);
 
         /// <summary>
         /// Returns the user's trading order with a specified orderId. (GET /api/2/history/order/{orderId}/trades)
@@ -733,7 +734,275 @@ namespace HitBtc.Net.Interfaces
         Task<WebCallResult<IEnumerable<HitBtcTrade>>> GetTradesByOrderIdAsync(long orderId, CancellationToken ct = default);
 
         #endregion TradingHistory
+        #region AccountManagement
+        /// <summary>
+        /// Returns the user's account balance. (GET /api/2/account/balance)
+        /// Requires the "Payment information" API key Access Right.
+        /// </summary>
+        /// <returns></returns>
+        WebCallResult<IEnumerable<HitBtcAccountBalance>> GetAccountBalance();
 
+        /// <summary>
+        /// Returns the user's account balance. (GET /api/2/account/balance)
+        /// Requires the "Payment information" API key Access Right.
+        /// </summary>
+        /// <returns></returns>
+        Task<WebCallResult<IEnumerable<HitBtcAccountBalance>>> GetAccountBalanceAsync(CancellationToken ct = default);
+
+        /// <summary>
+        /// Get current address (GET /api/2/account/crypto/address/{currency} )
+        /// Requires the "Payment information" API key Access Right.
+        /// </summary>
+        /// <param name="currency"></param>
+        /// <returns></returns>
+        WebCallResult<HitBtcDepositAddress> GetDepositAddress(string currency);
+
+        /// <summary>
+        /// Get current address (GET /api/2/account/crypto/address/{currency} )
+        /// Requires the "Payment information" API key Access Right.
+        /// </summary>
+        /// <param name="currency"></param>
+        /// <returns></returns>
+        Task<WebCallResult<HitBtcDepositAddress>> GetDepositAddressAsync(string currency, CancellationToken ct = default);
+
+        /// <summary>
+        /// Create new addresss (POST /api/2/account/crypto/address/{currency} )
+        /// Requires the "Payment information" API key Access Right.
+        /// </summary>
+        /// <param name="currency"</param>
+        /// <returns></returns>
+        WebCallResult<HitBtcDepositAddress> GenerateNewDepositAddress(string currency);
+
+        /// <summary>
+        /// Create new addresss (POST /api/2/account/crypto/address/{currency} )
+        /// Requires the "Payment information" API key Access Right.
+        /// </summary>
+        /// <param name="currency"</param>
+        /// <returns></returns>
+        Task<WebCallResult<HitBtcDepositAddress>> GenerateNewDepositAddressAsync(string currency, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get last 10 deposit addresses for currency (GET /api/2/account/crypto/addresses/{currency} )
+        /// Requires the "Payment information" API key Access Right.
+        /// </summary>
+        /// <param name="currency"></param>
+        /// <returns></returns>
+        WebCallResult<IEnumerable<HitBtcDepositAddress>> GetLastDepositAddresses(string currency);
+
+        /// <summary>
+        /// Get last 10 deposit addresses for currency (GET /api/2/account/crypto/addresses/{currency} )
+        /// Requires the "Payment information" API key Access Right.
+        /// </summary>
+        /// <param name="currency"></param>
+        /// <returns></returns>
+        Task<WebCallResult<IEnumerable<HitBtcDepositAddress>>> GetLastDepositAddressesAsync(string currency, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get last 10 unique addresses used for withdraw by currency (GET /api/2/account/crypto/used-addresses/{currency})
+        /// Requires the "Payment information" API key Access Right.
+        /// </summary>
+        /// <param name="currency"></param>
+        /// <returns></returns>
+        WebCallResult<IEnumerable<HitBtcDepositAddress>> GetLastUsedDepositAddresses(string currency);
+
+        /// <summary>
+        /// Get last 10 unique addresses used for withdraw by currency (GET /api/2/account/crypto/used-addresses/{currency})
+        /// Requires the "Payment information" API key Access Right.
+        /// </summary>
+        /// <param name="currency"></param>
+        /// <returns></returns>
+        Task<WebCallResult<IEnumerable<HitBtcDepositAddress>>> GetLastUsedDepositAddresses(string currency, CancellationToken ct = default);
+
+        /// <summary>
+        /// Withdraw crypto (POST /api/2/account/crypto/withdraw)
+        /// Requires the "Withdraw cryptocurrencies" API key Access Right.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        WebCallResult<HitBtcTransactionIdResponse> WithdrawCrypto(HitBtcWithdrawRequest request);
+
+        /// <summary>
+        /// Withdraw crypto (POST /api/2/account/crypto/withdraw)
+        /// Requires the "Withdraw cryptocurrencies" API key Access Right.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        Task<WebCallResult<HitBtcTransactionIdResponse>> WithdrawCryptoAsync(HitBtcWithdrawRequest request, CancellationToken ct = default);
+
+        /// <summary>
+        /// Transfer convert between currencies. (POST /api/2/account/crypto/transfer-convert)
+        /// </summary>
+        /// <param name="fromCurrency">Currency code</param>
+        /// <param name="toCurrency">Currency code</param>
+        /// <param name="amount"> The amount that will be sent to the specified address</param>
+        /// <returns>Array of transaction unique identifiers as assigned by exchange</returns>
+        WebCallResult<HitBtcTransferConvResult> TransferConvertCrypto(string fromCurrency, string toCurrency, decimal amount);
+
+        /// <summary>
+        /// Transfer convert between currencies. (POST /api/2/account/crypto/transfer-convert)
+        /// </summary>
+        /// <param name="fromCurrency">Currency code</param>
+        /// <param name="toCurrency">Currency code</param>
+        /// <param name="amount"> The amount that will be sent to the specified address</param>
+        /// <returns>Array of transaction unique identifiers as assigned by exchange</returns>
+        Task<WebCallResult<HitBtcTransferConvResult>> TransferConvertCryptoAsync(string fromCurrency, string toCurrency, decimal amount, CancellationToken ct = default);
+
+        /// <summary>
+        /// Commit withdraw crypro (PUT /api/2/account/crypto/withdraw/{id})
+        /// Requires the "Withdraw cryptocurrencies" API key Access Right.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        WebCallResult<HitBtcRequestBoolResult> CommitWithdrawCrypto(string id);
+
+
+        /// <summary>
+        /// Commit withdraw crypro (PUT /api/2/account/crypto/withdraw/{id})
+        /// Requires the "Withdraw cryptocurrencies" API key Access Right.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task<WebCallResult<HitBtcRequestBoolResult>> CommitWithdrawCryptoAsync(string id, CancellationToken ct = default);
+
+        /// <summary>
+        /// Rollback withdraw crypro (DELETE /api/2/account/crypto/withdraw/{id})
+        /// Requires the "Withdraw cryptocurrencies" API key Access Right.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        WebCallResult<HitBtcRequestBoolResult> RollbackWithdrawCrypto(string id);
+
+
+        /// <summary>
+        /// Rollback withdraw crypro (DELETE /api/2/account/crypto/withdraw/{id})
+        /// Requires the "Withdraw cryptocurrencies" API key Access Right.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task<WebCallResult<HitBtcRequestBoolResult>> RollbackWithdrawCryptoAsync(string id, CancellationToken ct = default);
+
+        /// <summary>
+        /// (GET /api/2/account/crypto/estimate-withdraw)
+        /// Requires the "Withdraw cryptocurrencies" API key Access Right.
+        /// </summary>
+        /// <param name="currency">Currency code</param>
+        /// <param name="amount">Expected withdraw amount</param>
+        /// <returns></returns>
+        WebCallResult<HitBtcFee> GetEstimateWithdrawFee(string currency, decimal amount);
+
+        /// <summary>
+        /// (GET /api/2/account/crypto/estimate-withdraw)
+        /// Requires the "Withdraw cryptocurrencies" API key Access Right.
+        /// </summary>
+        /// <param name="currency">Currency code</param>
+        /// <param name="amount">Expected withdraw amount</param>
+        /// <returns></returns>
+        Task<WebCallResult<HitBtcFee>> GetEstimateWithdrawFeeAsync(string currency, decimal amount, CancellationToken ct = default);
+
+        /// <summary>
+        /// Estimates fee levels for withdraw
+        /// (GET /account/crypto/estimate-withdraw-levels)
+        /// Requires the "Withdraw cryptocurrencies" API key Access Right.
+        /// </summary>
+        /// <param name="currency">Currency code</param>
+        /// <param name="amount">Expected withdraw amount</param>
+        /// <returns></returns>
+        Task<WebCallResult<IEnumerable<HitBtcFeeLevel>>> GetEstimateWithdrawFeeLevelsAsync(string currency, decimal amount, CancellationToken ct = default);
+
+        /// <summary>
+        /// Estimates fee levels for withdraw
+        /// (GET /account/crypto/estimate-withdraw-levels)
+        /// Requires the "Withdraw cryptocurrencies" API key Access Right.
+        /// </summary>
+        /// <param name="currency">Currency code</param>
+        /// <param name="amount">Expected withdraw amount</param>
+        /// <returns></returns>
+        WebCallResult<IEnumerable<HitBtcFeeLevel>> GetEstimateWithdrawFeeLevels(string currency, decimal amount);
+
+        /// <summary>
+        /// Check if crypto address belongs to current account
+        /// (GET /api/2/account/crypto/is-mine/{address})
+        /// Requires the "Payment information" API key Access Right.
+        /// </summary>
+        /// <param name="address"></param>
+        /// <returns>True, if address belongs to current account</returns>
+        WebCallResult<HitBtcRequestBoolResult> GetAddressIsMine(string address);
+
+        /// <summary>
+        /// Check if crypto address belongs to current account
+        /// (GET /api/2/account/crypto/is-mine/{address})
+        /// Requires the "Payment information" API key Access Right.
+        /// </summary>
+        /// <param name="address"></param>
+        /// <returns>True, if address belongs to current account</returns>
+        Task<WebCallResult<HitBtcRequestBoolResult>> GetAddressIsMineAsync(string address, CancellationToken ct = default);
+
+        /// <summary>
+        /// Transfer money between trading account and bank account
+        /// (POST /api/2/account/transfer)
+        /// Requires the "Payment information" API key Access Right.
+        /// </summary>
+        /// <param name="transferRequest"></param>
+        /// <returns></returns>
+        WebCallResult<HitBtcTransactionIdResponse> TransferBetweenAcc(HitBtcTransferRequest request);
+
+        /// <summary>
+        /// Transfer money between trading account and bank account
+        /// (POST /api/2/account/transfer)
+        /// Requires the "Payment information" API key Access Right.
+        /// </summary>
+        /// <param name="transferRequest"></param>
+        /// <returns></returns>
+        Task<WebCallResult<HitBtcTransactionIdResponse>> TransferBetweenAccAsync(HitBtcTransferRequest transferRequest, CancellationToken ct = default);
+
+        /// <summary>
+        /// Transfer money to another user by email or username
+        /// (POST /api/2/account/transfer/internal)
+        /// Requires the "Payment information" API key Access Right.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        WebCallResult<HitBtcTransactionIdResponse> TransferToAnotherUser(HitBtcTransferToAnotherUserRequest request);
+
+        /// <summary>
+        /// Transfer money to another user by email or username
+        /// (POST /api/2/account/transfer/internal)
+        /// Requires the "Payment information" API key Access Right.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        Task<WebCallResult<HitBtcTransactionIdResponse>> TransferToAnotherUser(HitBtcTransferToAnotherUserRequest request, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get transactions history (GET /api/2/account/transactions)
+        /// Requires the "Payment information" API key Access Right.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        WebCallResult<IEnumerable<HitBtcTransaction>> GetTransactions(HitBtcTransferHistoryRequest request);
+        /// <summary>
+        /// Get transactions history (GET /api/2/account/transactions)
+        /// Requires the "Payment information" API key Access Right.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        Task<WebCallResult<IEnumerable<HitBtcTransaction>>> GetTransactionsAsync(HitBtcTransferHistoryRequest request, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get transaction by Id (GET /api/2/account/transactions/{id})
+        /// Requires the "Payment information" API key Access Right.
+        /// </summary>
+        /// <param name="transactionId"></param>
+        /// <returns></returns>
+        WebCallResult<HitBtcTransaction> GetTransactionById(string transactionId);
+        /// <summary>
+        /// Get transaction by Id (GET /api/2/account/transactions/{id})
+        /// Requires the "Payment information" API key Access Right.
+        /// </summary>
+        /// <param name="transactionId"></param>
+        /// <returns></returns>
+        Task<WebCallResult<HitBtcTransaction>> GetTransactionByIdAsync(string transactionId, CancellationToken ct = default);
+        #endregion AccountManagement
     }
 
 }
