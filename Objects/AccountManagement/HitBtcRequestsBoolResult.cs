@@ -5,7 +5,7 @@ using System.Text;
 
 namespace HitBtc.Net.Objects.AccountManagement
 {
-    public class HitBtcRequestBoolResult
+    public class HitBtcRequestsBoolResult
     {
 
         [JsonProperty("result")]

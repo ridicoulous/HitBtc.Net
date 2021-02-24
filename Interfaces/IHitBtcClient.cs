@@ -1,5 +1,6 @@
 ﻿using CryptoExchange.Net.Objects;
 using HitBtc.Net.Objects.AccountManagement;
+using HitBtc.Net.Objects.AccountManagement.SubAccount;
 using HitBtc.Net.Objects.MarginTrading;
 using HitBtc.Net.Objects.MarketData;
 using HitBtc.Net.Objects.Trading;
@@ -153,7 +154,7 @@ namespace HitBtc.Net.Interfaces
         /// <returns></returns>
         Task<WebCallResult<HitBtcOrderBooksResponse>> GetOrderBooksAsync(
             int limit = 100,
-            CancellationToken ct = default, 
+            CancellationToken ct = default,
             params string[] symbol);
 
         /// <summary>
@@ -176,7 +177,7 @@ namespace HitBtc.Net.Interfaces
         /// <returns></returns>
         Task<WebCallResult<HitBtcOrderBook>> GetOrderBookAsync(
             string symbol,
-            int limit = 100, 
+            int limit = 100,
             decimal? volume = null,
             CancellationToken ct = default);
 
@@ -345,7 +346,7 @@ namespace HitBtc.Net.Interfaces
         /// For other order statuses, actual order info will be returned after specified wait time.</param>
         /// <returns>Order</returns>
         Task<WebCallResult<HitBtcOrder>> GetActiveOrderByClientOrderIdAsync(
-            string clientOrderId, 
+            string clientOrderId,
             long? wait = null,
             CancellationToken ct = default);
 
@@ -414,7 +415,7 @@ namespace HitBtc.Net.Interfaces
         /// <returns></returns>
         Task<WebCallResult<HitBtcTradingCommission>> GetTradingCommissionAsync(string symbol);
         #endregion Trading
-        #region MarginTrading
+        #region Margin Trading
         /// <summary>
         /// Get Isolated Margin Accounts (GET /api/2/margin/account)
         /// Requires the "Place/cancel orders" API key Access Right.
@@ -479,7 +480,7 @@ namespace HitBtc.Net.Interfaces
         /// for correct non exponential format and currency precision.</param>
         /// <returns>Returns margin account details.</returns>
         WebCallResult<HitBtcIsolatedMarginAccount> SetIsolatedMarginAccount(
-            string symbol, 
+            string symbol,
             decimal marginBalance,
             bool strictValidate);
 
@@ -564,7 +565,7 @@ namespace HitBtc.Net.Interfaces
         /// </summary>
         /// <returns></returns>
         Task<WebCallResult<HitBtcPosition>> GetMarginPositionAsync(string symbol, CancellationToken ct = default);
-  
+
         /// <summary>
         /// Closes open position by symbol. (DELETE /api/2/margin/position/{symbol})
         /// Requires the "Place/cancel orders" API key Access Right.
@@ -682,9 +683,8 @@ namespace HitBtc.Net.Interfaces
         /// <returns>Returns the successfully cancelled margin order.</returns>
         Task<WebCallResult<HitBtcOrder>> CancelMarginOrderByClientOrderIdAsync(string clientOrderId, CancellationToken ct = default);
 
-        #endregion MarginTrading
-
-        #region TradingHistory
+        #endregion Margin Trading
+        #region Trading History
         /// <summary>
         /// Get orders history (GET /api/2/history/order)
         /// Requires the "Orderbook, History, Trading balance" API key Access Right.
@@ -733,8 +733,8 @@ namespace HitBtc.Net.Interfaces
         /// <returns>list of the trades</returns>
         Task<WebCallResult<IEnumerable<HitBtcTrade>>> GetTradesByOrderIdAsync(long orderId, CancellationToken ct = default);
 
-        #endregion TradingHistory
-        #region AccountManagement
+        #endregion Trading History
+        #region Account Management
         /// <summary>
         /// Returns the user's account balance. (GET /api/2/account/balance)
         /// Requires the "Payment information" API key Access Right.
@@ -836,7 +836,7 @@ namespace HitBtc.Net.Interfaces
         /// <param name="toCurrency">Currency code</param>
         /// <param name="amount"> The amount that will be sent to the specified address</param>
         /// <returns>Array of transaction unique identifiers as assigned by exchange</returns>
-        WebCallResult<HitBtcTransferConvResult> TransferConvertCrypto(string fromCurrency, string toCurrency, decimal amount);
+        WebCallResult<HitBtcTransferConvResponse> TransferConvertCrypto(string fromCurrency, string toCurrency, decimal amount);
 
         /// <summary>
         /// Transfer convert between currencies. (POST /api/2/account/crypto/transfer-convert)
@@ -845,7 +845,7 @@ namespace HitBtc.Net.Interfaces
         /// <param name="toCurrency">Currency code</param>
         /// <param name="amount"> The amount that will be sent to the specified address</param>
         /// <returns>Array of transaction unique identifiers as assigned by exchange</returns>
-        Task<WebCallResult<HitBtcTransferConvResult>> TransferConvertCryptoAsync(string fromCurrency, string toCurrency, decimal amount, CancellationToken ct = default);
+        Task<WebCallResult<HitBtcTransferConvResponse>> TransferConvertCryptoAsync(string fromCurrency, string toCurrency, decimal amount, CancellationToken ct = default);
 
         /// <summary>
         /// Commit withdraw crypro (PUT /api/2/account/crypto/withdraw/{id})
@@ -853,7 +853,7 @@ namespace HitBtc.Net.Interfaces
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        WebCallResult<HitBtcRequestBoolResult> CommitWithdrawCrypto(string id);
+        WebCallResult<HitBtcRequestsBoolResult> CommitWithdrawCrypto(string id);
 
 
         /// <summary>
@@ -862,7 +862,7 @@ namespace HitBtc.Net.Interfaces
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task<WebCallResult<HitBtcRequestBoolResult>> CommitWithdrawCryptoAsync(string id, CancellationToken ct = default);
+        Task<WebCallResult<HitBtcRequestsBoolResult>> CommitWithdrawCryptoAsync(string id, CancellationToken ct = default);
 
         /// <summary>
         /// Rollback withdraw crypro (DELETE /api/2/account/crypto/withdraw/{id})
@@ -870,7 +870,7 @@ namespace HitBtc.Net.Interfaces
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        WebCallResult<HitBtcRequestBoolResult> RollbackWithdrawCrypto(string id);
+        WebCallResult<HitBtcRequestsBoolResult> RollbackWithdrawCrypto(string id);
 
 
         /// <summary>
@@ -879,7 +879,7 @@ namespace HitBtc.Net.Interfaces
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task<WebCallResult<HitBtcRequestBoolResult>> RollbackWithdrawCryptoAsync(string id, CancellationToken ct = default);
+        Task<WebCallResult<HitBtcRequestsBoolResult>> RollbackWithdrawCryptoAsync(string id, CancellationToken ct = default);
 
         /// <summary>
         /// (GET /api/2/account/crypto/estimate-withdraw)
@@ -926,7 +926,7 @@ namespace HitBtc.Net.Interfaces
         /// </summary>
         /// <param name="address"></param>
         /// <returns>True, if address belongs to current account</returns>
-        WebCallResult<HitBtcRequestBoolResult> GetAddressIsMine(string address);
+        WebCallResult<HitBtcRequestsBoolResult> GetAddressIsMine(string address);
 
         /// <summary>
         /// Check if crypto address belongs to current account
@@ -935,7 +935,7 @@ namespace HitBtc.Net.Interfaces
         /// </summary>
         /// <param name="address"></param>
         /// <returns>True, if address belongs to current account</returns>
-        Task<WebCallResult<HitBtcRequestBoolResult>> GetAddressIsMineAsync(string address, CancellationToken ct = default);
+        Task<WebCallResult<HitBtcRequestsBoolResult>> GetAddressIsMineAsync(string address, CancellationToken ct = default);
 
         /// <summary>
         /// Transfer money between trading account and bank account
@@ -1002,7 +1002,159 @@ namespace HitBtc.Net.Interfaces
         /// <param name="transactionId"></param>
         /// <returns></returns>
         Task<WebCallResult<HitBtcTransaction>> GetTransactionByIdAsync(string transactionId, CancellationToken ct = default);
-        #endregion AccountManagement
+        #endregion Account Management
+        #region Sub-account
+        /// <summary>
+        /// Returns list of sub-accounts per a super account. (GET /api/2/sub-acc)
+        /// Requires no API key Access Rights.
+        /// </summary>
+        /// <returns></returns>
+        WebCallResult<HitBtcSubAccountResponse> GetSubAccounts();
+
+        /// <summary>
+        /// Returns list of sub-accounts per a super account. (GET /api/2/sub-acc)
+        /// Requires no API key Access Rights.
+        /// </summary>
+        /// <returns></returns>
+        Task<WebCallResult<HitBtcSubAccountResponse>> GetSubAccountsAsync(CancellationToken ct = default);
+
+        /// <summary>
+        /// Freezes sub-accounts listed. It implies that the Sub-accounts frozen wouldn't be able to:
+        /// login; withdraw funds; trade; complete pending orders; use API keys.
+        /// (POST /api/2/sub-acc​/freeze)
+        /// </summary>
+        /// <param name="ids">Sub-accounts' userIds separated by commas (,). 
+        /// Those could be obtained by GET /api/2/sub-acc request.</param>
+        /// <returns></returns>
+        WebCallResult<HitBtcRequestsBoolResult> FreezeSubAccounts(params long[] ids);
+
+
+        /// <summary>
+        /// Freezes sub-accounts listed. It implies that the Sub-accounts frozen wouldn't be able to:
+        /// login; withdraw funds; trade; complete pending orders; use API keys.
+        /// (POST /api/2/sub-acc​/freeze)
+        /// </summary>
+        /// <param name="ids">Sub-accounts' userIds separated by commas (,). 
+        /// Those could be obtained by GET /api/2/sub-acc request.</param>
+        /// <returns></returns>
+        Task<WebCallResult<HitBtcRequestsBoolResult>> FreezeSubAccountsAsync(CancellationToken ct = default, params long[] ids);
+
+        /// <summary>
+        /// Activates sub-accounts listed. It would make sub-accounts active after being frozen.
+        /// (POST /api/2/sub-acc​/activate)
+        /// Requires no API key Access Rights.
+        /// </summary>
+        /// <param name="ids">Sub-accounts' userIds separated by commas (,).
+        /// Those could be obtained by GET /api/2/sub-acc request.</param>
+        /// <returns></returns>
+        WebCallResult<HitBtcRequestsBoolResult> ActivateSubAccounts(params long[] ids);
+
+        /// <summary>
+        /// Activates sub-accounts listed. It would make sub-accounts active after being frozen.
+        /// (POST /api/2/sub-acc​/activate)
+        /// Requires no API key Access Rights.
+        /// </summary>
+        /// <param name="ids">Sub-accounts' userIds separated by commas (,).
+        /// Those could be obtained by GET /api/2/sub-acc request.</param>
+        /// <returns></returns>
+       Task<WebCallResult<HitBtcRequestsBoolResult>> ActivateSubAccountsAsync(CancellationToken ct = default, params long[] ids);
+
+        /// <summary>
+        /// Transfers funds from the master account to sub-account or from sub-account to the master account.
+        /// (POST /api/2/sub-acc​/transfer)
+        /// Requires the "Withdraw cryptocurrencies" API key Access Right.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        WebCallResult<HitBtcRequestsBoolResult> TrasferFound(HitBtcSubAccTransferRequest request);
+
+        /// <summary>
+        /// Transfers funds from the master account to sub-account or from sub-account to the master account.
+        /// (POST /api/2/sub-acc​/transfer)
+        /// Requires the "Withdraw cryptocurrencies" API key Access Right.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        Task<WebCallResult<HitBtcRequestsBoolResult>> TrasferFoundAsync(HitBtcSubAccTransferRequest request,CancellationToken ct=default);
+
+        /// <summary>
+        /// Returns a list of withdrawal settings for sub-accounts listed.
+        /// (GET /api/2/sub-acc/acl)
+        /// Requires the "Payment information" API key Access Right.
+        /// </summary>
+        /// <param name="subAccountIds"></param>
+        /// <returns></returns>
+        WebCallResult<HitBtcSubAccSettingResponse> GetSubAccWithdrawalSettings(params long[] subAccountIds);
+
+        /// <summary>
+        /// Returns a list of withdrawal settings for sub-accounts listed.
+        /// (GET /api/2/sub-acc/acl)
+        /// Requires the "Payment information" API key Access Right.
+        /// </summary>
+        /// <param name="subAccountIds"></param>
+        /// <returns></returns>
+        Task<WebCallResult<HitBtcSubAccSettingResponse>> GetSubAccWithdrawalSettingsAsync(CancellationToken ct = default, params long[] subAccountIds);
+
+        /// <summary>
+        /// Disables or enables withdrawals for a sub-account.
+        /// (PUT /api/2/sub-acc/acl​/{subAccountUserId})
+        /// Requires the "Payment information" API key Access Right.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        WebCallResult<HitBtcSubAccSettingResponse> SetSubAccWithdrawalSettings(HitBtcSubAccWithdrawalSetting request);
+
+        /// <summary>
+        /// Disables or enables withdrawals for a sub-account.
+        /// (PUT /api/2/sub-acc/acl​/{subAccountUserId})
+        /// Requires the "Payment information" API key Access Right.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        Task<WebCallResult<HitBtcSubAccSettingResponse>> SetSubAccWithdrawalSettingsAsync(HitBtcSubAccWithdrawalSetting request, CancellationToken ct = default);
+
+        /// <summary>
+        /// Returns balance values by sub-account ID specified. 
+        /// Report will include main account and Trading balances for each currency.
+        /// It is functional with no regard to the state of a sub-account.
+        /// (GET /api/2/sub-acc​/balance​/{subAccountUserID})
+        /// Requires the "Payment information" API key Access Right.
+        /// </summary>
+        /// <param name="subAccountUserID"></param>
+        /// <returns></returns>
+        WebCallResult<HitBtcSubAccBalanceResponse> GetSubAccBalance(long subAccountUserID);
+
+        /// <summary>
+        /// Returns balance values by sub-account ID specified. 
+        /// Report will include main account and Trading balances for each currency.
+        /// It is functional with no regard to the state of a sub-account.
+        /// (GET /api/2/sub-acc​/balance​/{subAccountUserID})
+        /// Requires the "Payment information" API key Access Right.
+        /// </summary>
+        /// <param name="subAccountUserID"></param>
+        /// <returns></returns>
+        Task<WebCallResult<HitBtcSubAccBalanceResponse>> GetSubAccBalanceAsync(long subAccountUserID, CancellationToken ct = default);
+
+        /// <summary>
+        /// Returns sub-account crypto address for currency.
+        /// (GET /api/2/sub-acc/deposit-address/{subAccountUserId}/{currency})
+        /// Requires the "Payment information" API key Access Right.
+        /// </summary>
+        /// <param name="subAccountUserId"></param>
+        /// <param name="currency"></param>
+        /// <returns></returns>
+        WebCallResult<HitBtcSubAccAddressResponse> GetSubAccAddress(long subAccountUserId, string currency);
+
+        /// <summary>
+        /// Returns sub-account crypto address for currency.
+        /// (GET /api/2/sub-acc/deposit-address/{subAccountUserId}/{currency})
+        /// Requires the "Payment information" API key Access Right.
+        /// </summary>
+        /// <param name="subAccountUserId"></param>
+        /// <param name="currency"></param>
+        /// <returns></returns>
+        Task<WebCallResult<HitBtcSubAccAddressResponse>> GetSubAccAddressAsync(long subAccountUserId, string currency, CancellationToken ct = default);
+        #endregion Sub-account
     }
 
 }
