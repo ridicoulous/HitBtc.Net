@@ -4,7 +4,7 @@ using System.Text;
 
 namespace HitBtc.Net.Interfaces
 {
-    interface IHitBtcSocketClient
+    public interface IHitBtcSocketClient
     {
     }
 }
