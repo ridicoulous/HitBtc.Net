@@ -7,7 +7,6 @@ namespace HitBtc.Net.Objects.TradingHistory
 {
     public class HitBtcTransferHistoryRequest : HitbtcPublicTradesFilterRequest
     {
-        private string showSenders;
         public HitBtcTransferHistoryRequest(string symbol) : base()
         {
             Symbol = symbol;
