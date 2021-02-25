@@ -769,7 +769,7 @@ namespace HitBtc.Net.Interfaces
         /// Create new addresss (POST /api/2/account/crypto/address/{currency} )
         /// Requires the "Payment information" API key Access Right.
         /// </summary>
-        /// <param name="currency"</param>
+        /// <param name="currency"></param>
         /// <returns></returns>
         WebCallResult<HitBtcDepositAddress> GenerateNewDepositAddress(string currency);
 
@@ -777,7 +777,7 @@ namespace HitBtc.Net.Interfaces
         /// Create new addresss (POST /api/2/account/crypto/address/{currency} )
         /// Requires the "Payment information" API key Access Right.
         /// </summary>
-        /// <param name="currency"</param>
+        /// <param name="currency"></param>
         /// <returns></returns>
         Task<WebCallResult<HitBtcDepositAddress>> GenerateNewDepositAddressAsync(string currency, CancellationToken ct = default);
 
