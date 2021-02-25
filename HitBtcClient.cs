@@ -44,6 +44,8 @@ namespace HitBtc.Net
 
         private const string OrderWithClientOrderIdUrl = "order/{}";
         private const string OrderUrl = "order";
+        private const string TradingBalanceUrl = "trading/balance";
+        private const string TradingFeeWithSymbolUrl = "trading/fee/{}";
 
         private const string MarginOrderWithClientOrderIdUrl = "margin/order/{}";
         private const string MarginOrderUrl = "margin/order";
@@ -367,14 +369,12 @@ namespace HitBtc.Net
             return await SendRequest<HitBtcSubAccAddressResponse>(GetUrl(FillPathParameter(SubAccDepositAddressWithUserIdCurrencyUrl, subAccountUserId.ToString(), currency)), HttpMethod.Get, ct, null, true, true);
         }
 
-        public WebCallResult<HitBtcSubAccBalanceResponse> GetSubAccBalance(long subAccountUserID)
-        {
-            throw new NotImplementedException();
-        }
+        public WebCallResult<HitBtcSubAccBalanceResponse> GetSubAccBalance(long subAccountUserID) => GetSubAccBalanceAsync(subAccountUserID).Result;
+
 
         public async Task<WebCallResult<HitBtcSubAccBalanceResponse>> GetSubAccBalanceAsync(long subAccountUserID, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            return await SendRequest<HitBtcSubAccBalanceResponse>(GetUrl(FillPathParameter(SubAccBalanceWithUserIdUrl, subAccountUserID.ToString())), HttpMethod.Get, ct, null, true, true);
         }
 
         public WebCallResult<HitBtcSubAccountResponse> GetSubAccounts()
@@ -457,14 +457,11 @@ namespace HitBtc.Net
             throw new NotImplementedException();
         }
 
-        public WebCallResult<IEnumerable<HitBtcTrade>> GetTradesByOrderId(long orderId)
-        {
-            throw new NotImplementedException();
-        }
+        public WebCallResult<IEnumerable<HitBtcTrade>> GetTradesByOrderId(long orderId) => GetTradesByOrderIdAsync(orderId).Result;
 
         public async Task<WebCallResult<IEnumerable<HitBtcTrade>>> GetTradesByOrderIdAsync(long orderId, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            return await SendRequest<IEnumerable<HitBtcTrade>>(GetUrl(FillPathParameter(HistoryOrderWithOrderIdUrl, orderId.ToString())), HttpMethod.Get, ct, null, true, true);
         }
 
         public WebCallResult<IEnumerable<HitBtcTrade>> GetTradesHistory(HitBtcTradesFilterRequest filter)
@@ -477,14 +474,11 @@ namespace HitBtc.Net
             throw new NotImplementedException();
         }
 
-        public WebCallResult<HitBtcTradingBalance> GetTradingBalance()
-        {
-            throw new NotImplementedException();
-        }
+        public WebCallResult<HitBtcTradingBalance> GetTradingBalance() => GetTradingBalanceAsync().Result;
 
         public async Task<WebCallResult<HitBtcTradingBalance>> GetTradingBalanceAsync(CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            return await SendRequest<HitBtcTradingBalance>(GetUrl(TradingBalanceUrl), HttpMethod.Get, ct, null, true, true);
         }
 
         public WebCallResult<HitBtcTradingCommission> GetTradingCommission(string symbol)
@@ -517,24 +511,20 @@ namespace HitBtc.Net
             throw new NotImplementedException();
         }
 
-        public WebCallResult<HitBtcOrder> PlaceMarginOrder(HitbtcPlaceOrderRequest order)
-        {
-            throw new NotImplementedException();
-        }
+        public WebCallResult<HitBtcOrder> PlaceMarginOrder(HitbtcPlaceOrderRequest order) => PlaceMarginOrderAsync(order).Result;
 
         public async Task<WebCallResult<HitBtcOrder>> PlaceMarginOrderAsync(HitbtcPlaceOrderRequest order, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            var parameters = order.AsDictionary();
+            return await SendRequest<HitBtcOrder>(GetUrl(MarginOrderUrl), HttpMethod.Post, ct, parameters, true, true);
         }
 
-        public WebCallResult<HitBtcOrder> PlaceOrder(HitbtcPlaceOrderRequest order)
-        {
-            throw new NotImplementedException();
-        }
+        public WebCallResult<HitBtcOrder> PlaceOrder(HitbtcPlaceOrderRequest order) => PlaceMarginOrderAsync(order).Result;
 
         public async Task<WebCallResult<HitBtcOrder>> PlaceOrderAsync(HitbtcPlaceOrderRequest order, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            var parameters = order.AsDictionary();
+            return await SendRequest<HitBtcOrder>(GetUrl(OrderUrl), HttpMethod.Post, ct, parameters, true, true);
         }
 
         public WebCallResult<HitBtcRequestsBoolResult> RollbackWithdrawCrypto(string id)
@@ -547,14 +537,14 @@ namespace HitBtc.Net
             throw new NotImplementedException();
         }
 
-        public WebCallResult<HitBtcIsolatedMarginAccount> SetIsolatedMarginAccount(string symbol, decimal marginBalance, bool strictValidate)
-        {
-            throw new NotImplementedException();
-        }
+        public WebCallResult<HitBtcIsolatedMarginAccount> SetIsolatedMarginAccount(string symbol, decimal marginBalance, bool strictValidate) => SetIsolatedMarginAccountAsync(symbol, marginBalance, strictValidate).Result;
 
         public async Task<WebCallResult<HitBtcIsolatedMarginAccount>> SetIsolatedMarginAccountAsync(string symbol, decimal marginBalance, bool strictValidate, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            var parameters = new Dictionary<string, object>();
+            parameters.Add("marginBalance", marginBalance);
+            parameters.Add("strictValidate", strictValidate);
+            return await SendRequest<HitBtcIsolatedMarginAccount>(GetUrl(FillPathParameter(MarginAccountWithSymbolUrl, symbol)), HttpMethod.Put, ct, parameters, true, true);
         }
 
         public WebCallResult<HitBtcSubAccSettingResponse> SetSubAccWithdrawalSettings(HitBtcSubAccWithdrawalSetting request)

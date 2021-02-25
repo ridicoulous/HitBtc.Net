@@ -296,14 +296,14 @@ namespace HitBtc.Net.Interfaces
         #endregion
         #region Trading
         /// <summary>
-        /// Returns the user's trading balance. 
+        /// Returns the user's trading balance. (GET /api/2/trading/balance)
         /// Requires the "Orderbook, History, Trading balance" API key Access Right.
         /// </summary>
         /// <returns></returns>
         WebCallResult<HitBtcTradingBalance> GetTradingBalance();
 
         /// <summary>
-        /// Returns the user's trading balance. 
+        /// Returns the user's trading balance. (GET /api/2/trading/balance)
         /// Requires the "Orderbook, History, Trading balance" API key Access Right.
         /// </summary>
         /// <returns></returns>
