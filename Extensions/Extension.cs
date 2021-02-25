@@ -51,11 +51,7 @@ namespace HitBtc.Net.Extensions
                     if (value is decimal || value is decimal?)
                     {
                         value = (value as decimal?).Normalize();
-                    }
-                    //if (value.GetType().IsEnum)
-                    //{
-                    //    value = value?.ToString();
-                    //}
+                    }                  
                     if (p.IsDefined(typeof(JsonConverterAttribute)))
                     {
                         var att = p.GetCustomAttribute<JsonConverterAttribute>();

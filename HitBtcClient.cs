@@ -19,7 +19,7 @@ namespace HitBtc.Net
 {
     public class HitBtcClient : RestClient, IHitBtcClient
     {
-        #region Endpoints        
+        #region Endpoints
         private const string SymbolsUrl = "public/symbol";
         private const string SymbolsWithSymbolUrl = "public/symbol/{}";
         private const string CurrencyUrl = "public/currency";
@@ -73,7 +73,13 @@ namespace HitBtc.Net
         private const string HistoryOrderWithOrderIdUrl = "/history/order/{}/trades";
 
         #endregion
-        public HitBtcClient(string clientName, HitBtcClientOptions exchangeOptions, AuthenticationProvider authenticationProvider) : base(clientName, exchangeOptions, authenticationProvider)
+        static HitBtcClientOptions defaultOptions = new HitBtcClientOptions();
+        public HitBtcClient() : this("HitBtcClient", defaultOptions, null) { }
+        public HitBtcClient(string key, string secret, string clientName = "HitBtcClient", bool sandBox = false) : this(clientName, new HitBtcClientOptions(sandBox), new HitBtcAuthenticationProvider(new ApiCredentials(key, secret)))
+        {
+
+        }
+        public HitBtcClient(string clientName, HitBtcClientOptions exchangeOptions, HitBtcAuthenticationProvider authenticationProvider) : base(clientName, exchangeOptions, authenticationProvider)
         {
 
         }
