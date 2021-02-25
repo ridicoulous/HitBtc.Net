@@ -146,34 +146,37 @@ namespace HitBtc.Net.Interfaces
 
         /// <summary>
         /// Get Order Book for all symbols or for specified symbols
+        /// (GET /api/2/public/orderbook)
         /// </summary>
         /// <param name="limit">Limit of Order Book levels
         /// Default value: 100, Set 0 to view full list of Order Book levels.</param>
-        /// <param name="symbol">Comma-separated list of symbol codes. Optional parameter. 
+        /// <param name="symbols">Comma-separated list of symbol codes. Optional parameter. 
         /// If it is not provided, null or empty, the request returns an Order Book for all symbols.</param>
         /// <returns></returns>
         Task<WebCallResult<HitBtcOrderBooksResponse>> GetOrderBooksAsync(
             int limit = 100,
             CancellationToken ct = default,
-            params string[] symbol);
+            params string[] symbols);
 
         /// <summary>
         /// Get Order Book for all symbols or for specified symbols
+        /// (GET /api/2/public/orderbook)
         /// </summary>
         /// <param name="limit">Limit of Order Book levels
         /// Default value: 100, Set 0 to view full list of Order Book levels.</param>
-        /// <param name="symbol">Comma-separated list of symbol codes. Optional parameter. 
+        /// <param name="symbols">Comma-separated list of symbol codes. Optional parameter. 
         /// If it is not provided, null or empty, the request returns an Order Book for all symbols.</param>
         /// <returns></returns>
-        WebCallResult<HitBtcOrderBooksResponse> GetOrderBooks(int limit = 100, params string[] symbol);
+        WebCallResult<HitBtcOrderBooksResponse> GetOrderBooks(int limit = 100, params string[] symbols);
 
         /// <summary>
         /// Get Order Book for a certain symbol
+        /// <p><code>GET /api/2/public/orderbook/{symbol}</code></p>
         /// </summary>
         /// <param name="symbol">symbol code</param>
         /// <param name="limit">Limit of Order Book levels
         /// Default value: 100, Set 0 to view full list of Order Book levels.</param>
-        /// <param name="volume">Desired volume for market depth search. Please note that if the <c>volume</c> is specified, the <c>limit</c> will be ignored, <c>askAveragePrice</c>  and <c>bidAveragePrice<c> are returned in response.</param>
+        /// <param name="volume">Desired volume for market depth search. Please note that if the <c>volume</c> is specified, the <c>limit</c> will be ignored, <c>askAveragePrice</c>  and <c>bidAveragePrice</c> are returned in response.</param>
         /// <returns></returns>
         Task<WebCallResult<HitBtcOrderBook>> GetOrderBookAsync(
             string symbol,
@@ -183,11 +186,14 @@ namespace HitBtc.Net.Interfaces
 
         /// <summary>
         /// Get Order Book for a certain symbol
+        /// <p><code>GET /api/2/public/orderbook/{symbol}</code></p>
         /// </summary>
         /// <param name="symbol">symbol code</param>
         /// <param name="limit">Limit of Order Book levels
         /// Default value: 100, Set 0 to view full list of Order Book levels.</param>
-        /// <param name="volume">Desired volume for market depth search. Please note that if the <c>volume</c> is specified, the <c>limit</c> will be ignored, <c>askAveragePrice</c>  and <c>bidAveragePrice<c> are returned in response.</param>
+        /// <param name="volume">Desired volume for market depth search. 
+        /// Please note that if the <c>volume</c> is specified, the <c>limit</c> will be ignored,
+        /// <c>askAveragePrice</c> and <c>bidAveragePrice</c> are returned in response.</param>
         /// <returns></returns>
         WebCallResult<HitBtcOrderBook> GetOrderBook(string symbol, int limit = 100, decimal? volume = null);
 
@@ -290,14 +296,14 @@ namespace HitBtc.Net.Interfaces
         #endregion
         #region Trading
         /// <summary>
-        /// Returns the user's trading balance. 
+        /// Returns the user's trading balance. (GET /api/2/trading/balance)
         /// Requires the "Orderbook, History, Trading balance" API key Access Right.
         /// </summary>
         /// <returns></returns>
         WebCallResult<HitBtcTradingBalance> GetTradingBalance();
 
         /// <summary>
-        /// Returns the user's trading balance. 
+        /// Returns the user's trading balance. (GET /api/2/trading/balance)
         /// Requires the "Orderbook, History, Trading balance" API key Access Right.
         /// </summary>
         /// <returns></returns>
@@ -811,7 +817,7 @@ namespace HitBtc.Net.Interfaces
         /// </summary>
         /// <param name="currency"></param>
         /// <returns></returns>
-        Task<WebCallResult<IEnumerable<HitBtcDepositAddress>>> GetLastUsedDepositAddresses(string currency, CancellationToken ct = default);
+        Task<WebCallResult<IEnumerable<HitBtcDepositAddress>>> GetLastUsedDepositAddressesAsync(string currency, CancellationToken ct = default);
 
         /// <summary>
         /// Withdraw crypto (POST /api/2/account/crypto/withdraw)
@@ -1026,7 +1032,7 @@ namespace HitBtc.Net.Interfaces
         /// <param name="ids">Sub-accounts' userIds separated by commas (,). 
         /// Those could be obtained by GET /api/2/sub-acc request.</param>
         /// <returns></returns>
-        WebCallResult<HitBtcRequestsBoolResult> FreezeSubAccounts(params long[] ids);
+        WebCallResult<HitBtcRequestsBoolResult> FreezeSubAccounts(List<long> ids);
 
 
         /// <summary>
@@ -1037,7 +1043,7 @@ namespace HitBtc.Net.Interfaces
         /// <param name="ids">Sub-accounts' userIds separated by commas (,). 
         /// Those could be obtained by GET /api/2/sub-acc request.</param>
         /// <returns></returns>
-        Task<WebCallResult<HitBtcRequestsBoolResult>> FreezeSubAccountsAsync(CancellationToken ct = default, params long[] ids);
+        Task<WebCallResult<HitBtcRequestsBoolResult>> FreezeSubAccountsAsync(List<long> ids, CancellationToken ct = default);
 
         /// <summary>
         /// Activates sub-accounts listed. It would make sub-accounts active after being frozen.
@@ -1047,7 +1053,7 @@ namespace HitBtc.Net.Interfaces
         /// <param name="ids">Sub-accounts' userIds separated by commas (,).
         /// Those could be obtained by GET /api/2/sub-acc request.</param>
         /// <returns></returns>
-        WebCallResult<HitBtcRequestsBoolResult> ActivateSubAccounts(params long[] ids);
+        WebCallResult<HitBtcRequestsBoolResult> ActivateSubAccounts(List<long> ids);
 
         /// <summary>
         /// Activates sub-accounts listed. It would make sub-accounts active after being frozen.
@@ -1057,7 +1063,7 @@ namespace HitBtc.Net.Interfaces
         /// <param name="ids">Sub-accounts' userIds separated by commas (,).
         /// Those could be obtained by GET /api/2/sub-acc request.</param>
         /// <returns></returns>
-       Task<WebCallResult<HitBtcRequestsBoolResult>> ActivateSubAccountsAsync(CancellationToken ct = default, params long[] ids);
+       Task<WebCallResult<HitBtcRequestsBoolResult>> ActivateSubAccountsAsync(List<long> ids, CancellationToken ct = default);
 
         /// <summary>
         /// Transfers funds from the master account to sub-account or from sub-account to the master account.
