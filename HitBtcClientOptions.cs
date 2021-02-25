@@ -8,11 +8,11 @@ namespace HitBtc.Net
 {
     public class HitBtcClientOptions : RestClientOptions
     {
-        public HitBtcClientOptions(string baseAddress) : base(baseAddress)
+        public HitBtcClientOptions(bool sandBox = false) : base(sandBox ? "https://api.demo.hitbtc.com/api/2" : "https://api.hitbtc.com/api/2")
         {
         }
 
-        public HitBtcClientOptions(HttpClient httpClient, string baseAddress) : base(httpClient, baseAddress)
+        public HitBtcClientOptions(HttpClient httpClient, bool sandBox = false) : base(httpClient, sandBox ? "https://api.demo.hitbtc.com/api/2" : "https://api.hitbtc.com/api/2")
         {
         }
     }
