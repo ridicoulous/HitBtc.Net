@@ -18,13 +18,19 @@ namespace HitBtc.Net
 {
     public class HitBtcClient : RestClient, IHitBtcClient
     {
+        static HitBtcClientOptions defaultOptions = new HitBtcClientOptions();
+        public HitBtcClient() : this("HitBtcClient", defaultOptions, null) { }
+        public HitBtcClient(string key, string secret, string clientName= "HitBtcClient", bool sandBox=false):this(clientName,new HitBtcClientOptions(sandBox), new HitBtcAuthenticationProvider(new ApiCredentials(key, secret)))
+        {
+
+        }
         #region Endpoints
         private const string ActivateSubAccountsUrl = "sub-acc/activate";
         private const string OrderWithClientOrderIdUrl = "order/{}";
         private const string MarginOrderWithClientOrderIdUrl = "margin/order/{}";
 
         #endregion
-        public HitBtcClient(string clientName, HitBtcClientOptions exchangeOptions, AuthenticationProvider authenticationProvider) : base(clientName, exchangeOptions, authenticationProvider)
+        public HitBtcClient(string clientName, HitBtcClientOptions exchangeOptions, HitBtcAuthenticationProvider authenticationProvider) : base(clientName, exchangeOptions, authenticationProvider)
         {
 
         }
@@ -86,11 +92,7 @@ namespace HitBtc.Net
             throw new NotImplementedException();
         }
 
-        public WebCallResult<IEnumerable<HitBtcPosition>> CloseMarginPositions()
-        {
-            throw new NotImplementedException();
-        }
-
+        public WebCallResult<IEnumerable<HitBtcPosition>> CloseMarginPositions() => CloseMarginPositionsAsync().Result;
         public async Task<WebCallResult<IEnumerable<HitBtcPosition>>> CloseMarginPositionsAsync(CancellationToken ct = default)
         {
             throw new NotImplementedException();
