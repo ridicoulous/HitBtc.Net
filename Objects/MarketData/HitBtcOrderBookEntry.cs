@@ -1,11 +1,12 @@
-﻿using Newtonsoft.Json;
+﻿using CryptoExchange.Net.Interfaces;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace HitBtc.Net.Objects.MarketData
 {
-    public class HitBtcBidAsk
+    public class HitBtcOrderBookEntry : ISymbolOrderBookEntry
     {
         /// <summary>
         /// Total volume of orders with the specified price
@@ -16,7 +17,8 @@ namespace HitBtc.Net.Objects.MarketData
         /// <summary>
         /// Price level
         /// </summary>
-        [JsonProperty("size")]  
-        public decimal Size { get; set; }
+        [JsonProperty("size")]
+        public decimal Quantity { get; set; }
+
     }
 }

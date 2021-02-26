@@ -11,10 +11,10 @@ namespace HitBtc.Net.Objects.MarketData
         public string Symbol { get; set; }
 
         [JsonProperty("ask")]
-        public HitBtcBidAsk[] Ask { get; set; }
+        public List<HitBtcOrderBookEntry> Asks { get; set; }
 
         [JsonProperty("bid")]
-        public HitBtcBidAsk[] Bid { get; set; }
+        public List<HitBtcOrderBookEntry> Bids { get; set; }
 
         [JsonProperty("timestamp")]
         public DateTime Timestamp { get; set; }
