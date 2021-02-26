@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -47,29 +48,34 @@ namespace HitBtc.Net.Objects.TradingHistory
         /// <summary>
         /// Optional parameter to filter orders by symbol.
         /// </summary>
+        [JsonProperty("symbol")]
         public string Symbol { get; private set; }
 
 
         /// <summary>
         /// If set, other parameters will be ignored, including limit and offset.
         /// </summary>
+        [JsonProperty("clientOrderId")]
         public string ClientOrderId { get; private set; }
 
 
         /// <summary>
         /// Interval initial value (optional parameter) 
         /// </summary>
+        [JsonProperty("from")]
         public DateTime? From { get; private set; }
 
         /// <summary>
         /// Interval end value (optional parameter)
         /// </summary>
+        [JsonProperty("till")]
         public DateTime? Till { get; private set; }
 
 
         /// <summary>
         /// Default value: 100. Max value: 1000
         /// </summary>
+        [JsonProperty("limit")]
         public int Limit
         {
             get
@@ -87,6 +93,7 @@ namespace HitBtc.Net.Objects.TradingHistory
         /// <summary>
         /// Default value: 0. Max value: 100000
         /// </summary>
+        [JsonProperty("offset")]
         public int Offset
         {
             get
