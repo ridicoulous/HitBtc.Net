@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using System.Net.WebSockets;
 using StreamJsonRpc;
 using Microsoft.VisualStudio.Threading;
+using Newtonsoft.Json;
+using System.Text;
+using System.Linq;
 
 namespace HitBtc.Net.Example
 {
@@ -13,68 +16,23 @@ namespace HitBtc.Net.Example
     {
         static async Task Main(string[] args)
         {
-            //var orderRequest = new HitbtcPlaceOrderRequest()
-            //{
-            //    ClientOrderId = "42",
-            //    Side = Enums.HitBtcTradeSide.Buy,
-            //    TimeInForce = Enums.HitBtcOrderTimeInForce.GoodTillCancelled,
-            //    Quantity = 9,
-            //    Price = 42,
-            //    Symbol = "asd"
-            //};
-            //var dict = orderRequest.AsDictionary();
+            //var s = new HitBtcSocketClient();
+            //var result = await s.SubscribeToOrderBookAsync("ETHBTC", c => Console.WriteLine(c.Data.Sequence));
+            //Console.ReadKey();
+            var client = new HitBtcClient();
+            var pairs = await client.GetSymbolsAsync();
+        
+            var book = new HitBtcSymbolOrderBook("BTCUSD");
+            book.OnBestOffersChanged += Book_OnBestOffersChanged;
+            await book.StartAsync();
+
             
-            var cts = new CancellationTokenSource();
-            Console.CancelKeyPress += (s, e) =>
-            {
-                Console.WriteLine("Canceling...");
-                cts.Cancel();
-                e.Cancel = true;
-            };
-
-            try
-            {
-                Console.WriteLine("Press Ctrl+C to end.");
-                await MainAsync(cts.Token);
-            }
-
-            catch (OperationCanceledException)
-            {
-                // This is the normal way we close.
-            }
-            catch (Exception ex)
-            {
-
-            }
-
+            Console.ReadLine();
         }
-        static async Task MainAsync(CancellationToken cancellationToken)
+
+        private static void Book_OnBestOffersChanged((CryptoExchange.Net.Interfaces.ISymbolOrderBookEntry BestBid, CryptoExchange.Net.Interfaces.ISymbolOrderBookEntry BestAsk) obj)
         {
-            Console.WriteLine("Connecting to web socket...");
-            using (var socket = new ClientWebSocket())
-            {
-                await socket.ConnectAsync(new Uri("wss://api.hitbtc.com/api/2/ws/public"), cancellationToken);
-                Console.WriteLine("Connected to web socket. Establishing JSON-RPC protocol...");
-                using (var jsonRpc = new JsonRpc(new WebSocketMessageHandler(socket)))
-                {
-                    try
-                    {
-                        jsonRpc.AddLocalRpcMethod("updateOrderbook", new Action<string>(tick => Console.WriteLine($"Tick {tick}!")));
-                        jsonRpc.StartListening();
-                        Console.WriteLine("JSON-RPC protocol over web socket established.");
-                        var myResult = await jsonRpc.InvokeWithParameterObjectAsync<object>("subscribeOrderbook", new { symbol = "ETHBTC" });
-                  
-                        await jsonRpc.Completion.WithCancellation(cancellationToken);
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        // Closing is initiated by Ctrl+C on the client.
-                        // Close the web socket gracefully -- before JsonRpc is disposed to avoid the socket going into an aborted state.
-                        await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Client closing", CancellationToken.None);
-                        throw;
-                    }
-                }
-            }
+            Console.WriteLine($"{obj.BestBid.Price}:{obj.BestAsk.Price}");
         }
     }
 }

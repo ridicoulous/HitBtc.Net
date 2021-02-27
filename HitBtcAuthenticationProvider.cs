@@ -41,21 +41,46 @@ namespace HitBtc.Net
         //Like as basic authorization add header "Authorization: HS256 " + base64(publicKey+":"+timestamp+":"+signature hex encoded)
         public override Dictionary<string, string> AddAuthenticationToHeaders(string uri, HttpMethod method, Dictionary<string, object> parameters, bool signed, PostParameters postParameters, ArrayParametersSerialization arrayParametersSerialization)
         {
-            var time = TimeStamp;
+           // var time = TimeStamp;
 
+            //if (!signed)
+            //    return new Dictionary<string, string>();
+            //var result = new Dictionary<string, string>();          
+            //string additionalData = String.Empty;
+            //if (parameters != null && parameters.Any() && method != HttpMethod.Delete && method != HttpMethod.Get)
+            //{
+            //    additionalData = JsonConvert.SerializeObject(parameters.ToDictionary(p => p.Key, p => p.Value));
+            //}
+            //var dataToSign = CreateAuthPayload(method, time, uri.Split(new[] { ".com" }, StringSplitOptions.None)[1],  additionalData);
+            //var signedData = Sign(dataToSign);
+            //var b64 = Base64Encode($"{Credentials.Key.GetString()}:{time}:{signedData}");
+            //result.Add("Authorization", $"HS256 {b64}");
+            //return result;
             if (!signed)
                 return new Dictionary<string, string>();
-            var result = new Dictionary<string, string>();          
-            string additionalData = String.Empty;
-            if (parameters != null && parameters.Any() && method != HttpMethod.Delete && method != HttpMethod.Get)
-            {
-                additionalData = JsonConvert.SerializeObject(parameters.ToDictionary(p => p.Key, p => p.Value));
-            }
-            var dataToSign = CreateAuthPayload(method, time, uri.Split(new[] { ".com" }, StringSplitOptions.None)[1],  additionalData);
-            var signedData = Sign(dataToSign);
-            var b64 = Base64Encode($"{Credentials.Key.GetString()}:{time}:{signedData}");
-            result.Add("Authorization", $"HS256 {b64}");
+
+            if (Credentials.Key == null)
+                throw new ArgumentException("ApiKey/Secret needed");
+
+            if (Credentials.Secret == null)
+                throw new ArgumentException("ApiKey/Secret needed");
+
+            var result = new Dictionary<string, string>();
+
+            var encoded = Convert.ToBase64String(Encoding.GetEncoding("ISO-8859-1").GetBytes(Credentials.Key.GetString() + ":" + Credentials.Secret.GetString()));
+            result.Add("Authorization", "Basic " + encoded);
+
             return result;
+        }
+        private  string CalculateSignature(string text)
+        {
+            using (var hmacsha512 = new HMACSHA512(Encoding.UTF8.GetBytes(Credentials.Secret.GetString())))
+            {
+                hmacsha512.ComputeHash(Encoding.UTF8.GetBytes(text));
+
+                // minimalistic hex-encoding and lower case
+                return string.Concat(hmacsha512.Hash.Select(b => b.ToString("x2")).ToArray());
+            }
         }
         public string ByteArrayToString(byte[] ba)
         {

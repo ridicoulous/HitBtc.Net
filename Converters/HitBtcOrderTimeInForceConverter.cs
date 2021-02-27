@@ -7,7 +7,7 @@ namespace HitBtc.Net.Converters
 {
     public class HitBtcOrderTimeInForceConverter : BaseConverter<HitBtcOrderTimeInForce>
     {
-        public HitBtcOrderTimeInForceConverter() : this(true) { }
+        public HitBtcOrderTimeInForceConverter() : this(false) { }
         public HitBtcOrderTimeInForceConverter(bool quotes) : base(quotes) { }
 
         protected override List<KeyValuePair<HitBtcOrderTimeInForce, string>> Mapping => new List<KeyValuePair<HitBtcOrderTimeInForce, string>>
