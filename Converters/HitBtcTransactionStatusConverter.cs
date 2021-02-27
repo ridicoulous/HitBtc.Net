@@ -6,7 +6,7 @@ namespace HitBtc.Net.Converters
 {
     public class HitBtcTransactionStatusConverter : BaseConverter<HitBtcTransactionStatus>
     {
-        public HitBtcTransactionStatusConverter() : this(true) { }
+        public HitBtcTransactionStatusConverter() : this(false) { }
         public HitBtcTransactionStatusConverter(bool quotes) : base(quotes) { }
 
         protected override List<KeyValuePair<HitBtcTransactionStatus, string>> Mapping => new List<KeyValuePair<HitBtcTransactionStatus, string>>

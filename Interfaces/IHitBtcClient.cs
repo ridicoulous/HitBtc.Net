@@ -300,14 +300,14 @@ namespace HitBtc.Net.Interfaces
         /// Requires the "Orderbook, History, Trading balance" API key Access Right.
         /// </summary>
         /// <returns></returns>
-        WebCallResult<HitBtcTradingBalance> GetTradingBalance();
+        WebCallResult<List<HitBtcTradingBalance>> GetTradingBalance();
 
         /// <summary>
         /// Returns the user's trading balance. (GET /api/2/trading/balance)
         /// Requires the "Orderbook, History, Trading balance" API key Access Right.
         /// </summary>
         /// <returns></returns>
-        Task<WebCallResult<HitBtcTradingBalance>> GetTradingBalanceAsync(CancellationToken ct = default);
+        Task<WebCallResult<List<HitBtcTradingBalance>>> GetTradingBalanceAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Return array of active orders. (GET /api/2/order)

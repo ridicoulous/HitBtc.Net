@@ -7,7 +7,7 @@ namespace HitBtc.Net.Converters
 {
     public class HitBtcTradeSideConverter : BaseConverter<HitBtcTradeSide>
     {
-        public HitBtcTradeSideConverter() : this(true) { }
+        public HitBtcTradeSideConverter() : this(false) { }
         public HitBtcTradeSideConverter(bool quotes) : base(quotes) { }
 
         protected override List<KeyValuePair<HitBtcTradeSide, string>> Mapping => new List<KeyValuePair<HitBtcTradeSide, string>>

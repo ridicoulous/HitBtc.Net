@@ -7,7 +7,7 @@ namespace HitBtc.Net.Converters
 {
     public class HitBtcOrderTypeConverter : BaseConverter<HitBtcOrderType>
     {
-        public HitBtcOrderTypeConverter() : this(true) { }
+        public HitBtcOrderTypeConverter() : this(false) { }
         public HitBtcOrderTypeConverter(bool quotes) : base(quotes) { }
 
         protected override List<KeyValuePair<HitBtcOrderType, string>> Mapping => new List<KeyValuePair<HitBtcOrderType, string>>

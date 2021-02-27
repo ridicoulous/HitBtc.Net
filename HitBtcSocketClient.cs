@@ -3,6 +3,7 @@ using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Sockets;
 using HitBtc.Net.Interfaces;
+using HitBtc.Net.Objects.Socket;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -13,8 +14,19 @@ namespace HitBtc.Net
 {
     public class HitBtcSocketClient : SocketClient, IHitBtcSocketClient
     {
-        public HitBtcSocketClient(string clientName, SocketClientOptions exchangeOptions, AuthenticationProvider authenticationProvider) : base(clientName, exchangeOptions, authenticationProvider)
+        private static HitBtcSocketClientOptions defaultOptions = new HitBtcSocketClientOptions();
+        public HitBtcSocketClient():this(nameof(HitBtcSocketClient),defaultOptions,null)
         {
+
+        }
+        public HitBtcSocketClient(string clientName, HitBtcSocketClientOptions exchangeOptions, HitBtcAuthenticationProvider authenticationProvider) : base(clientName, exchangeOptions, authenticationProvider)
+        {
+            
+        }
+
+        public async Task<CallResult<UpdateSubscription>> SubscribeToOrderBookAsync(string symbol, Action<HitBtcSocketOrderBookEvent>dataHandler)
+        {
+            return await Subscribe<HitBtcSocketOrderBookEvent>(BaseAddress+"public", new HitBtcSubscribeToOrderBookRequest(symbol), null, false, dataHandler);
         }
 
         protected override Task<CallResult<bool>> AuthenticateSocket(SocketConnection s)
@@ -29,12 +41,14 @@ namespace HitBtc.Net
 
         protected override bool HandleSubscriptionResponse(SocketConnection s, SocketSubscription subscription, object request, JToken message, out CallResult<object> callResult)
         {
-            throw new NotImplementedException();
+            var error = message["error"];
+            callResult = new CallResult<object>(request,error==null?null:new ServerError(error["message"].ToString(),error));
+            return message["result"] != null && (bool)message["result"] == true;
         }
 
         protected override bool MessageMatchesHandler(JToken message, object request)
         {
-            throw new NotImplementedException();
+            return true;
         }
 
         protected override bool MessageMatchesHandler(JToken message, string identifier)

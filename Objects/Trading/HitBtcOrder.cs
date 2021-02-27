@@ -53,7 +53,7 @@ namespace HitBtc.Net.Objects.Trading
         /// Day - keeps the order active until the end of the trading day (UTC).
         /// GTD - ''Good-Till-Date''. The date is specified in expireTime.
         /// </summary>
-        [JsonProperty("timeInForce")]
+        [JsonProperty("timeInForce"),JsonConverter(typeof(HitBtcOrderTimeInForceConverter))]
         public HitBtcOrderTimeInForce TimeInForce { get; set; }
 
         /// <summary>
