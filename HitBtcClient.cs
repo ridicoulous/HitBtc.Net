@@ -14,6 +14,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using HitBtc.Net.Extensions;
+using Microsoft.VisualStudio.Threading;
 
 namespace HitBtc.Net
 {
@@ -83,7 +84,8 @@ namespace HitBtc.Net
         }
         public HitBtcClient(string clientName, HitBtcClientOptions exchangeOptions, HitBtcAuthenticationProvider authenticationProvider) : base(clientName, exchangeOptions, authenticationProvider)
         {
-
+            postParametersPosition = PostParameters.InBody;
+            requestBodyFormat = RequestBodyFormat.FormData;
         }
         private Uri GetUrl(string path)
         {
@@ -407,14 +409,11 @@ namespace HitBtc.Net
             throw new NotImplementedException();
         }
 
-        public WebCallResult<IEnumerable<HitBtcSymbol>> GetSymbols(params string[] symbols)
-        {
-            throw new NotImplementedException();
-        }
+        public WebCallResult<IEnumerable<HitBtcSymbol>> GetSymbols(params string[] symbols) => GetSymbolsAsync(default, symbols).Result; //JoinableTaskFactory.Run(async delegate { await GetSymbolsAsync(default, symbols); });
 
         public async Task<WebCallResult<IEnumerable<HitBtcSymbol>>> GetSymbolsAsync(CancellationToken ct = default, params string[] symbols)
         {
-            throw new NotImplementedException();
+            return await SendRequest<IEnumerable<HitBtcSymbol>>(GetUrl(SymbolsUrl), HttpMethod.Get, ct, null, false);
         }
 
         public WebCallResult<HitBtcTicker> GetTicker(string symbol)
@@ -474,11 +473,11 @@ namespace HitBtc.Net
             throw new NotImplementedException();
         }
 
-        public WebCallResult<HitBtcTradingBalance> GetTradingBalance() => GetTradingBalanceAsync().Result;
+        public WebCallResult<List<HitBtcTradingBalance>> GetTradingBalance() => GetTradingBalanceAsync().Result;
 
-        public async Task<WebCallResult<HitBtcTradingBalance>> GetTradingBalanceAsync(CancellationToken ct = default)
+        public async Task<WebCallResult<List<HitBtcTradingBalance>>> GetTradingBalanceAsync(CancellationToken ct = default)
         {
-            return await SendRequest<HitBtcTradingBalance>(GetUrl(TradingBalanceUrl), HttpMethod.Get, ct, null, true, true);
+            return await SendRequest<List<HitBtcTradingBalance>>(GetUrl(TradingBalanceUrl), HttpMethod.Get, ct, null, true, true);
         }
 
         public WebCallResult<HitBtcTradingCommission> GetTradingCommission(string symbol)
@@ -524,7 +523,7 @@ namespace HitBtc.Net
         public async Task<WebCallResult<HitBtcOrder>> PlaceOrderAsync(HitbtcPlaceOrderRequest order, CancellationToken ct = default)
         {
             var parameters = order.AsDictionary();
-            return await SendRequest<HitBtcOrder>(GetUrl(OrderUrl), HttpMethod.Post, ct, parameters, true, true);
+            return await SendRequest<HitBtcOrder>(GetUrl(OrderUrl), HttpMethod.Post, ct, parameters, true, false);
         }
 
         public WebCallResult<HitBtcRequestsBoolResult> RollbackWithdrawCrypto(string id)

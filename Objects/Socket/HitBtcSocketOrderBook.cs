@@ -15,7 +15,7 @@ namespace HitBtc.Net.Objects.Socket
         public List<HitBtcOrderBookEntry> Asks { get; set; }
 
         [JsonProperty("bid")]
-        public List<HitBtcOrderBookEntry> Bid { get; set; }
+        public List<HitBtcOrderBookEntry> Bids { get; set; }
 
         [JsonProperty("symbol")]
         public string Symbol { get; set; }

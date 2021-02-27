@@ -45,7 +45,7 @@ namespace HitBtc.Net.Objects.Trading
         /// GTD - ''Good-Till-Date''. The date is specified in expireTime.
         /// </summary>
         [JsonProperty("timeInForce"), JsonConverter(typeof(HitBtcOrderTimeInForceConverter))]
-        public HitBtcOrderTimeInForce TimeInForce { get; set; }
+        public HitBtcOrderTimeInForce? TimeInForce { get; set; }
 
         /// <summary>
         /// Order quantity
@@ -57,7 +57,7 @@ namespace HitBtc.Net.Objects.Trading
         /// Order price. Required for limit order types
         /// </summary>
         [JsonProperty("price")]
-        public decimal Price { get; set; }
+        public decimal? Price { get; set; }
 
         /// <summary>
         /// Required for orders with timeInForce = GTD
@@ -69,20 +69,20 @@ namespace HitBtc.Net.Objects.Trading
         /// Price and quantity will be checked for incrementation within the symbol’s tick size and quantity step.
         /// </summary>
         [JsonProperty("strictValidate")]
-        public bool StrictValidate { get; set; }
+        public bool? StrictValidate { get; set; }
 
         /// <summary>
         /// Required for stop-limit and stop-market orders
         /// </summary>
         [JsonProperty("stopPrice")]
-        public decimal StopPrice { get; set; }
+        public decimal? StopPrice { get; set; }
 
         /// <summary>
         /// If your post-only order causes a match with a pre-existing order as a taker, 
         /// then the order will be cancelled.
         /// </summary>
         [JsonProperty("postOnly")]
-        public bool PostOnly { get; set; }
+        public bool? PostOnly { get; set; }
     }
 
 }
