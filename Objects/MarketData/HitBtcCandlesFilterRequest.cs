@@ -5,51 +5,34 @@ using System.Text;
 
 namespace HitBtc.Net.Objects.MarketData
 {
-    public class HitbtcPublicTradesFilterRequest
+    public class HitBtcCandlesFilterRequest
     {
-
+        string period;
         string sort;
-        string by;
-        Object from;
-        Object till;
+        DateTime? from;
+        DateTime? till;
         int limit;
         int offset;
 
         /// <summary>
         /// Filter public trades with default parameters
         /// </summary>
-        public HitbtcPublicTradesFilterRequest() : this("DESC", null, null, 100, 0) { }
+        public HitBtcCandlesFilterRequest() : this("M30","ASC", null, null, 100, 0) { }
 
-        /// <summary>
-        /// Filter public trades by index
-        /// </summary>
-        /// <param name="sort">Sort direction. Accepted values: ASC, DESC. Default value: DESC</param>
-        /// <param name="from">Interval initial value
-        /// <param name="till">Interval end value
-        /// <param name="limit">Max value: 1000</param>
-        /// <param name="offset">Max value: 100000</param>
-        public HitbtcPublicTradesFilterRequest(string sort, long from, long till, int limit, int offset)
-        {
-            Sort = sort;
-            this.by = "id";
-            this.from = from;
-            this.till = till;
-            Limit = limit;
-            Offset = offset;
-        }
 
         /// <summary>
         /// Filter public trades by date
         /// </summary>
-        /// <param name="sort">Sort direction. Accepted values: ASC, DESC. Default value: DESC</param>
+        /// param name="period" Accepted values: M1 (one minute), M3, M5, M15, M30, H1 (one hour), H4, D1 (one day), D7, 1M (one month)
+        /// Default value: M30(30 minutes)</param>
+        /// <param name="sort">Sort direction. Accepted values: ASC, DESC.</param>
         /// <param name="from">Interval initial value
         /// <param name="till">Interval end value
         /// <param name="limit">Max value: 1000</param>
         /// <param name="offset">Max value: 100000</param>
-        public HitbtcPublicTradesFilterRequest(string sort, DateTime? from, DateTime? till, int limit, int offset)
+        public HitBtcCandlesFilterRequest(string period, string sort, DateTime? from, DateTime? till, int limit, int offset)
         {
             Sort = sort;
-            this.by = "timestamp";
             this.from = from;
             this.till = till;
             Limit = limit;
@@ -57,7 +40,41 @@ namespace HitBtc.Net.Objects.MarketData
         }
 
         /// <summary>
-        /// Sort direction. Accepted values: ASC, DESC. Default value: DESC
+        /// Sort direction. Accepted values: ASC, DESC. Default value: ASC
+        /// </summary>
+        [JsonProperty("period")]
+        public string Period
+        {
+            get
+            {
+                return period;
+            }
+            private set
+            {
+                value = value ?? "M30";
+                switch (value.ToUpper())
+                {
+                    case "M1":
+                    case "M3":
+                    case "M5":
+                    case "M15":
+                    case "M30":
+                    case "H1":
+                    case "H4":
+                    case "D1":
+                    case "D7":
+                    case "1M":
+                        period = value.ToUpper();
+                        break;
+                    default:
+                        throw new NotSupportedException("Only one of \"M1\", \"M3\",\"M5\",\"M15\"," +
+                            "\"M30\",\"H1\" \"H4\",\"D1\",\"D7\" or \"1M\" are allowed");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sort direction. Accepted values: ASC, DESC. Default value: ASC
         /// </summary>
         [JsonProperty("sort")]
         public string Sort
@@ -68,6 +85,7 @@ namespace HitBtc.Net.Objects.MarketData
             }
             private set
             {
+                value = value ?? "ASC";
                 if (string.Equals(value, "DESC", StringComparison.OrdinalIgnoreCase))
                 {
                     sort = "DESC";
@@ -84,18 +102,6 @@ namespace HitBtc.Net.Objects.MarketData
         }
 
         /// <summary>
-        /// Defines filter type. Accepted values: id, timestamp. Default value: timestamp
-        /// </summary>
-        [JsonProperty("by")]
-        public string By
-        {
-            get
-            {
-                return by;
-            }
-        }
-
-        /// <summary>
         /// Interval initial value (optional parameter) 
         /// If sorting by timestamp is used, then Datetime, otherwise long of index value
         /// </summary>
@@ -104,14 +110,7 @@ namespace HitBtc.Net.Objects.MarketData
         {
             get
             {
-                if ("id".Equals(by))
-                {
-                    return (long)from;
-                }
-                else
-                {
-                    return (DateTime?)from;
-                }
+                return (DateTime?)from;
             }
         }
 
@@ -124,16 +123,9 @@ namespace HitBtc.Net.Objects.MarketData
         {
             get
             {
-                if ("id".Equals(by))
-                {
-                    return (long)till;
-                }
-                else
-                {
-                    return (DateTime?)till;
-                }
+                return (DateTime?)till;
             }
-            
+
         }
 
         /// <summary>
@@ -142,20 +134,19 @@ namespace HitBtc.Net.Objects.MarketData
         [JsonProperty("limit")]
         public int Limit
         {
-                get
+            get
             {
-                    return limit;
-                }
-                private set
+                return limit;
+            }
+            private set
             {
-                    if (value < 0 || value > 1000)
+                if (value < 0 || value > 1000)
                 {
                     throw new NotSupportedException("Accepted range: 0 - 1000");
                 }
-
                 limit = value;
-                }
             }
+        }
 
         /// <summary>
         /// Default value: 0. Max value: 100000
@@ -173,7 +164,6 @@ namespace HitBtc.Net.Objects.MarketData
                 {
                     throw new NotSupportedException("Accepted range: 0 - 100000");
                 }
-
                 offset = value;
             }
         }

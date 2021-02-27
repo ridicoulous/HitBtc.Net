@@ -5,9 +5,9 @@ using System.Text;
 
 namespace HitBtc.Net.Objects.AccountManagement
 {
-    public class HitBtcTransferConvResponse
+    public class HitBtcTransferConvertCryptoResponse
     {
         [JsonProperty("result")]
-        public string[] Result { get; set; }
+        public string[] TransactionIds { get; set; }
     }
 }

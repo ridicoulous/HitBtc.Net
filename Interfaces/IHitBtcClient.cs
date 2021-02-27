@@ -31,20 +31,21 @@ namespace HitBtc.Net.Interfaces
         WebCallResult<IEnumerable<HitBtcCurrency>> GetCurrencies(params string[] currencies);
 
         /// <summary>
-        /// Returns the data for a certain currency. (GET /api/2/public/currency)
+        /// Returns the data for a certain currency. (GET /api/2/public/currency/{currency})
         /// </summary>
-        /// <param name="currency">currency codes (GET /api/2/public/currency/{currency})</param>
+        /// <param name="currency">currency code</param>
         /// <returns></returns>
         Task<WebCallResult<HitBtcCurrency>> GetCurrencyAsync(string currency, CancellationToken ct = default);
 
         /// <summary>
-        /// Returns the data for a certain currency. (GET /api/2/public/currency)
+        /// Returns the data for a certain currency. (GET /api/2/public/currency/{currency})
         /// </summary>
-        /// <param name="currency">currency codes (GET /api/2/public/currency/{currency})</param>
+        /// <param name="currency">currency code</param>
         /// <returns></returns>
         WebCallResult<HitBtcCurrency> GetCurrency(string currency);
 
         /// <summary>
+        /// (GET /api/2/public/symbol)
         /// Return the actual list of currency symbols (currency pairs) traded on exchange.
         /// The first listed currency of a symbol is called the base currency, 
         /// and the second currency is called the quote currency. 
@@ -55,6 +56,7 @@ namespace HitBtc.Net.Interfaces
         Task<WebCallResult<IEnumerable<HitBtcSymbol>>> GetSymbolsAsync(CancellationToken ct = default, params string[] symbols);
 
         /// <summary>
+        /// (GET /api/2/public/symbol)
         /// Return the actual list of currency symbols (currency pairs) traded on exchange.
         /// The first listed currency of a symbol is called the base currency, 
         /// and the second currency is called the quote currency. 
@@ -66,6 +68,7 @@ namespace HitBtc.Net.Interfaces
 
         /// <summary>
         /// Returns the data for a certain symbol.
+        /// GET /api/2/public/symbol/{symbol}
         /// </summary>
         /// <param name="symbol">certain symbol</param>
         /// <returns></returns>
@@ -73,6 +76,7 @@ namespace HitBtc.Net.Interfaces
 
         /// <summary>
         /// Returns the data for a certain symbol.
+        /// GET /api/2/public/symbol/{symbol}
         /// </summary>
         /// <param name="symbol">certain symbol</param>
         /// <returns></returns>
@@ -80,6 +84,7 @@ namespace HitBtc.Net.Interfaces
 
         /// <summary>
         /// Get tickers for all symbols or for specified symbols
+        /// (GET /api/2/public/ticker)
         /// </summary>
         /// <param name="symbols">Comma-separated list of symbol codes. Optional parameter</param>
         /// <returns></returns>
@@ -87,6 +92,7 @@ namespace HitBtc.Net.Interfaces
 
         /// <summary>
         /// Get tickers for all symbols or for specified symbols
+        /// (GET /api/2/public/ticker)
         /// </summary>
         /// <param name="symbols">Comma-separated list of symbol codes. Optional parameter</param>
         /// <returns></returns>
@@ -94,6 +100,7 @@ namespace HitBtc.Net.Interfaces
 
         /// <summary>
         /// Get ticker for a certain symbol
+        /// (GET /api/2/public/ticker/{symbol})
         /// </summary>
         /// <param name="symbol"></param>
         /// <returns></returns>
@@ -101,26 +108,27 @@ namespace HitBtc.Net.Interfaces
 
         /// <summary>
         /// Get ticker for a certain symbol
+        /// (GET /api/2/public/ticker/{symbol})
         /// </summary>
         /// <param name="symbol"></param>
         /// <returns></returns>
         WebCallResult<HitBtcTicker> GetTicker(string symbol);
 
         /// <summary>
-        /// Get trades for all symbols or for specified symbols (GET /api/2/public/trades)
+        /// Get trades for a certain symbol (GET /api/2/public/trades/{symbol})
         /// </summary>
         /// <param name="symbol">symbol code.</param>
         /// <returns>Returns trades information for a symbol with a symbol Id</returns>
-        WebCallResult<IEnumerable<HitBtcPublicTrade>> GetTrade(
+        WebCallResult<IEnumerable<HitBtcPublicTrade>> GetTradesForSymbol(
             string symbol,
             HitbtcPublicTradesFilterRequest filter = null);
 
         /// <summary>
-        /// Get trades for all symbols or for specified symbols (GET /api/2/public/trades)
+        /// Get trades for a certain symbol (GET /api/2/public/trades/{symbol})
         /// </summary>
         /// <param name="symbol">symbol code.</param>
         /// <returns>Returns trades information for a symbol with a symbol Id</returns>
-        Task<WebCallResult<IEnumerable<HitBtcPublicTrade>>> GetTradeAsync(
+        Task<WebCallResult<IEnumerable<HitBtcPublicTrade>>> GetTradesForSymbolAsync(
             string symbol,
             HitbtcPublicTradesFilterRequest filter = null,
             CancellationToken ct = default);
@@ -203,23 +211,10 @@ namespace HitBtc.Net.Interfaces
         /// If it is not provided, null or empty, the request returns candles for all symbols.
         /// The result contains candles with non-zero volume only (no trades = no candles). 
         /// </summary>
-        /// <param name="period">Accepted values: M1(one minute), M3, M5, M15, M30, H1(one hour), H4, D1(one day), D7, 1M (one month)
-        /// Default value: M30(30 minutes)</param>
-        /// <param name="sort"> Sort direction
-        /// Accepted values: ASC, DESC. Default value: ASC</param>
-        /// <param name="from">Datetime Interval initial value(optional parameter)</param>
-        /// <param name="till">Interval end value(optional parameter)</param>
-        /// <param name="limit">Limit of candles. Default value: 100. Max value: 1000</param>
-        /// <param name="offset">Default value: 0. Max value: 100000</param>
         /// <param name="symbols">Comma-separated list of symbol codes.Optional parameter</param>
         /// <returns></returns>
         WebCallResult<HitBtcCandlesResponse> GetCandles(
-            string period = "M30",
-            string sort = "ASC",
-            DateTime? from = null,
-            DateTime? till = null,
-            int limit = 100,
-            int offset = 0,
+            HitBtcCandlesFilterRequest filter,
             params string[] symbols);
 
         /// <summary>
@@ -228,69 +223,31 @@ namespace HitBtc.Net.Interfaces
         /// If it is not provided, null or empty, the request returns candles for all symbols.
         /// The result contains candles with non-zero volume only (no trades = no candles). 
         /// </summary>
-        /// <param name="period">Accepted values: M1(one minute), M3, M5, M15, M30, H1(one hour), H4, D1(one day), D7, 1M (one month)
-        /// Default value: M30(30 minutes)</param>
-        /// <param name="sort"> Sort direction
-        /// Accepted values: ASC, DESC. Default value: ASC</param>
-        /// <param name="from">Datetime Interval initial value(optional parameter)</param>
-        /// <param name="till">Interval end value(optional parameter)</param>
-        /// <param name="limit">Limit of candles. Default value: 100. Max value: 1000</param>
-        /// <param name="offset">Default value: 0. Max value: 100000</param>
         /// <param name="symbols">Comma-separated list of symbol codes.Optional parameter</param>
         /// <returns></returns>
         Task<WebCallResult<HitBtcCandlesResponse>> GetCandlesAsync(
-            string period = "M30",
-            string sort = "ASC",
-            DateTime? from = null,
-            DateTime? till = null,
-            int limit = 100,
-            int offset = 0,
+            HitBtcCandlesFilterRequest filter,
             CancellationToken ct = default,
             params string[] symbols);
 
         /// <summary>
         /// Get candles for a certain symbol. The result contains candles with non-zero volume only (no trades = no candles). 
+        /// (GET /api/2/public/candles/{symbol})
         /// </summary>
         /// <param name="symbol">The certain symbol</param>
-        /// <param name="period">Accepted values: M1(one minute), M3, M5, M15, M30, H1(one hour), H4, D1(one day), D7, 1M (one month)
-        /// Default value: M30(30 minutes)</param>
-        /// <param name="sort"> Sort direction
-        /// Accepted values: ASC, DESC. Default value: ASC</param>
-        /// <param name="from">Datetime Interval initial value(optional parameter)</param>
-        /// <param name="till">Interval end value(optional parameter)</param>
-        /// <param name="limit">Limit of candles. Default value: 100. Max value: 1000</param>
-        /// <param name="offset">Default value: 0. Max value: 100000</param>
         /// <returns></returns>
-        WebCallResult<IEnumerable<HitBtcCandle>> GetCandle(
+        WebCallResult<IEnumerable<HitBtcCandle>> GetCandlesForSymbol(
             string symbol,
-            string period = "M30",
-            string sort = "ASC",
-            DateTime? from = null,
-            DateTime? till = null,
-            int limit = 100,
-            int offset = 0);
+            HitBtcCandlesFilterRequest filter);
 
         /// <summary>
         /// Get candles for a certain symbol.  The result contains candles with non-zero volume only (no trades = no candles). 
+        /// (GET /api/2/public/candles/{symbol})
         /// </summary>
-        /// <param name="symbol">The certain symbol</param>
-        /// <param name="period">Accepted values: M1(one minute), M3, M5, M15, M30, H1(one hour), H4, D1(one day), D7, 1M (one month)
-        /// Default value: M30(30 minutes)</param>
-        /// <param name="sort"> Sort direction
-        /// Accepted values: ASC, DESC. Default value: ASC</param>
-        /// <param name="from">Datetime Interval initial value(optional parameter)</param>
-        /// <param name="till">Interval end value(optional parameter)</param>
-        /// <param name="limit">Limit of candles. Default value: 100. Max value: 1000</param>
-        /// <param name="offset">Default value: 0. Max value: 100000</param>
         /// <returns></returns>
-        Task<WebCallResult<IEnumerable<HitBtcCandle>>> GetCandleAsync(
+        Task<WebCallResult<IEnumerable<HitBtcCandle>>> GetCandlesForSymbolAsync(
             string symbol,
-            string period = "M30",
-            string sort = "ASC",
-            DateTime? from = null,
-            DateTime? till = null,
-            int limit = 100,
-            int offset = 0,
+            HitBtcCandlesFilterRequest filter,
             CancellationToken ct = default);
 
         #endregion
@@ -406,7 +363,8 @@ namespace HitBtc.Net.Interfaces
         Task<WebCallResult<HitBtcOrder>> CancelOrderByClientOrderIdAsync(string clientOrderId, CancellationToken ct = default);
 
         /// <summary>
-        /// Get personal trading commission rate.
+        /// Get personal trading commission rate. 
+        /// (GET /api/2/trading/fee/{symbol})
         /// Requires the "Place/cancel orders" API key Access Right.
         /// </summary>
         /// <param name="symbol"></param>
@@ -415,11 +373,12 @@ namespace HitBtc.Net.Interfaces
 
         /// <summary>
         /// Get personal trading commission rate.
+        /// (GET /api/2/trading/fee/{symbol})
         /// Requires the "Place/cancel orders" API key Access Right.
         /// </summary>
         /// <param name="symbol"></param>
         /// <returns></returns>
-        Task<WebCallResult<HitBtcTradingCommission>> GetTradingCommissionAsync(string symbol);
+        Task<WebCallResult<HitBtcTradingCommission>> GetTradingCommissionAsync(string symbol, CancellationToken ct = default);
         #endregion Trading
         #region Margin Trading
         /// <summary>
@@ -842,7 +801,7 @@ namespace HitBtc.Net.Interfaces
         /// <param name="toCurrency">Currency code</param>
         /// <param name="amount"> The amount that will be sent to the specified address</param>
         /// <returns>Array of transaction unique identifiers as assigned by exchange</returns>
-        WebCallResult<HitBtcTransferConvResponse> TransferConvertCrypto(string fromCurrency, string toCurrency, decimal amount);
+        WebCallResult<HitBtcTransferConvertCryptoResponse> TransferConvertCrypto(string fromCurrency, string toCurrency, decimal amount);
 
         /// <summary>
         /// Transfer convert between currencies. (POST /api/2/account/crypto/transfer-convert)
@@ -851,7 +810,7 @@ namespace HitBtc.Net.Interfaces
         /// <param name="toCurrency">Currency code</param>
         /// <param name="amount"> The amount that will be sent to the specified address</param>
         /// <returns>Array of transaction unique identifiers as assigned by exchange</returns>
-        Task<WebCallResult<HitBtcTransferConvResponse>> TransferConvertCryptoAsync(string fromCurrency, string toCurrency, decimal amount, CancellationToken ct = default);
+        Task<WebCallResult<HitBtcTransferConvertCryptoResponse>> TransferConvertCryptoAsync(string fromCurrency, string toCurrency, decimal amount, CancellationToken ct = default);
 
         /// <summary>
         /// Commit withdraw crypro (PUT /api/2/account/crypto/withdraw/{id})
@@ -977,7 +936,7 @@ namespace HitBtc.Net.Interfaces
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<WebCallResult<HitBtcTransactionIdResponse>> TransferToAnotherUser(HitBtcTransferToAnotherUserRequest request, CancellationToken ct = default);
+        Task<WebCallResult<HitBtcTransactionIdResponse>> TransferToAnotherUserAsync(HitBtcTransferToAnotherUserRequest request, CancellationToken ct = default);
 
         /// <summary>
         /// Get transactions history (GET /api/2/account/transactions)
@@ -985,14 +944,14 @@ namespace HitBtc.Net.Interfaces
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        WebCallResult<IEnumerable<HitBtcTransaction>> GetTransactions(HitBtcTransferHistoryRequest request);
+        WebCallResult<IEnumerable<HitBtcTransaction>> GetTransactions(HitBtcTransactionsHistoryRequest request);
         /// <summary>
         /// Get transactions history (GET /api/2/account/transactions)
         /// Requires the "Payment information" API key Access Right.
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<WebCallResult<IEnumerable<HitBtcTransaction>>> GetTransactionsAsync(HitBtcTransferHistoryRequest request, CancellationToken ct = default);
+        Task<WebCallResult<IEnumerable<HitBtcTransaction>>> GetTransactionsAsync(HitBtcTransactionsHistoryRequest request, CancellationToken ct = default);
 
         /// <summary>
         /// Get transaction by Id (GET /api/2/account/transactions/{id})
@@ -1008,6 +967,30 @@ namespace HitBtc.Net.Interfaces
         /// <param name="transactionId"></param>
         /// <returns></returns>
         Task<WebCallResult<HitBtcTransaction>> GetTransactionByIdAsync(string transactionId, CancellationToken ct = default);
+
+        /// <summary>
+        /// Check that offchain payout is avialable for a destination address
+        /// (POST /api/2/account/crypto/check-offchain-available)
+        /// </summary>
+        /// <param name="currency"></param>
+        /// <param name="address"></param>
+        /// <param name="paymentId"></param>
+        /// <returns></returns>
+        WebCallResult<HitBtcRequestsBoolResult> IsOffchainTransactionAvialable(string currency,
+                                                                               string address,
+                                                                               string paymentId = null);
+        /// <summary>
+        /// Check that offchain payout is avialable for a destination address
+        /// (POST /api/2/account/crypto/check-offchain-available)
+        /// </summary>
+        /// <param name="currency"></param>
+        /// <param name="address"></param>
+        /// <param name="paymentId"></param>
+        /// <returns></returns>
+        Task<WebCallResult<HitBtcRequestsBoolResult>> IsOffchainTransactionAvialableAsync(string currency,
+                                                                               string address,
+                                                                               string paymentId = null,
+                                                                               CancellationToken ct = default);
         #endregion Account Management
         #region Sub-account
         /// <summary>
@@ -1090,7 +1073,7 @@ namespace HitBtc.Net.Interfaces
         /// </summary>
         /// <param name="subAccountIds"></param>
         /// <returns></returns>
-        WebCallResult<HitBtcSubAccSettingResponse> GetSubAccWithdrawalSettings(params long[] subAccountIds);
+        WebCallResult<HitBtcSubAccSettingResponse> GetSubAccWithdrawalSettings(List<long> subAccountIds);
 
         /// <summary>
         /// Returns a list of withdrawal settings for sub-accounts listed.
@@ -1099,7 +1082,7 @@ namespace HitBtc.Net.Interfaces
         /// </summary>
         /// <param name="subAccountIds"></param>
         /// <returns></returns>
-        Task<WebCallResult<HitBtcSubAccSettingResponse>> GetSubAccWithdrawalSettingsAsync(CancellationToken ct = default, params long[] subAccountIds);
+        Task<WebCallResult<HitBtcSubAccSettingResponse>> GetSubAccWithdrawalSettingsAsync(List<long> subAccountIds, CancellationToken ct = default);
 
         /// <summary>
         /// Disables or enables withdrawals for a sub-account.

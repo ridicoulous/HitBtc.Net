@@ -1,4 +1,5 @@
 ﻿using CryptoExchange.Net.Converters;
+using HitBtc.Net.Attributes;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -30,7 +31,8 @@ namespace HitBtc.Net.Extensions
                 var props = source.GetType().GetProperties(bindingAttr);
                 foreach (var p in props)
                 {
-                    if (p.IsDefined(typeof(JsonIgnoreAttribute)))
+                    if (p.IsDefined(typeof(JsonIgnoreAttribute)) ||
+                        p.IsDefined(typeof(IgnoreAsParameterAttribute)))
                         continue;
                     string key = p.Name;
                     if (p.IsDefined(typeof(JsonPropertyAttribute)))
@@ -69,6 +71,13 @@ namespace HitBtc.Net.Extensions
             {
                 throw ex;
             }
+        }
+
+        public static string AsStringParameterOrNull<T>(this List<T> source) => AsStringParameterOrNull(source.ToArray());
+
+        public static string AsStringParameterOrNull<T>(this T[] source)
+        {
+            return (source.Length == 0) ? null : string.Join(",", source);
         }
     }
 }
