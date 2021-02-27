@@ -33,7 +33,7 @@ namespace HitBtc.Net
         private const string OrderBookWithSymbolUrl = "public/orderbook/{}";
         private const string CandlesUrl = "public/candles";
         private const string CandlesWithSymbolUrl = "public/candles/{}";
-
+        
         private const string SubAccountsUrl = "sub-acc";
         private const string ActivateSubAccountsUrl = "sub-acc/activate";
         private const string SubAccFreezeUrl = "sub-acc/freeze";
@@ -218,14 +218,14 @@ namespace HitBtc.Net
         public async Task<WebCallResult<IEnumerable<HitBtcCandle>>> GetCandlesForSymbolAsync(string symbol, HitBtcCandlesFilterRequest filter, CancellationToken ct = default)
         {
             var parameters = filter.AsDictionary();
-            return await SendRequest<IEnumerable<HitBtcCandle>>(GetUrl(FillPathParameter(CandlesWithSymbolUrl, symbol)), HttpMethod.Get, ct, parameters, true, true);
+            return await SendRequest<IEnumerable<HitBtcCandle>>(GetUrl(FillPathParameter(CandlesWithSymbolUrl, symbol)), HttpMethod.Get, ct, parameters, false);
         }
 
         public WebCallResult<HitBtcCandlesResponse> GetCandles(HitBtcCandlesFilterRequest filter, params string[] symbols) => GetCandlesAsync(filter, symbols: symbols).Result;
         public async Task<WebCallResult<HitBtcCandlesResponse>> GetCandlesAsync(HitBtcCandlesFilterRequest filter, CancellationToken ct = default, params string[] symbols)
         {
             var parameters = filter.AsDictionary();
-            return await SendRequest<HitBtcCandlesResponse>(GetUrl(CandlesUrl), HttpMethod.Get, ct, parameters, true, true);
+            return await SendRequest<HitBtcCandlesResponse>(GetUrl(CandlesUrl), HttpMethod.Get, ct, parameters, false);
         }
 
         public WebCallResult<IEnumerable<HitBtcCurrency>> GetCurrencies(params string[] currencies) => GetCurrenciesAsync().Result;
@@ -234,14 +234,14 @@ namespace HitBtc.Net
         {
             var parameters = new Dictionary<string, object>();
             parameters.Add("currencies", currencies.AsStringParameterOrNull());
-            return await SendRequest<IEnumerable<HitBtcCurrency>>(GetUrl(CurrencyUrl), HttpMethod.Get, ct, parameters, true, true);
+            return await SendRequest<IEnumerable<HitBtcCurrency>>(GetUrl(CurrencyUrl), HttpMethod.Get, ct, parameters, false);
         }
 
         public WebCallResult<HitBtcCurrency> GetCurrency(string currency) => GetCurrencyAsync(currency).Result;
 
         public async Task<WebCallResult<HitBtcCurrency>> GetCurrencyAsync(string currency, CancellationToken ct = default)
         {
-            return await SendRequest<HitBtcCurrency>(GetUrl(FillPathParameter(CurrencyWithCurrencyUrl, currency)), HttpMethod.Get, ct, null, true, true);
+            return await SendRequest<HitBtcCurrency>(GetUrl(FillPathParameter(CurrencyWithCurrencyUrl, currency)), HttpMethod.Get, ct, null, false);
         }
 
         public WebCallResult<HitBtcDepositAddress> GetDepositAddress(string currency) => GetDepositAddressAsync(currency).Result;
@@ -335,17 +335,16 @@ namespace HitBtc.Net
             var parameters = new Dictionary<string, object>();
             parameters.Add("limit", limit);
             parameters.AddOptionalParameter("volume", volume);
-            return await SendRequest<HitBtcOrderBook>(GetUrl(FillPathParameter(OrderBookWithSymbolUrl, symbol)), HttpMethod.Get, ct, parameters, true, true);
+            return await SendRequest<HitBtcOrderBook>(GetUrl(FillPathParameter(OrderBookWithSymbolUrl, symbol)), HttpMethod.Get, ct, parameters, false);
         }
 
         public WebCallResult<HitBtcOrderBooksResponse> GetOrderBooks(int limit = 100, params string[] symbols) => GetOrderBooksAsync(limit, symbols: symbols).Result;
-
         public async Task<WebCallResult<HitBtcOrderBooksResponse>> GetOrderBooksAsync(int limit = 100, CancellationToken ct = default, params string[] symbols)
         {
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("limit", limit);
             parameters.AddOptionalParameter("symbols", symbols.AsStringParameterOrNull());
-            return await SendRequest<HitBtcOrderBooksResponse>(GetUrl(OrderBookUrl), HttpMethod.Get, ct, parameters, true, true);
+            return await SendRequest<HitBtcOrderBooksResponse>(GetUrl(OrderBookUrl), HttpMethod.Get, ct, parameters, false);
         }
 
         public WebCallResult<IEnumerable<HitBtcOrder>> GetOrdersHistory(HitBtcOrdersFilterRequest filter) => GetOrdersHistoryAsync(filter).Result;
@@ -390,7 +389,8 @@ namespace HitBtc.Net
         public WebCallResult<HitBtcSymbol> GetSymbol(string symbol) => GetSymbolAsync(symbol).Result;
         public async Task<WebCallResult<HitBtcSymbol>> GetSymbolAsync(string symbol, CancellationToken ct = default)
         {
-            return await SendRequest<HitBtcSymbol>(GetUrl(FillPathParameter(SymbolWithSymbolUrl, symbol)), HttpMethod.Get, ct, null, true, true);
+
+            return await SendRequest<HitBtcSymbol>(GetUrl(FillPathParameter(SymbolWithSymbolUrl, symbol)), HttpMethod.Get, ct, null, false);
         }
 
         public WebCallResult<IEnumerable<HitBtcSymbol>> GetSymbols(params string[] symbols) => GetSymbolsAsync(default, symbols).Result; //JoinableTaskFactory.Run(async delegate { await GetSymbolsAsync(default, symbols); });
@@ -405,7 +405,7 @@ namespace HitBtc.Net
         public WebCallResult<HitBtcTicker> GetTicker(string symbol) => GetTickerAsync(symbol).Result;
         public async Task<WebCallResult<HitBtcTicker>> GetTickerAsync(string symbol, CancellationToken ct = default)
         {
-            return await SendRequest<HitBtcTicker>(GetUrl(FillPathParameter(TickerWithSymbolUrl, symbol)), HttpMethod.Get, ct, null, true, true);
+            return await SendRequest<HitBtcTicker>(GetUrl(FillPathParameter(TickerWithSymbolUrl, symbol)), HttpMethod.Get, ct, null, false);
         }
 
         public WebCallResult<IEnumerable<HitBtcTicker>> GetTickers(params string[] symbols) => GetTickersAsync(symbols: symbols).Result;
@@ -413,22 +413,22 @@ namespace HitBtc.Net
         {
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("symbols", symbols.AsStringParameterOrNull());
-            return await SendRequest<IEnumerable<HitBtcTicker>>(GetUrl(TickerUrl), HttpMethod.Get, ct, parameters, true, true);
+            return await SendRequest<IEnumerable<HitBtcTicker>>(GetUrl(TickerUrl), HttpMethod.Get, ct, parameters, false);
         }
 
-        public WebCallResult<IEnumerable<HitBtcPublicTrade>> GetTradesForSymbol(string symbol, HitbtcPublicTradesFilterRequest filter = null) => GetTradesForSymbolAsync(symbol, filter).Result;
-        public async Task<WebCallResult<IEnumerable<HitBtcPublicTrade>>> GetTradesForSymbolAsync(string symbol, HitbtcPublicTradesFilterRequest filter = null, CancellationToken ct = default)
+        public WebCallResult<IEnumerable<HitBtcPublicTrade>> GetTradesForSymbol(string symbol, HitbtcPublicTradesFilterRequest filter) => GetTradesForSymbolAsync(symbol, filter).Result;
+        public async Task<WebCallResult<IEnumerable<HitBtcPublicTrade>>> GetTradesForSymbolAsync(string symbol, HitbtcPublicTradesFilterRequest filter, CancellationToken ct = default)
         {
             var parameters = filter.AsDictionary();
-            return await SendRequest<IEnumerable<HitBtcPublicTrade>>(GetUrl(FillPathParameter(TradesWithSymbolUrl, symbol)), HttpMethod.Get, ct, parameters, true, true);
+            return await SendRequest<IEnumerable<HitBtcPublicTrade>>(GetUrl(FillPathParameter(TradesWithSymbolUrl, symbol)), HttpMethod.Get, ct, parameters, false);
         }
 
-        public WebCallResult<HitBtcTradeResponse> GetTrades(HitbtcPublicTradesFilterRequest filter = null, params string[] symbols) => GetTradesAsync(filter: filter, symbols: symbols).Result;
-        public async Task<WebCallResult<HitBtcTradeResponse>> GetTradesAsync(HitbtcPublicTradesFilterRequest filter = null, CancellationToken ct = default, params string[] symbols)
+        public WebCallResult<HitBtcTradeResponse> GetTrades(HitbtcPublicTradesFilterRequest filter, params string[] symbols) => GetTradesAsync(filter: filter, symbols: symbols).Result;
+        public async Task<WebCallResult<HitBtcTradeResponse>> GetTradesAsync(HitbtcPublicTradesFilterRequest filter, CancellationToken ct = default, params string[] symbols)
         {
             var parameters = filter.AsDictionary();
             parameters.AddOptionalParameter("symbols", symbols.AsStringParameterOrNull());
-            return await SendRequest<HitBtcTradeResponse>(GetUrl(TradesUrl), HttpMethod.Get, ct, parameters, true, true);
+            return await SendRequest<HitBtcTradeResponse>(GetUrl(TradesUrl), HttpMethod.Get, ct, parameters, false);
         }
 
         public WebCallResult<IEnumerable<HitBtcTrade>> GetTradesByOrderId(long orderId) => GetTradesByOrderIdAsync(orderId).Result;
