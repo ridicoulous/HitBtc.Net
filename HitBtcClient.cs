@@ -518,7 +518,7 @@ namespace HitBtc.Net
             return await SendRequest<HitBtcOrder>(GetUrl(MarginOrderUrl), HttpMethod.Post, ct, parameters, true, true);
         }
 
-        public WebCallResult<HitBtcOrder> PlaceOrder(HitbtcPlaceOrderRequest order) => PlaceMarginOrderAsync(order).Result;
+        public WebCallResult<HitBtcOrder> PlaceOrder(HitbtcPlaceOrderRequest order) => PlaceOrderAsync(order).Result;
 
         public async Task<WebCallResult<HitBtcOrder>> PlaceOrderAsync(HitbtcPlaceOrderRequest order, CancellationToken ct = default)
         {
