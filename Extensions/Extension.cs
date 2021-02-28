@@ -3,6 +3,7 @@ using HitBtc.Net.Attributes;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Reflection;
 using System.Text;
 
@@ -10,13 +11,13 @@ namespace HitBtc.Net.Extensions
 {
     public static class Extensions
     {
-        public static decimal? Normalize(this decimal? value)
+        public static string Normalize(this decimal? value)
         {
-            if (value == null)
+            if (!value.HasValue)
             {
-                return value;
+                return null;
             }
-            return value / 1.000000000000000000000000000000000m;
+            return (value.Value / 1.000000000000000000000000000000000m).ToString(CultureInfo.InvariantCulture);
         }
         public static Dictionary<string, object> AsDictionary(this object source,
           BindingFlags bindingAttr = BindingFlags.FlattenHierarchy |
@@ -52,7 +53,8 @@ namespace HitBtc.Net.Extensions
                     }
                     if (value is decimal || value is decimal?)
                     {
-                        value = (value as decimal?).Normalize();
+                        value = (value as decimal?).Normalize();                       
+                            
                     }                  
                     if (p.IsDefined(typeof(JsonConverterAttribute)))
                     {

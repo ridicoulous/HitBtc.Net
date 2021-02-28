@@ -1,14 +1,7 @@
 ﻿using HitBtc.Net.Objects.Trading;
-using System;
-using HitBtc.Net.Extensions;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Net.WebSockets;
-using StreamJsonRpc;
 using Microsoft.VisualStudio.Threading;
-using Newtonsoft.Json;
-using System.Text;
-using System.Linq;
+using System;
+using System.Threading.Tasks;
 
 namespace HitBtc.Net.Example
 {
@@ -16,17 +9,24 @@ namespace HitBtc.Net.Example
     {
         static async Task Main(string[] args)
         {
-            //var s = new HitBtcSocketClient();
-            //var result = await s.SubscribeToOrderBookAsync("ETHBTC", c => Console.WriteLine(c.Data.Sequence));
-            //Console.ReadKey();
-            var client = new HitBtcClient();
+            var client = new HitBtcClient("key", "secret");
+
             var pairs = await client.GetSymbolsAsync();
-        
+            var order = await client.PlaceOrderAsync(new HitbtcPlaceOrderRequest()
+            {
+                Side = Enums.HitBtcTradeSide.Sell,
+                PostOnly=true,
+                Quantity=0.042m,
+                Price=142000,
+                Symbol="BTCUSD",
+                Type=Enums.HitBtcOrderType.Limit,
+                
+            });
             var book = new HitBtcSymbolOrderBook("BTCUSD");
             book.OnBestOffersChanged += Book_OnBestOffersChanged;
             await book.StartAsync();
 
-            
+
             Console.ReadLine();
         }
 
