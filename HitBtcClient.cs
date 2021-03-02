@@ -22,7 +22,7 @@ namespace HitBtc.Net
     {
         #region Endpoints
         private const string SymbolsUrl = "public/symbol";
-        private const string SymbolsWithSymbolUrl = "public/symbol/{}";
+        private const string SymbolWithSymbolUrl = "public/symbol/{}";
         private const string CurrencyUrl = "public/currency";
         private const string CurrencyWithCurrencyUrl = "public/currency/{}";
         private const string TickerUrl = "public/ticker";
@@ -33,7 +33,7 @@ namespace HitBtc.Net
         private const string OrderBookWithSymbolUrl = "public/orderbook/{}";
         private const string CandlesUrl = "public/candles";
         private const string CandlesWithSymbolUrl = "public/candles/{}";
-
+        
         private const string SubAccountsUrl = "sub-acc";
         private const string ActivateSubAccountsUrl = "sub-acc/activate";
         private const string SubAccFreezeUrl = "sub-acc/freeze";
@@ -66,8 +66,8 @@ namespace HitBtc.Net
         private const string AccountCryptoAddressesWithCurrencyUrl = "account/crypto/addresses/{}";
         private const string AccountCryptoIsMineAddressUrl = "account/crypto/is-mine/{}";
         private const string AccountCryptoUsedAddressesWithCurrencyUrl = "account/crypto/used-addresses/{}";
-        private const string AccountCryptoTransferUrl = "account/transfer";
-        private const string AccountCryptoTransferInternalUrl = "account/transfer/internal";
+        private const string AccountTransferUrl = "account/transfer";
+        private const string AccountTransferInternalUrl = "account/transfer/internal";
         private const string AccountTransactionsUrl = "account/transactions";
         private const string AccountTransactionWithIdUrl = "account/transactions/{}";
 
@@ -96,7 +96,7 @@ namespace HitBtc.Net
         public async Task<WebCallResult<HitBtcRequestsBoolResult>> ActivateSubAccountsAsync(List<long> ids, CancellationToken ct = default)
         {   
             var parameters = new Dictionary<string, object>();
-            parameters.AddOptionalParameter("ids", string.Join(",", ids));
+            parameters.AddOptionalParameter("ids", ids.AsStringParameterOrNull());
             return await SendRequest<HitBtcRequestsBoolResult>(GetUrl(ActivateSubAccountsUrl), HttpMethod.Post, ct, null, true, true);
         }
 
@@ -168,7 +168,7 @@ namespace HitBtc.Net
         public async Task<WebCallResult<HitBtcRequestsBoolResult>> FreezeSubAccountsAsync(List<long> ids, CancellationToken ct = default)
         {
             var parameters = new Dictionary<string, object>();
-            parameters.AddOptionalParameter("ids", string.Join(",", ids));
+            parameters.AddOptionalParameter("ids", ids.AsStringParameterOrNull());
             return await SendRequest<HitBtcRequestsBoolResult>(GetUrl(SubAccFreezeUrl), HttpMethod.Post, ct, parameters, true, true);
 
         }
@@ -214,24 +214,18 @@ namespace HitBtc.Net
             return await SendRequest<HitBtcRequestsBoolResult>(GetUrl(FillPathParameter(AccountCryptoIsMineAddressUrl, address)), HttpMethod.Get, ct, null, true, true);
         }
 
-        public WebCallResult<IEnumerable<HitBtcCandle>> GetCandle(string symbol, string period = "M30", string sort = "ASC", DateTime? from = null, DateTime? till = null, int limit = 100, int offset = 0)
+        public WebCallResult<IEnumerable<HitBtcCandle>> GetCandlesForSymbol(string symbol, HitBtcCandlesFilterRequest filter) => GetCandlesForSymbolAsync(symbol, filter).Result;
+        public async Task<WebCallResult<IEnumerable<HitBtcCandle>>> GetCandlesForSymbolAsync(string symbol, HitBtcCandlesFilterRequest filter, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            var parameters = filter.AsDictionary();
+            return await SendRequest<IEnumerable<HitBtcCandle>>(GetUrl(FillPathParameter(CandlesWithSymbolUrl, symbol)), HttpMethod.Get, ct, parameters, false);
         }
 
-        public async Task<WebCallResult<IEnumerable<HitBtcCandle>>> GetCandleAsync(string symbol, string period = "M30", string sort = "ASC", DateTime? from = null, DateTime? till = null, int limit = 100, int offset = 0, CancellationToken ct = default)
+        public WebCallResult<HitBtcCandlesResponse> GetCandles(HitBtcCandlesFilterRequest filter, params string[] symbols) => GetCandlesAsync(filter, symbols: symbols).Result;
+        public async Task<WebCallResult<HitBtcCandlesResponse>> GetCandlesAsync(HitBtcCandlesFilterRequest filter, CancellationToken ct = default, params string[] symbols)
         {
-            throw new NotImplementedException();
-        }
-
-        public WebCallResult<HitBtcCandlesResponse> GetCandles(string period = "M30", string sort = "ASC", DateTime? from = null, DateTime? till = null, int limit = 100, int offset = 0, params string[] symbols)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<WebCallResult<HitBtcCandlesResponse>> GetCandlesAsync(string period = "M30", string sort = "ASC", DateTime? from = null, DateTime? till = null, int limit = 100, int offset = 0, CancellationToken ct = default, params string[] symbols)
-        {
-            throw new NotImplementedException();
+            var parameters = filter.AsDictionary();
+            return await SendRequest<HitBtcCandlesResponse>(GetUrl(CandlesUrl), HttpMethod.Get, ct, parameters, false);
         }
 
         public WebCallResult<IEnumerable<HitBtcCurrency>> GetCurrencies(params string[] currencies) => GetCurrenciesAsync().Result;
@@ -239,17 +233,15 @@ namespace HitBtc.Net
         public async Task<WebCallResult<IEnumerable<HitBtcCurrency>>> GetCurrenciesAsync(CancellationToken ct = default, params string[] currencies)
         {
             var parameters = new Dictionary<string, object>();
-            parameters.Add("currencies", string.Join(",", currencies));
-            return await SendRequest<IEnumerable<HitBtcCurrency>>(GetUrl(CurrencyUrl), HttpMethod.Get, ct, parameters, true, true);
+            parameters.Add("currencies", currencies.AsStringParameterOrNull());
+            return await SendRequest<IEnumerable<HitBtcCurrency>>(GetUrl(CurrencyUrl), HttpMethod.Get, ct, parameters, false);
         }
 
         public WebCallResult<HitBtcCurrency> GetCurrency(string currency) => GetCurrencyAsync(currency).Result;
 
         public async Task<WebCallResult<HitBtcCurrency>> GetCurrencyAsync(string currency, CancellationToken ct = default)
         {
-            var parameters = new Dictionary<string, object>();
-            parameters.Add("currency", currency);
-            return await SendRequest<HitBtcCurrency>(GetUrl(CurrencyUrl), HttpMethod.Get, ct, parameters, true, true);
+            return await SendRequest<HitBtcCurrency>(GetUrl(FillPathParameter(CurrencyWithCurrencyUrl, currency)), HttpMethod.Get, ct, null, false);
         }
 
         public WebCallResult<HitBtcDepositAddress> GetDepositAddress(string currency) => GetDepositAddressAsync(currency).Result;
@@ -343,17 +335,16 @@ namespace HitBtc.Net
             var parameters = new Dictionary<string, object>();
             parameters.Add("limit", limit);
             parameters.AddOptionalParameter("volume", volume);
-            return await SendRequest<HitBtcOrderBook>(GetUrl(FillPathParameter(OrderBookWithSymbolUrl, symbol)), HttpMethod.Get, ct, parameters, true, true);
+            return await SendRequest<HitBtcOrderBook>(GetUrl(FillPathParameter(OrderBookWithSymbolUrl, symbol)), HttpMethod.Get, ct, parameters, false);
         }
 
         public WebCallResult<HitBtcOrderBooksResponse> GetOrderBooks(int limit = 100, params string[] symbols) => GetOrderBooksAsync(limit, symbols: symbols).Result;
-
         public async Task<WebCallResult<HitBtcOrderBooksResponse>> GetOrderBooksAsync(int limit = 100, CancellationToken ct = default, params string[] symbols)
         {
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("limit", limit);
-            parameters.AddOptionalParameter("volume", string.Join(",", symbols));
-            return await SendRequest<HitBtcOrderBooksResponse>(GetUrl(OrderBookUrl), HttpMethod.Get, ct, parameters, true, true);
+            parameters.AddOptionalParameter("symbols", symbols.AsStringParameterOrNull());
+            return await SendRequest<HitBtcOrderBooksResponse>(GetUrl(OrderBookUrl), HttpMethod.Get, ct, parameters, false);
         }
 
         public WebCallResult<IEnumerable<HitBtcOrder>> GetOrdersHistory(HitBtcOrdersFilterRequest filter) => GetOrdersHistoryAsync(filter).Result;
@@ -379,81 +370,65 @@ namespace HitBtc.Net
             return await SendRequest<HitBtcSubAccBalanceResponse>(GetUrl(FillPathParameter(SubAccBalanceWithUserIdUrl, subAccountUserID.ToString())), HttpMethod.Get, ct, null, true, true);
         }
 
-        public WebCallResult<HitBtcSubAccountResponse> GetSubAccounts()
-        {
-            throw new NotImplementedException();
-        }
+        public WebCallResult<HitBtcSubAccountResponse> GetSubAccounts() => GetSubAccountsAsync().Result;
 
         public async Task<WebCallResult<HitBtcSubAccountResponse>> GetSubAccountsAsync(CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            return await SendRequest<HitBtcSubAccountResponse>(GetUrl(SubAccountsUrl), HttpMethod.Get, ct, null, true, true);
         }
 
-        public WebCallResult<HitBtcSubAccSettingResponse> GetSubAccWithdrawalSettings(params long[] subAccountIds)
+        public WebCallResult<HitBtcSubAccSettingResponse> GetSubAccWithdrawalSettings(List<long> subAccountIds) => GetSubAccWithdrawalSettingsAsync(subAccountIds).Result;
+
+        public async Task<WebCallResult<HitBtcSubAccSettingResponse>> GetSubAccWithdrawalSettingsAsync(List<long> subAccountIds, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            var parameters = new Dictionary<string, object>();
+            parameters.AddOptionalParameter("subAccountIds", subAccountIds.AsStringParameterOrNull());
+            return await SendRequest<HitBtcSubAccSettingResponse>(GetUrl(SubAccWithdrawSettingUrl), HttpMethod.Get, ct, parameters, true, true);
         }
 
-        public async Task<WebCallResult<HitBtcSubAccSettingResponse>> GetSubAccWithdrawalSettingsAsync(CancellationToken ct = default, params long[] subAccountIds)
-        {
-            throw new NotImplementedException();
-        }
-
-        public WebCallResult<HitBtcSymbol> GetSymbol(string symbol)
-        {
-            throw new NotImplementedException();
-        }
-
+        public WebCallResult<HitBtcSymbol> GetSymbol(string symbol) => GetSymbolAsync(symbol).Result;
         public async Task<WebCallResult<HitBtcSymbol>> GetSymbolAsync(string symbol, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+
+            return await SendRequest<HitBtcSymbol>(GetUrl(FillPathParameter(SymbolWithSymbolUrl, symbol)), HttpMethod.Get, ct, null, false);
         }
 
         public WebCallResult<IEnumerable<HitBtcSymbol>> GetSymbols(params string[] symbols) => GetSymbolsAsync(default, symbols).Result; //JoinableTaskFactory.Run(async delegate { await GetSymbolsAsync(default, symbols); });
 
         public async Task<WebCallResult<IEnumerable<HitBtcSymbol>>> GetSymbolsAsync(CancellationToken ct = default, params string[] symbols)
         {
-            return await SendRequest<IEnumerable<HitBtcSymbol>>(GetUrl(SymbolsUrl), HttpMethod.Get, ct, null, false);
+            var parameters = new Dictionary<string, object>();
+            parameters.AddOptionalParameter("symbols", symbols.AsStringParameterOrNull());
+            return await SendRequest<IEnumerable<HitBtcSymbol>>(GetUrl(SymbolsUrl), HttpMethod.Get, ct, parameters, false);
         }
 
-        public WebCallResult<HitBtcTicker> GetTicker(string symbol)
-        {
-            throw new NotImplementedException();
-        }
-
+        public WebCallResult<HitBtcTicker> GetTicker(string symbol) => GetTickerAsync(symbol).Result;
         public async Task<WebCallResult<HitBtcTicker>> GetTickerAsync(string symbol, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            return await SendRequest<HitBtcTicker>(GetUrl(FillPathParameter(TickerWithSymbolUrl, symbol)), HttpMethod.Get, ct, null, false);
         }
 
-        public WebCallResult<IEnumerable<HitBtcTicker>> GetTickers(params string[] symbols)
-        {
-            throw new NotImplementedException();
-        }
-
+        public WebCallResult<IEnumerable<HitBtcTicker>> GetTickers(params string[] symbols) => GetTickersAsync(symbols: symbols).Result;
         public async Task<WebCallResult<IEnumerable<HitBtcTicker>>> GetTickersAsync(CancellationToken ct = default, params string[] symbols)
         {
-            throw new NotImplementedException();
+            var parameters = new Dictionary<string, object>();
+            parameters.AddOptionalParameter("symbols", symbols.AsStringParameterOrNull());
+            return await SendRequest<IEnumerable<HitBtcTicker>>(GetUrl(TickerUrl), HttpMethod.Get, ct, parameters, false);
         }
 
-        public WebCallResult<IEnumerable<HitBtcPublicTrade>> GetTrade(string symbol, HitbtcPublicTradesFilterRequest filter = null)
+        public WebCallResult<IEnumerable<HitBtcPublicTrade>> GetTradesForSymbol(string symbol, HitbtcPublicTradesFilterRequest filter) => GetTradesForSymbolAsync(symbol, filter).Result;
+        public async Task<WebCallResult<IEnumerable<HitBtcPublicTrade>>> GetTradesForSymbolAsync(string symbol, HitbtcPublicTradesFilterRequest filter, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            var parameters = filter.AsDictionary();
+            return await SendRequest<IEnumerable<HitBtcPublicTrade>>(GetUrl(FillPathParameter(TradesWithSymbolUrl, symbol)), HttpMethod.Get, ct, parameters, false);
         }
 
-        public async Task<WebCallResult<IEnumerable<HitBtcPublicTrade>>> GetTradeAsync(string symbol, HitbtcPublicTradesFilterRequest filter = null, CancellationToken ct = default)
+        public WebCallResult<HitBtcTradeResponse> GetTrades(HitbtcPublicTradesFilterRequest filter, params string[] symbols) => GetTradesAsync(filter: filter, symbols: symbols).Result;
+        public async Task<WebCallResult<HitBtcTradeResponse>> GetTradesAsync(HitbtcPublicTradesFilterRequest filter, CancellationToken ct = default, params string[] symbols)
         {
-            throw new NotImplementedException();
-        }
-
-        public WebCallResult<HitBtcTradeResponse> GetTrades(HitbtcPublicTradesFilterRequest filter = null, params string[] symbols)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<WebCallResult<HitBtcTradeResponse>> GetTradesAsync(HitbtcPublicTradesFilterRequest filter = null, CancellationToken ct = default, params string[] symbols)
-        {
-            throw new NotImplementedException();
+            var parameters = filter.AsDictionary();
+            parameters.AddOptionalParameter("symbols", symbols.AsStringParameterOrNull());
+            return await SendRequest<HitBtcTradeResponse>(GetUrl(TradesUrl), HttpMethod.Get, ct, parameters, false);
         }
 
         public WebCallResult<IEnumerable<HitBtcTrade>> GetTradesByOrderId(long orderId) => GetTradesByOrderIdAsync(orderId).Result;
@@ -463,14 +438,11 @@ namespace HitBtc.Net
             return await SendRequest<IEnumerable<HitBtcTrade>>(GetUrl(FillPathParameter(HistoryOrderWithOrderIdUrl, orderId.ToString())), HttpMethod.Get, ct, null, true, true);
         }
 
-        public WebCallResult<IEnumerable<HitBtcTrade>> GetTradesHistory(HitBtcTradesFilterRequest filter)
-        {
-            throw new NotImplementedException();
-        }
-
+        public WebCallResult<IEnumerable<HitBtcTrade>> GetTradesHistory(HitBtcTradesFilterRequest filter) => GetTradesHistoryAsync(filter).Result;
         public async Task<WebCallResult<IEnumerable<HitBtcTrade>>> GetTradesHistoryAsync(HitBtcTradesFilterRequest filter, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            var parameters = filter.AsDictionary();
+            return await SendRequest<IEnumerable<HitBtcTrade>>(GetUrl(HistoryTradesUrl), HttpMethod.Get, ct, parameters, true, true);
         }
 
         public WebCallResult<List<HitBtcTradingBalance>> GetTradingBalance() => GetTradingBalanceAsync().Result;
@@ -480,38 +452,26 @@ namespace HitBtc.Net
             return await SendRequest<List<HitBtcTradingBalance>>(GetUrl(TradingBalanceUrl), HttpMethod.Get, ct, null, true, true);
         }
 
-        public WebCallResult<HitBtcTradingCommission> GetTradingCommission(string symbol)
+        public WebCallResult<HitBtcTradingCommission> GetTradingCommission(string symbol) => GetTradingCommissionAsync(symbol).Result;
+        public async Task<WebCallResult<HitBtcTradingCommission>> GetTradingCommissionAsync(string symbol, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            return await SendRequest<HitBtcTradingCommission>(GetUrl(FillPathParameter(TradingFeeWithSymbolUrl, symbol)), HttpMethod.Get, ct, null, true, true);
         }
 
-        public async Task<WebCallResult<HitBtcTradingCommission>> GetTradingCommissionAsync(string symbol)
-        {
-            throw new NotImplementedException();
-        }
-
-        public WebCallResult<HitBtcTransaction> GetTransactionById(string transactionId)
-        {
-            throw new NotImplementedException();
-        }
-
+        public WebCallResult<HitBtcTransaction> GetTransactionById(string transactionId) => GetTransactionByIdAsync(transactionId).Result;
         public async Task<WebCallResult<HitBtcTransaction>> GetTransactionByIdAsync(string transactionId, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            return await SendRequest<HitBtcTransaction>(GetUrl(FillPathParameter(AccountTransactionWithIdUrl, transactionId)), HttpMethod.Get, ct, null, true, true);
         }
 
-        public WebCallResult<IEnumerable<HitBtcTransaction>> GetTransactions(HitBtcTransferHistoryRequest request)
+        public WebCallResult<IEnumerable<HitBtcTransaction>> GetTransactions(HitBtcTransactionsHistoryRequest request) => GetTransactionsAsync(request).Result;
+        public async Task<WebCallResult<IEnumerable<HitBtcTransaction>>> GetTransactionsAsync(HitBtcTransactionsHistoryRequest request, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
-        }
-
-        public async Task<WebCallResult<IEnumerable<HitBtcTransaction>>> GetTransactionsAsync(HitBtcTransferHistoryRequest request, CancellationToken ct = default)
-        {
-            throw new NotImplementedException();
+            var parameters = request.AsDictionary();
+            return await SendRequest<IEnumerable<HitBtcTransaction>>(GetUrl(AccountTransactionsUrl), HttpMethod.Get, ct, parameters, true, true);
         }
 
         public WebCallResult<HitBtcOrder> PlaceMarginOrder(HitbtcPlaceOrderRequest order) => PlaceMarginOrderAsync(order).Result;
-
         public async Task<WebCallResult<HitBtcOrder>> PlaceMarginOrderAsync(HitbtcPlaceOrderRequest order, CancellationToken ct = default)
         {
             var parameters = order.AsDictionary();
@@ -526,14 +486,10 @@ namespace HitBtc.Net
             return await SendRequest<HitBtcOrder>(GetUrl(OrderUrl), HttpMethod.Post, ct, parameters, true, false);
         }
 
-        public WebCallResult<HitBtcRequestsBoolResult> RollbackWithdrawCrypto(string id)
-        {
-            throw new NotImplementedException();
-        }
-
+        public WebCallResult<HitBtcRequestsBoolResult> RollbackWithdrawCrypto(string id) => RollbackWithdrawCryptoAsync(id).Result;
         public async Task<WebCallResult<HitBtcRequestsBoolResult>> RollbackWithdrawCryptoAsync(string id, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            return await SendRequest<HitBtcRequestsBoolResult>(GetUrl(FillPathParameter(AccountCryptoWithdrawWithIdUrl, id)), HttpMethod.Delete, ct, null, true, true);
         }
 
         public WebCallResult<HitBtcIsolatedMarginAccount> SetIsolatedMarginAccount(string symbol, decimal marginBalance, bool strictValidate) => SetIsolatedMarginAccountAsync(symbol, marginBalance, strictValidate).Result;
@@ -546,64 +502,59 @@ namespace HitBtc.Net
             return await SendRequest<HitBtcIsolatedMarginAccount>(GetUrl(FillPathParameter(MarginAccountWithSymbolUrl, symbol)), HttpMethod.Put, ct, parameters, true, true);
         }
 
-        public WebCallResult<HitBtcSubAccSettingResponse> SetSubAccWithdrawalSettings(HitBtcSubAccWithdrawalSetting request)
-        {
-            throw new NotImplementedException();
-        }
-
+        public WebCallResult<HitBtcSubAccSettingResponse> SetSubAccWithdrawalSettings(HitBtcSubAccWithdrawalSetting request) => SetSubAccWithdrawalSettingsAsync(request).Result;
         public async Task<WebCallResult<HitBtcSubAccSettingResponse>> SetSubAccWithdrawalSettingsAsync(HitBtcSubAccWithdrawalSetting request, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            var parameters = request.AsDictionary();
+            return await SendRequest<HitBtcSubAccSettingResponse>(GetUrl(FillPathParameter(SubAccWithdrawSettingWithUserIdUrl, request.SubAccountId.ToString())), HttpMethod.Put, ct, parameters, true, true);
         }
 
-        public WebCallResult<HitBtcTransactionIdResponse> TransferBetweenAcc(HitBtcTransferRequest request)
-        {
-            throw new NotImplementedException();
-        }
-
+        public WebCallResult<HitBtcTransactionIdResponse> TransferBetweenAcc(HitBtcTransferRequest request) => TransferBetweenAccAsync(request).Result;
         public async Task<WebCallResult<HitBtcTransactionIdResponse>> TransferBetweenAccAsync(HitBtcTransferRequest transferRequest, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            var parameters = transferRequest.AsDictionary();
+            return await SendRequest<HitBtcTransactionIdResponse>(GetUrl(AccountTransferUrl), HttpMethod.Post, ct, parameters, true, true);
         }
 
-        public WebCallResult<HitBtcTransferConvResponse> TransferConvertCrypto(string fromCurrency, string toCurrency, decimal amount)
+        public WebCallResult<HitBtcTransferConvertCryptoResponse> TransferConvertCrypto(string fromCurrency, string toCurrency, decimal amount) => TransferConvertCryptoAsync(fromCurrency, toCurrency, amount).Result;
+        public async Task<WebCallResult<HitBtcTransferConvertCryptoResponse>> TransferConvertCryptoAsync(string fromCurrency, string toCurrency, decimal amount, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            var parameters = new Dictionary<string, object>();
+            parameters.Add("fromCurrency", fromCurrency);
+            parameters.Add("toCurrency", toCurrency);
+            parameters.Add("amount", amount);
+            return await SendRequest<HitBtcTransferConvertCryptoResponse>(GetUrl(AccountCryptoTransferConvertUrl), HttpMethod.Post, ct, parameters, true, true);
         }
 
-        public async Task<WebCallResult<HitBtcTransferConvResponse>> TransferConvertCryptoAsync(string fromCurrency, string toCurrency, decimal amount, CancellationToken ct = default)
+        public WebCallResult<HitBtcTransactionIdResponse> TransferToAnotherUser(HitBtcTransferToAnotherUserRequest request) => TransferToAnotherUserAsync(request).Result;
+        public async Task<WebCallResult<HitBtcTransactionIdResponse>> TransferToAnotherUserAsync(HitBtcTransferToAnotherUserRequest request, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            var parameters = request.AsDictionary();
+            return await SendRequest<HitBtcTransactionIdResponse>(GetUrl(AccountTransferInternalUrl), HttpMethod.Post, ct, parameters, true, true);
         }
 
-        public WebCallResult<HitBtcTransactionIdResponse> TransferToAnotherUser(HitBtcTransferToAnotherUserRequest request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<WebCallResult<HitBtcTransactionIdResponse>> TransferToAnotherUser(HitBtcTransferToAnotherUserRequest request, CancellationToken ct = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public WebCallResult<HitBtcRequestsBoolResult> TrasferFound(HitBtcSubAccTransferRequest request)
-        {
-            throw new NotImplementedException();
-        }
-
+        public WebCallResult<HitBtcRequestsBoolResult> TrasferFound(HitBtcSubAccTransferRequest request) => TrasferFoundAsync(request).Result;
         public async Task<WebCallResult<HitBtcRequestsBoolResult>> TrasferFoundAsync(HitBtcSubAccTransferRequest request, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            var parameters = request.AsDictionary();
+            return await SendRequest<HitBtcRequestsBoolResult>(GetUrl(SubAccTransferUrl), HttpMethod.Post, ct, parameters, true, true);
         }
 
-        public WebCallResult<HitBtcTransactionIdResponse> WithdrawCrypto(HitBtcWithdrawRequest request)
-        {
-            throw new NotImplementedException();
-        }
-
+        public WebCallResult<HitBtcTransactionIdResponse> WithdrawCrypto(HitBtcWithdrawRequest request) => WithdrawCryptoAsync(request).Result;
         public async Task<WebCallResult<HitBtcTransactionIdResponse>> WithdrawCryptoAsync(HitBtcWithdrawRequest request, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            var parameters = request.AsDictionary();
+            return await SendRequest<HitBtcTransactionIdResponse>(GetUrl(AccountCryptoWithdrawUrl), HttpMethod.Post, ct, parameters, true, true);
+        }
+
+        public WebCallResult<HitBtcRequestsBoolResult> IsOffchainTransactionAvialable(string currency, string address, string paymentId = null) => IsOffchainTransactionAvialableAsync(currency, address, paymentId, default).Result;
+        public async Task<WebCallResult<HitBtcRequestsBoolResult>> IsOffchainTransactionAvialableAsync(string currency, string address, string paymentId = null, CancellationToken ct = default)
+        {
+            var parameters = new Dictionary<string, object>();
+            parameters.Add("currency", currency);
+            parameters.Add("address", address);
+            parameters.AddOptionalParameter("paymentId", paymentId);
+            return await SendRequest<HitBtcRequestsBoolResult>(GetUrl(AccountCryptoCheckOffchainUrl), HttpMethod.Post, ct, parameters, true, true);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿
 
+using Newtonsoft.Json;
 using System;
 
 namespace HitBtc.Net.Objects.AccountManagement
@@ -28,10 +29,13 @@ namespace HitBtc.Net.Objects.AccountManagement
                 throw new NotSupportedException("Only \"exchangeToBank\" or \"bankToExchange\" are allowed");
         }
 
+        [JsonProperty("currency")]
         public string Currency => currency;
 
+        [JsonProperty("amount")]
         public decimal Amount => amount;
 
+        [JsonProperty("type")]
         public string Type => type;
     }
 

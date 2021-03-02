@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -41,32 +42,38 @@ namespace HitBtc.Net.Objects.AccountManagement
         /// <summary>
         /// Currency code
         /// </summary>
-        public string Currency {get; set;}
+        [JsonProperty("currency")]
+        public string Currency {get; set; }
 
         /// <summary>
         /// The amount that will be sent to the specified address
         /// </summary>
+        [JsonProperty("amount")]
         public decimal Amount { get; set;}
 
         /// <summary>
         ///  Address identifier
         /// </summary>
+        [JsonProperty("address")]
         public string Address { get; set;}
 
         /// <summary>
         /// Optional parameter
         /// </summary>
+        [JsonProperty("paymentId")]
         public string PaymentId { get; set;}
 
         /// <summary>
         /// Default value: false. If true is set, then total spent value will include fees.
         /// </summary>
+        [JsonProperty("includeFee")]
         public bool IncludeFee { get; set; }
 
         /// <summary>
         /// Default value: true
         /// If false is set, then you should commit or rollback transaction in an hour.Used in two phase commit schema.
         /// </summary>
+        [JsonProperty("autoCommit")]
         public bool AutoCommit { get; set; }
 
         /// <summary>
@@ -75,7 +82,9 @@ namespace HitBtc.Net.Objects.AccountManagement
         /// Available values : never, optionally, required
         /// Default value : never
         /// </summary>
-        public string UseOffchain {
+        [JsonProperty("useOffchain")]
+        public string UseOffchain
+        {
             get { return useOffchain; }
             private set 
             {
@@ -99,11 +108,13 @@ namespace HitBtc.Net.Objects.AccountManagement
         /// <summary>
         /// Allows you to select the desired commission level. (The level affects the speed of transactions).
         /// </summary>
+        [JsonProperty("feeLevelId")]
         public int? FeeLevelId { get; set; }
 
         /// <summary>
         /// Allows you add comment to transaction.
         /// </summary>
+        [JsonProperty("publicComment")]
         public string PublicComment
         {
             get { return publicComment;}

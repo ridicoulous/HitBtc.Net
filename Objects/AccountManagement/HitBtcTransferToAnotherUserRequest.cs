@@ -1,5 +1,6 @@
 ﻿
 
+using Newtonsoft.Json;
 using System;
 
 namespace HitBtc.Net.Objects.AccountManagement
@@ -32,12 +33,16 @@ namespace HitBtc.Net.Objects.AccountManagement
             this.identifier = identifier;
         }
 
+        [JsonProperty("currency")]
         public string Currency => currency;
 
+        [JsonProperty("amount")]
         public decimal Amount => amount;
 
+        [JsonProperty("by")]
         public string By => by;
 
+        [JsonProperty("identifier")]
         public string Identifier => identifier;
     }
 

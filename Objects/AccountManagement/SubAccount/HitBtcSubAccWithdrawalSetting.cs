@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using HitBtc.Net.Attributes;
+using Newtonsoft.Json;
 
 namespace HitBtc.Net.Objects.AccountManagement.SubAccount
 {
@@ -7,7 +8,7 @@ namespace HitBtc.Net.Objects.AccountManagement.SubAccount
         /// <summary>
         /// Unique identifier of a sub-account.
         /// </summary>
-        [JsonProperty("subAccountId")]
+        [JsonProperty("subAccountId"), IgnoreAsParameter]
         public long SubAccountId { get; set; }
 
         /// <summary>

@@ -10,6 +10,35 @@ namespace HitBtc.Net.Objects.Trading
     /// </summary>
     public class HitbtcPlaceOrderRequest
     {
+        public HitbtcPlaceOrderRequest()
+        {
+        }
+
+        private HitbtcPlaceOrderRequest(string symbol,
+                                       HitBtcTradeSide side,
+                                       decimal quantity,
+                                       HitBtcOrderType type,
+                                       decimal? price = null,
+                                       string clientOrderId = null,
+                                       bool? postOnly = false,
+                                       bool? strictValidate = false,
+                                       HitBtcOrderTimeInForce? timeInForce = HitBtcOrderTimeInForce.GoodTillCancelled,
+                                       DateTime? expireTime = null,
+                                       decimal? stopPrice = null
+                                       )
+        {
+            ClientOrderId = clientOrderId;
+            Symbol = symbol;
+            Side = side;
+            Type = type;
+            TimeInForce = timeInForce;
+            Quantity = quantity;
+            Price = price;
+            ExpireTime = expireTime;
+            StrictValidate = strictValidate;
+            StopPrice = stopPrice;
+            PostOnly = postOnly;
+        }
 
         /// <summary>
         /// Order unique identifier as assigned by trader. 
@@ -83,6 +112,113 @@ namespace HitBtc.Net.Objects.Trading
         /// </summary>
         [JsonProperty("postOnly")]
         public bool? PostOnly { get; set; }
+
+
+        /// <summary>
+        /// Generate request to place limit order
+        /// </summary>
+        /// <param name="symbol"></param>
+        /// <param name="side"></param>
+        /// <param name="quantity"></param>
+        /// <param name="price"></param>
+        /// <param name="clientOrderId"></param>
+        /// <param name="postOnly"> If your post-only order causes a match with a pre-existing order as a taker, 
+        ///  then the order will be cancelled.</param>
+        /// <param name="timeInForce"></param>
+        /// <param name="expireTime">Required for orders with timeInForce = GoodTillDate</param>
+        /// <param name="strictValidate">Price and quantity will be checked for incrementation within the symbol’s tick size and quantity step.</param>
+        /// <returns></returns>
+        public static HitbtcPlaceOrderRequest PlaceLimitOrderRequest(
+                                       string symbol,
+                                       HitBtcTradeSide side,
+                                       decimal quantity,
+                                       decimal price,
+                                       string clientOrderId = null,
+                                       bool postOnly = false,
+                                       HitBtcOrderTimeInForce? timeInForce = HitBtcOrderTimeInForce.GoodTillCancelled,
+                                       DateTime? expireTime = null,
+                                       bool strictValidate = false)
+        {
+            return new HitbtcPlaceOrderRequest(symbol, side, quantity, HitBtcOrderType.Limit, price,
+                                            clientOrderId, postOnly, strictValidate, timeInForce, expireTime);
+        }
+        /// <summary>
+        /// Generate request to place market order
+        /// </summary>
+        /// <param name="symbol"></param>
+        /// <param name="side"></param>
+        /// <param name="quantity"></param>
+        /// <param name="clientOrderId"></param>
+        /// <param name="timeInForce"></param>
+        /// <param name="expireTime">Required for orders with timeInForce = GoodTillDate</param>
+        /// <param name="strictValidate">Price and quantity will be checked for incrementation within the symbol’s tick size and quantity step.</param>
+        /// <returns></returns>
+        public static HitbtcPlaceOrderRequest PlaceMarketOrderRequest(
+                                    string symbol,
+                                    HitBtcTradeSide side,
+                                    decimal quantity,
+                                    string clientOrderId = null,
+                                    HitBtcOrderTimeInForce? timeInForce = HitBtcOrderTimeInForce.GoodTillCancelled,
+                                    DateTime? expireTime = null,
+                                    bool strictValidate = false)
+        {
+            return new HitbtcPlaceOrderRequest(symbol, side, quantity, HitBtcOrderType.Market, null,
+                                            clientOrderId, false, strictValidate, timeInForce, expireTime);
+        }
+
+        /// <summary>
+        /// Generate request to place stop market order
+        /// </summary>
+        /// <param name="symbol"></param>
+        /// <param name="side"></param>
+        /// <param name="quantity"></param>
+        /// <param name="clientOrderId"></param>
+        /// <param name="timeInForce"></param>
+        /// <param name="expireTime">Required for orders with timeInForce = GoodTillDate</param>
+        /// <param name="strictValidate">Price and quantity will be checked for incrementation within the symbol’s tick size and quantity step.</param>
+        /// <returns></returns>
+        public static HitbtcPlaceOrderRequest PlaceStopMarketOrderRequest(
+                                   string symbol,
+                                   HitBtcTradeSide side,
+                                   decimal quantity,
+                                   decimal stopPrice,
+                                   string clientOrderId = null,
+                                   HitBtcOrderTimeInForce? timeInForce = HitBtcOrderTimeInForce.GoodTillCancelled,
+                                   DateTime? expireTime = null,
+                                   bool strictValidate = false)
+        {
+            return new HitbtcPlaceOrderRequest(symbol, side, quantity, HitBtcOrderType.StopMarket, null,
+                                            clientOrderId, false, strictValidate, timeInForce, expireTime, stopPrice);
+        }
+        /// <summary>
+        /// Generate request to place limit order
+        /// </summary>
+        /// <param name="symbol"></param>
+        /// <param name="side"></param>
+        /// <param name="quantity"></param>
+        /// <param name="price"></param>
+        /// <param name="clientOrderId"></param>
+        /// <param name="postOnly"> If your post-only order causes a match with a pre-existing order as a taker, 
+        ///  then the order will be cancelled.</param>
+        /// <param name="timeInForce"></param>
+        /// <param name="expireTime">Required for orders with timeInForce = GoodTillDate</param>
+        /// <param name="strictValidate">Price and quantity will be checked for incrementation within the symbol’s tick size and quantity step.</param>
+        /// <returns></returns>
+        public static HitbtcPlaceOrderRequest PlaceStopLimitOrderRequest(
+                                      string symbol,
+                                      HitBtcTradeSide side,
+                                      decimal quantity,
+                                      decimal price,
+                                      decimal stopPrice,
+                                      string clientOrderId = null,
+                                      bool postOnly = false,
+                                      HitBtcOrderTimeInForce? timeInForce = HitBtcOrderTimeInForce.GoodTillCancelled,
+                                      DateTime? expireTime = null,
+                                      bool strictValidate = false)
+        {
+            return new HitbtcPlaceOrderRequest(symbol, side, quantity, HitBtcOrderType.StopLimit, price,
+                                            clientOrderId, postOnly, strictValidate, timeInForce, expireTime, stopPrice);
+        }
     }
 
 }
