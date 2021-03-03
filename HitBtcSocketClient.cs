@@ -24,9 +24,21 @@ namespace HitBtc.Net
             
         }
 
-        public async Task<CallResult<UpdateSubscription>> SubscribeToOrderBookAsync(string symbol, Action<HitBtcSocketOrderBookEvent>dataHandler)
+        public async Task<CallResult<UpdateSubscription>> SubscribeToOrderBookAsync(string symbol, Action<HitBtcSocketOrderBookEvent> dataHandler)
         {
-            return await Subscribe<HitBtcSocketOrderBookEvent>(BaseAddress+"public", new HitBtcSubscribeToOrderBookRequest(symbol), null, false, dataHandler);
+            return await Subscribe<HitBtcSocketOrderBookEvent>(BaseAddress, new HitBtcSubscribeToOrderBookRequest(symbol), null, false, dataHandler);
+        }
+        public async Task<CallResult<UpdateSubscription>> SubscribeToTradesAsync(HitBtcSubscribeToTradesParam requestParams, Action<HitBtcSocketTradesEvent> dataHandler)
+        {
+            return await Subscribe<HitBtcSocketTradesEvent>(BaseAddress, requestParams, null, false, dataHandler);
+        }
+        public async Task<CallResult<UpdateSubscription>> SubscribeToCandlesAsync(HitBtcSubscribeToCandlesParam requestParams, Action<HitBtcSocketCandlesEvent> dataHandler)
+        {
+            return await Subscribe<HitBtcSocketCandlesEvent>(BaseAddress, requestParams, null, false, dataHandler);
+        }
+        public async Task<CallResult<UpdateSubscription>> SubscribeToTicketAsync(string symbol, Action<HitBtcSocketTickerEvent> dataHandler)
+        {
+            return await Subscribe<HitBtcSocketTickerEvent>(BaseAddress, new HitBtcSubscribeToTickerRequest(symbol), null, false, dataHandler);
         }
 
         protected override Task<CallResult<bool>> AuthenticateSocket(SocketConnection s)
