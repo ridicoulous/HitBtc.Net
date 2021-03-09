@@ -439,6 +439,12 @@ namespace HitBtc.Net
         }
 
         public WebCallResult<IEnumerable<HitBtcTrade>> GetTradesHistory(HitBtcTradesFilterRequest filter) => GetTradesHistoryAsync(filter).Result;
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
         public async Task<WebCallResult<IEnumerable<HitBtcTrade>>> GetTradesHistoryAsync(HitBtcTradesFilterRequest filter, CancellationToken ct = default)
         {
             var parameters = filter.AsDictionary();
