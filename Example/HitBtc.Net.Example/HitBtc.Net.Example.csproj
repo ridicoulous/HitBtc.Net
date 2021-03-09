@@ -8,10 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="StreamJsonRpc" Version="2.6.121" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\HitBtc.Net.csproj" />
   </ItemGroup>
 
