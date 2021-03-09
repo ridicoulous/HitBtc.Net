@@ -10,8 +10,8 @@ namespace HitBtc.Net.Objects.MarketData
 
         string sort;
         string by;
-        Object from;
-        Object till;
+        object from;
+        object till;
         int limit;
         int offset;
 
@@ -100,7 +100,7 @@ namespace HitBtc.Net.Objects.MarketData
         /// If sorting by timestamp is used, then Datetime, otherwise long of index value
         /// </summary>
         [JsonProperty("from")]
-        public Object From
+        public object From
         {
             get
             {
@@ -120,7 +120,7 @@ namespace HitBtc.Net.Objects.MarketData
         /// If sorting by timestamp is used, then Datetime, otherwise long of index value
         /// </summary>
         [JsonProperty("till")]
-        public Object Till
+        public object Till
         {
             get
             {
