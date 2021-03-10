@@ -1,5 +1,4 @@
 ﻿using HitBtc.Net.Objects.Trading;
-using Microsoft.VisualStudio.Threading;
 using System;
 using System.Threading.Tasks;
 

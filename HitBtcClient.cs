@@ -14,7 +14,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using HitBtc.Net.Extensions;
-using Microsoft.VisualStudio.Threading;
+
 
 namespace HitBtc.Net
 {
@@ -439,6 +439,12 @@ namespace HitBtc.Net
         }
 
         public WebCallResult<IEnumerable<HitBtcTrade>> GetTradesHistory(HitBtcTradesFilterRequest filter) => GetTradesHistoryAsync(filter).Result;
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
         public async Task<WebCallResult<IEnumerable<HitBtcTrade>>> GetTradesHistoryAsync(HitBtcTradesFilterRequest filter, CancellationToken ct = default)
         {
             var parameters = filter.AsDictionary();
