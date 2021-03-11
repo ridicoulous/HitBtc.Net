@@ -1,7 +1,5 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace HitBtc.Net.Objects.MarketData
 {
@@ -19,11 +17,10 @@ namespace HitBtc.Net.Objects.MarketData
         /// </summary>
         public HitBtcCandlesFilterRequest() : this("M30","ASC", null, null, 100, 0) { }
 
-
         /// <summary>
         /// Filter public trades by date
         /// </summary>
-        /// param name="period" Accepted values: M1 (one minute), M3, M5, M15, M30, H1 (one hour), H4, D1 (one day), D7, 1M (one month)
+        /// <param name="period"> Accepted values: M1 (one minute), M3, M5, M15, M30, H1 (one hour), H4, D1 (one day), D7, 1M (one month)
         /// Default value: M30(30 minutes)</param>
         /// <param name="sort">Sort direction. Accepted values: ASC, DESC.</param>
         /// <param name="from">Interval initial value
@@ -40,7 +37,8 @@ namespace HitBtc.Net.Objects.MarketData
         }
 
         /// <summary>
-        /// Sort direction. Accepted values: ASC, DESC. Default value: ASC
+        ///  Accepted values: M1 (one minute), M3, M5, M15, M30, H1 (one hour), H4, D1 (one day), D7, 1M (one month)
+        ///  Default value: M30(30 minutes)
         /// </summary>
         [JsonProperty("period")]
         public string Period

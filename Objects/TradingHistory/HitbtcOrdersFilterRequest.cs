@@ -107,5 +107,14 @@ namespace HitBtc.Net.Objects.TradingHistory
                 offset = value;
             }
         }
+
+        public static HitBtcOrdersFilterRequest CreateFilterBySymbolRequest(string symbol)
+        {
+            return new HitBtcOrdersFilterRequest(symbol, null, null, 100, 0);
+        }
+        public static HitBtcOrdersFilterRequest CreateFilterByClOrderIdRequest(string clientOrderId)
+        {
+            return new HitBtcOrdersFilterRequest(clientOrderId);
+        }
     }
 }

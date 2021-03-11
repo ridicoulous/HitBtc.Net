@@ -6,9 +6,9 @@ namespace HitBtc.Net.Enums
 {
     public enum HitBtcTradeSide
     {
-        Sell,
+        Sell = 1,
 
-        Buy,
+        Buy = 0,
 
     }
 }

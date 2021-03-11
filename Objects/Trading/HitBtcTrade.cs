@@ -1,12 +1,11 @@
-﻿using HitBtc.Net.Objects.MarketData;
+﻿using System;
+using CryptoExchange.Net.ExchangeInterfaces;
+using HitBtc.Net.Objects.MarketData;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace HitBtc.Net.Objects.Trading
 {
-        public class HitBtcTrade : HitBtcPublicTrade
+        public class HitBtcTrade : HitBtcPublicTrade, ICommonTrade, ICommonRecentTrade
     {
         /// <summary>
         /// Order unique identifier as assigned by exchange
@@ -52,6 +51,16 @@ namespace HitBtc.Net.Objects.Trading
         [JsonProperty("taker")]
         public bool Taker { get; set; }
 
+        public string CommonId => Id.ToString();
 
+        public decimal CommonPrice => Price;
+
+        public decimal CommonQuantity => Quantity;
+
+        public decimal CommonFee => Fee;
+
+        public string CommonFeeAsset => null;
+
+        public DateTime CommonTradeTime => Timestamp;
     }
 }

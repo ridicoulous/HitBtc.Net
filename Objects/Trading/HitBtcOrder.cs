@@ -2,10 +2,11 @@
 using System;
 using HitBtc.Net.Enums;
 using HitBtc.Net.Converters;
+using CryptoExchange.Net.ExchangeInterfaces;
 
 namespace HitBtc.Net.Objects.Trading
 {
-    public class HitBtcOrder
+    public class HitBtcOrder : ICommonOrderId, ICommonOrder
     {
         /// <summary>
         /// Order unique identifier as assigned by exchange
@@ -122,6 +123,62 @@ namespace HitBtc.Net.Objects.Trading
         /// </summary>
         [JsonProperty("tradesReport")]
         public HitBtcTrade[] TradesReport { get; set; }
-            
+
+        public string CommonId => Id.ToString();
+
+        public string CommonSymbol => Symbol;
+
+        public decimal CommonPrice => Price;
+
+        public decimal CommonQuantity => Quantity;
+
+        public string CommonStatus => Status.ToString();
+
+        public bool IsActive
+        {
+            get
+            {
+                switch (Status)
+                {
+                    case HitBtcOrderStatus.New:
+                    case HitBtcOrderStatus.PartiallyFilled:
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        }
+
+        public IExchangeClient.OrderSide CommonSide
+        {
+            get
+            {
+                switch (Side)
+                {
+                    case HitBtcTradeSide.Buy:
+                        return IExchangeClient.OrderSide.Buy;
+                    case HitBtcTradeSide.Sell:
+                        return IExchangeClient.OrderSide.Sell;
+                    default:
+                        throw new NotSupportedException("Unknown trade side");
+                }
+            }
+        }
+
+        public IExchangeClient.OrderType CommonType
+        {
+            get
+            {
+                switch (Type)
+                {
+                    case HitBtcOrderType.Limit:
+                        return IExchangeClient.OrderType.Limit;
+                    case HitBtcOrderType.Market:
+                        return IExchangeClient.OrderType.Market;
+                    default:
+                        return IExchangeClient.OrderType.Other;
+                }
+            }
+        }
     }
 }
