@@ -622,9 +622,11 @@ namespace HitBtc.Net
             return WebCallResult<ICommonOrderId>.CreateFrom(foo);
         }
 
-        async Task<WebCallResult<ICommonOrder>> IExchangeClient.GetOrderAsync(string orderId, string symbol = null)
+        public async Task<WebCallResult<ICommonOrder>> GetOrderAsync(string orderId, string symbol = null)
         {
-             throw new NotImplementedException();
+            string clientOrderId = await GetClientOrderIdById(orderId, symbol);
+            var foo = await GetActiveOrderByClientOrderIdAsync(clientOrderId);
+            return WebCallResult<ICommonOrder>.CreateFrom(foo); 
         }
 
         public async Task<WebCallResult<IEnumerable<ICommonTrade>>> GetTradesAsync(string orderId, string symbol = null)
@@ -654,15 +656,30 @@ namespace HitBtc.Net
             return WebCallResult<IEnumerable<ICommonOrder>>.CreateFrom(foo);     
        }
 
-        async Task<WebCallResult<ICommonOrderId>> IExchangeClient.CancelOrderAsync(string orderId, string symbol = null)
+        public async Task<WebCallResult<ICommonOrderId>> CancelOrderAsync(string orderId, string symbol = null)
         {
-               throw new NotImplementedException();
+            string clientOrderId = await GetClientOrderIdById(orderId, symbol);
+            var foo = await CancelOrderByClientOrderIdAsync(clientOrderId);
+            return WebCallResult<ICommonOrderId>.CreateFrom(foo);    
         }
 
         public async Task<WebCallResult<IEnumerable<ICommonBalance>>> GetBalancesAsync(string accountId = null)
         {
             var foo = await GetAccountBalanceAsync();
             return WebCallResult<IEnumerable<ICommonBalance>>.CreateFrom(foo);
+        }
+
+        private async Task<string> GetClientOrderIdById(string orderId, string symbol = null)
+        {
+             var result = await GetActiveOrdersAsync(symbol);
+            foreach (HitBtcOrder order in result.Data)
+            {
+                if (order.Id.ToString().Equals(orderId))
+                {
+                    return order.ClientOrderId;
+                }
+            }
+            throw new ArgumentException("$Can't find active order with id {orderId}");
         }
     }
 }
