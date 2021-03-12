@@ -14,7 +14,7 @@ namespace HitBtc.Net.Objects.Trading
         {
         }
 
-        private HitbtcPlaceOrderRequest(string symbol,
+        public HitbtcPlaceOrderRequest(string symbol,
                                        HitBtcTradeSide side,
                                        decimal quantity,
                                        HitBtcOrderType type,

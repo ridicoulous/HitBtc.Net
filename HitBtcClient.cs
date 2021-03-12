@@ -1,6 +1,7 @@
 ﻿using CryptoExchange.Net;
 using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Objects;
+using CryptoExchange.Net.ExchangeInterfaces;
 using HitBtc.Net.Interfaces;
 using HitBtc.Net.Objects.AccountManagement;
 using HitBtc.Net.Objects.AccountManagement.SubAccount;
@@ -14,11 +15,11 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using HitBtc.Net.Extensions;
-
+using HitBtc.Net.Enums;
 
 namespace HitBtc.Net
 {
-    public class HitBtcClient : RestClient, IHitBtcClient
+    public class HitBtcClient : RestClient, IHitBtcClient, IExchangeClient
     {
         #region Endpoints
         private const string SymbolsUrl = "public/symbol";
@@ -561,6 +562,124 @@ namespace HitBtc.Net
             parameters.Add("address", address);
             parameters.AddOptionalParameter("paymentId", paymentId);
             return await SendRequest<HitBtcRequestsBoolResult>(GetUrl(AccountCryptoCheckOffchainUrl), HttpMethod.Post, ct, parameters, true, true);
+        }
+
+        public string GetSymbolName(string baseAsset, string quoteAsset)
+        {
+            return baseAsset + quoteAsset;
+        }
+
+        async Task<WebCallResult<IEnumerable<ICommonSymbol>>> IExchangeClient.GetSymbolsAsync()
+        {
+            var foo = await GetSymbolsAsync();
+            return WebCallResult<IEnumerable<ICommonSymbol>>.CreateFrom(foo);;
+        }
+
+        async Task<WebCallResult<IEnumerable<ICommonTicker>>> IExchangeClient.GetTickersAsync()
+        {
+            var foo = await GetTickersAsync();
+            return WebCallResult<IEnumerable<ICommonTicker>>.CreateFrom(foo);;
+        }
+
+        async Task<WebCallResult<ICommonTicker>> IExchangeClient.GetTickerAsync(string symbol)
+        {
+            var foo = await GetTickerAsync(symbol);
+            return WebCallResult<ICommonTicker>.CreateFrom(foo);
+        }
+
+        public async Task<WebCallResult<IEnumerable<ICommonKline>>> GetKlinesAsync(string symbol, TimeSpan timespan, DateTime? startTime = null, DateTime? endTime = null, int? limit = null)
+        {
+            var request = new HitBtcCandlesFilterRequest(timespan.AsStringTimeFrame(), "ASC", startTime, endTime, limit ?? 100, 0);
+            var foo = await GetCandlesForSymbolAsync(symbol, request);
+            return WebCallResult<IEnumerable<ICommonKline>>.CreateFrom(foo);
+        }
+
+        async Task<WebCallResult<ICommonOrderBook>> IExchangeClient.GetOrderBookAsync(string symbol)
+        {
+            var foo = await GetOrderBookAsync(symbol);
+            return WebCallResult<ICommonOrderBook>.CreateFrom(foo);
+        }
+
+        public async Task<WebCallResult<IEnumerable<ICommonRecentTrade>>> GetRecentTradesAsync(string symbol)
+        {
+            //TODO change maxEntryCount if you wish less or more entries in recent history
+            int maxEntryCount = 100; 
+            var request = new HitBtcTradesFilterRequest(symbol, limit: maxEntryCount);
+             var foo = await GetTradesHistoryAsync(request);
+            return WebCallResult<IEnumerable<ICommonRecentTrade>>.CreateFrom(foo);        }
+
+        public async Task<WebCallResult<ICommonOrderId>> PlaceOrderAsync(string symbol, IExchangeClient.OrderSide side, IExchangeClient.OrderType type, decimal quantity, decimal? price = null, string accountId = null)
+        {
+            var  hitBtcSide = (HitBtcTradeSide)Enum.Parse(typeof(HitBtcTradeSide), side.ToString());
+            HitBtcOrderType hitBtcOType = type switch
+            {
+                IExchangeClient.OrderType.Limit => HitBtcOrderType.Limit,
+                IExchangeClient.OrderType.Market => HitBtcOrderType.Market,
+                _  => throw new ArgumentException("unknown order type")
+            };
+            var request = new HitbtcPlaceOrderRequest(symbol, hitBtcSide, quantity, hitBtcOType, price);
+            var foo = await PlaceOrderAsync(request);
+            return WebCallResult<ICommonOrderId>.CreateFrom(foo);
+        }
+
+        public async Task<WebCallResult<ICommonOrder>> GetOrderAsync(string orderId, string symbol = null)
+        {
+            string clientOrderId = await GetClientOrderIdById(orderId, symbol);
+            var foo = await GetActiveOrderByClientOrderIdAsync(clientOrderId);
+            return WebCallResult<ICommonOrder>.CreateFrom(foo); 
+        }
+
+        public async Task<WebCallResult<IEnumerable<ICommonTrade>>> GetTradesAsync(string orderId, string symbol = null)
+        {
+            long id;
+            if (long.TryParse(orderId, out id))
+            {
+                var foo = await GetTradesByOrderIdAsync(id);
+                return WebCallResult<IEnumerable<ICommonTrade>>.CreateFrom(foo);
+            }
+            else
+            {
+                throw new ArgumentException("Can't convert \"orderId\" to type long");
+            }
+        }
+
+        public async Task<WebCallResult<IEnumerable<ICommonOrder>>> GetOpenOrdersAsync(string symbol = null)
+        {
+            var foo = await GetActiveOrdersAsync(symbol);
+            return WebCallResult<IEnumerable<ICommonOrder>>.CreateFrom(foo);
+        }
+
+        public async Task<WebCallResult<IEnumerable<ICommonOrder>>> GetClosedOrdersAsync(string symbol = null)
+        {
+            var request = HitBtcOrdersFilterRequest.CreateFilterBySymbolRequest(symbol);
+            var foo = await GetOrdersHistoryAsync(request);
+            return WebCallResult<IEnumerable<ICommonOrder>>.CreateFrom(foo);     
+       }
+
+        public async Task<WebCallResult<ICommonOrderId>> CancelOrderAsync(string orderId, string symbol = null)
+        {
+            string clientOrderId = await GetClientOrderIdById(orderId, symbol);
+            var foo = await CancelOrderByClientOrderIdAsync(clientOrderId);
+            return WebCallResult<ICommonOrderId>.CreateFrom(foo);    
+        }
+
+        public async Task<WebCallResult<IEnumerable<ICommonBalance>>> GetBalancesAsync(string accountId = null)
+        {
+            var foo = await GetAccountBalanceAsync();
+            return WebCallResult<IEnumerable<ICommonBalance>>.CreateFrom(foo);
+        }
+
+        private async Task<string> GetClientOrderIdById(string orderId, string symbol = null)
+        {
+             var result = await GetActiveOrdersAsync(symbol);
+            foreach (HitBtcOrder order in result.Data)
+            {
+                if (order.Id.ToString().Equals(orderId))
+                {
+                    return order.ClientOrderId;
+                }
+            }
+            throw new ArgumentException("$Can't find active order with id {orderId}");
         }
     }
 }

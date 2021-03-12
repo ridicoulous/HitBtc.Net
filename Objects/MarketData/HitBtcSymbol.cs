@@ -1,8 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using CryptoExchange.Net.ExchangeInterfaces;
+using Newtonsoft.Json;
 
 namespace HitBtc.Net.Objects.MarketData
 {
-    public class HitBtcSymbol
+    public class HitBtcSymbol : ICommonSymbol
     {
         /// <summary>
         /// Symbol (currency pair) identifier, for example, ''ETHBTC''
@@ -52,5 +53,9 @@ namespace HitBtc.Net.Objects.MarketData
         /// </summary>
         [JsonProperty("feeCurrency")]
         public string FeeCurrency { get; set; }
+
+        public string CommonName => Id;
+
+        public decimal CommonMinimumTradeSize => QuantityIncrement;
     }
 }

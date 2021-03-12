@@ -81,5 +81,31 @@ namespace HitBtc.Net.Extensions
         {
             return (source.Length == 0) ? null : string.Join(",", source);
         }
+
+        public static string AsStringTimeFrame(this TimeSpan timeSpan)
+        {
+            if (timeSpan == TimeSpan.FromMinutes(1))
+                return "M1";
+            else if (timeSpan == TimeSpan.FromMinutes(3))
+                return "M3";
+            else if (timeSpan == TimeSpan.FromMinutes(5))
+                return "M5";
+            else if (timeSpan == TimeSpan.FromMinutes(15))
+                return "M15";
+            else if (timeSpan == TimeSpan.FromMinutes(30))
+                return "M30";
+            else if (timeSpan == TimeSpan.FromHours(1))
+                return "H1";
+            else if (timeSpan == TimeSpan.FromHours(4))
+                return "H4";
+            else if (timeSpan == TimeSpan.FromDays(1))
+                return "D1";
+            else if (timeSpan == TimeSpan.FromDays(7))
+                return "D7";
+            else if (timeSpan == TimeSpan.FromDays(30) || timeSpan == TimeSpan.FromDays(31))
+                return "1M";
+            else
+                throw new ArgumentException("Unsupported timespan for HitBTC Candles, check supported intervals");
+        }
     }
 }

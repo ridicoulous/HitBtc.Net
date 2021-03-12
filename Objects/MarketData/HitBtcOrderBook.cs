@@ -1,11 +1,13 @@
-﻿using Newtonsoft.Json;
+﻿using CryptoExchange.Net.ExchangeInterfaces;
+using CryptoExchange.Net.Interfaces;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace HitBtc.Net.Objects.MarketData
 {
-    public class HitBtcOrderBook
+    public class HitBtcOrderBook : ICommonOrderBook
     {
         [JsonProperty("symbol")]
         public string Symbol { get; set; }
@@ -24,5 +26,9 @@ namespace HitBtc.Net.Objects.MarketData
 
         [JsonProperty("bidAveragePrice")]
         public decimal BidAveragePrice { get; set; }
+
+        public IEnumerable<ISymbolOrderBookEntry> CommonBids => Asks;
+
+        public IEnumerable<ISymbolOrderBookEntry> CommonAsks => Bids;
     }
 }

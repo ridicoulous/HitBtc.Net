@@ -3,7 +3,7 @@ using System;
 
 namespace HitBtc.Net.Objects.MarketData
 {
-    public class HitBtcTicker
+    public class HitBtcTicker : CryptoExchange.Net.ExchangeInterfaces.ICommonTicker
     {
         /// <summary>
         /// Best ask price. Can return 'null' if no data
@@ -64,5 +64,13 @@ namespace HitBtc.Net.Objects.MarketData
         /// </summary>
         [JsonProperty("symbol")]
         public string Symbol { get; set; }
+
+        public string CommonSymbol => Symbol;
+
+        public decimal CommonHigh => High;
+
+        public decimal CommonLow => Low;
+
+        public decimal CommonVolume => Volume;
     }
 }
