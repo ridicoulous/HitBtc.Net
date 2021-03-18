@@ -606,19 +606,20 @@ namespace HitBtc.Net
             int maxEntryCount = 100; 
             var request = new HitBtcTradesFilterRequest(symbol, limit: maxEntryCount);
              var foo = await GetTradesHistoryAsync(request);
-            return WebCallResult<IEnumerable<ICommonRecentTrade>>.CreateFrom(foo);        }
+            return WebCallResult<IEnumerable<ICommonRecentTrade>>.CreateFrom(foo);    
+        }
 
         public async Task<WebCallResult<ICommonOrderId>> PlaceOrderAsync(string symbol, IExchangeClient.OrderSide side, IExchangeClient.OrderType type, decimal quantity, decimal? price = null, string accountId = null)
         {
             var  hitBtcSide = (HitBtcTradeSide)Enum.Parse(typeof(HitBtcTradeSide), side.ToString());
             HitBtcOrderType hitBtcOType = type switch
-            {
-                IExchangeClient.OrderType.Limit => HitBtcOrderType.Limit,
+            {            
                 IExchangeClient.OrderType.Market => HitBtcOrderType.Market,
-                _  => throw new ArgumentException("unknown order type")
+                _  => HitBtcOrderType.Limit
             };
             var request = new HitbtcPlaceOrderRequest(symbol, hitBtcSide, quantity, hitBtcOType, price);
             var foo = await PlaceOrderAsync(request);
+            
             return WebCallResult<ICommonOrderId>.CreateFrom(foo);
         }
 
@@ -659,6 +660,10 @@ namespace HitBtc.Net
         public async Task<WebCallResult<ICommonOrderId>> CancelOrderAsync(string orderId, string symbol = null)
         {
             string clientOrderId = await GetClientOrderIdById(orderId, symbol);
+            if (String.IsNullOrEmpty(clientOrderId))
+            {
+                return new WebCallResult<ICommonOrderId>(System.Net.HttpStatusCode.NotFound, null, null, new ServerError($"order {orderId} was not found"));
+            }
             var foo = await CancelOrderByClientOrderIdAsync(clientOrderId);
             return WebCallResult<ICommonOrderId>.CreateFrom(foo);    
         }
@@ -679,7 +684,7 @@ namespace HitBtc.Net
                     return order.ClientOrderId;
                 }
             }
-            throw new ArgumentException("$Can't find active order with id {orderId}");
+            return String.Empty;
         }
     }
 }
