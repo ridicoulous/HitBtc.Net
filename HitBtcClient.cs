@@ -640,7 +640,7 @@ namespace HitBtc.Net
             }
             else
             {
-                throw new ArgumentException("Can't convert \"orderId\" to type long");
+               return WebCallResult<IEnumerable<ICommonTrade>>.CreateErrorResult(new ServerError($"Can't convert orderId {orderId} to type long"));
             }
         }
 
