@@ -1,11 +1,12 @@
-﻿using Newtonsoft.Json;
+﻿using CryptoExchange.Net.ExchangeInterfaces;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace HitBtc.Net.Objects.Trading
 {
-    public class HitBtcTradingBalance
+    public class HitBtcTradingBalance:ICommonBalance
     {
         /// <summary>
         /// Currency code
@@ -24,5 +25,11 @@ namespace HitBtc.Net.Objects.Trading
         /// </summary>
         [JsonProperty("reserved")]
         public decimal Reserved { get; set; }
+
+        public string CommonAsset => Currency;
+
+        public decimal CommonAvailable => Available;
+
+        public decimal CommonTotal => Reserved + Available;
     }
 }

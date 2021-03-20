@@ -670,7 +670,7 @@ namespace HitBtc.Net
 
         public async Task<WebCallResult<IEnumerable<ICommonBalance>>> GetBalancesAsync(string accountId = null)
         {
-            var foo = await GetAccountBalanceAsync();
+            var foo = await GetTradingBalanceAsync();
             return WebCallResult<IEnumerable<ICommonBalance>>.CreateFrom(foo);
         }
 
