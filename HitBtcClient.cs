@@ -625,8 +625,8 @@ namespace HitBtc.Net
 
         public async Task<WebCallResult<ICommonOrder>> GetOrderAsync(string orderId, string symbol = null)
         {
-            string clientOrderId = await GetClientOrderIdById(orderId, symbol);
-            var foo = await GetActiveOrderByClientOrderIdAsync(clientOrderId);
+           // string clientOrderId = await GetClientOrderIdById(orderId, symbol);
+            var foo = await GetActiveOrderByClientOrderIdAsync(orderId);
             return WebCallResult<ICommonOrder>.CreateFrom(foo); 
         }
 
@@ -659,12 +659,12 @@ namespace HitBtc.Net
 
         public async Task<WebCallResult<ICommonOrderId>> CancelOrderAsync(string orderId, string symbol = null)
         {
-            string clientOrderId = await GetClientOrderIdById(orderId, symbol);
-            if (String.IsNullOrEmpty(clientOrderId))
-            {
-                return new WebCallResult<ICommonOrderId>(System.Net.HttpStatusCode.NotFound, null, null, new ServerError($"order {orderId} was not found"));
-            }
-            var foo = await CancelOrderByClientOrderIdAsync(clientOrderId);
+            //string clientOrderId = await GetClientOrderIdById(orderId, symbol);
+            //if (String.IsNullOrEmpty(clientOrderId))
+            //{
+            //    return new WebCallResult<ICommonOrderId>(System.Net.HttpStatusCode.NotFound, null, null, new ServerError($"order {orderId} was not found"));
+            //}
+            var foo = await CancelOrderByClientOrderIdAsync(orderId);
             return WebCallResult<ICommonOrderId>.CreateFrom(foo);    
         }
 
@@ -674,17 +674,17 @@ namespace HitBtc.Net
             return WebCallResult<IEnumerable<ICommonBalance>>.CreateFrom(foo);
         }
 
-        private async Task<string> GetClientOrderIdById(string orderId, string symbol = null)
-        {
-             var result = await GetActiveOrdersAsync(symbol);
-            foreach (HitBtcOrder order in result.Data)
-            {
-                if (order.Id.ToString().Equals(orderId))
-                {
-                    return order.ClientOrderId;
-                }
-            }
-            return String.Empty;
-        }
+        //private async Task<string> GetClientOrderIdById(string orderId, string symbol = null)
+        //{
+        //     var result = await GetActiveOrdersAsync(symbol);
+        //    foreach (HitBtcOrder order in result.Data)
+        //    {
+        //        if (order.Id.ToString().Equals(orderId))
+        //        {
+        //            return order.ClientOrderId;
+        //        }
+        //    }
+        //    return String.Empty;
+        //}
     }
 }
