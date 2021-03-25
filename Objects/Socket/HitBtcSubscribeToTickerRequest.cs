@@ -1,15 +1,16 @@
+using HitBtc.Net.Enums;
 using Newtonsoft.Json;
 
 namespace HitBtc.Net.Objects.Socket
 {
-    internal class HitBtcSubscribeToTickerRequest : HitBtcSocketSubscribeBaseRequest<HitBtcSubscribeToTickerParam>
+    public class HitBtcSubscribeToTickerRequest : HitBtcSocketSubscribeBaseRequest<HitBtcSubscribeToTickerParam>
     {
-        public HitBtcSubscribeToTickerRequest(string symbol) : base("subscribeTicker", new HitBtcSubscribeToTickerParam(symbol))
+        public HitBtcSubscribeToTickerRequest(string symbol) : base(HitBtcSocketRequest.SubscribeToTicker, new HitBtcSubscribeToTickerParam(symbol))
         {
         }
     }
 
-    internal class HitBtcSubscribeToTickerParam
+    public class HitBtcSubscribeToTickerParam
     {
         public HitBtcSubscribeToTickerParam(string s)
         {

@@ -1,6 +1,7 @@
 ﻿using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.OrderBook;
 using CryptoExchange.Net.Sockets;
+using HitBtc.Net.Enums;
 using HitBtc.Net.Objects.Socket;
 using System;
 using System.Collections.Generic;
@@ -43,7 +44,7 @@ namespace HitBtc.Net
             {
                 return;
             }
-            if(book.Method== "snapshotOrderbook")
+            if(book.Method== HitBtcSocketEvent.OrderbookFullSnapshot)
             {
                 SetInitialOrderBook(book.Data.Sequence, book.Data.Bids, book.Data.Asks);
             }

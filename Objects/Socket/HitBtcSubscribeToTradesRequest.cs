@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using HitBtc.Net.Enums;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,7 +8,7 @@ namespace HitBtc.Net.Objects.Socket
 {
     internal class HitBtcSubscribeToTradesRequest : HitBtcSocketSubscribeBaseRequest<HitBtcSubscribeToTradesParam>
     {
-        public HitBtcSubscribeToTradesRequest(HitBtcSubscribeToTradesParam requestParams) : base("subscribeTrades", requestParams)
+        public HitBtcSubscribeToTradesRequest(HitBtcSubscribeToTradesParam requestParams) : base(HitBtcSocketRequest.SubscribeToTrades, requestParams)
         {
         }
     }
