@@ -424,12 +424,13 @@ namespace HitBtc.Net
             return await SendRequest<IEnumerable<HitBtcPublicTrade>>(GetUrl(FillPathParameter(TradesWithSymbolUrl, symbol)), HttpMethod.Get, ct, parameters, false);
         }
 
-        public WebCallResult<HitBtcTradeResponse> GetTrades(HitbtcPublicTradesFilterRequest filter, params string[] symbols) => GetTradesAsync(filter: filter, symbols: symbols).Result;
-        public async Task<WebCallResult<HitBtcTradeResponse>> GetTradesAsync(HitbtcPublicTradesFilterRequest filter, CancellationToken ct = default, params string[] symbols)
+        public WebCallResult<Dictionary<string, List<HitBtcPublicTrade>>> GetTrades(HitbtcPublicTradesFilterRequest filter, params string[] symbols) => GetTradesAsync(filter: filter, symbols: symbols).Result;
+        public async Task<WebCallResult<Dictionary<string, List<HitBtcPublicTrade>>>> GetTradesAsync(HitbtcPublicTradesFilterRequest filter, CancellationToken ct = default, params string[] symbols)
         {
             var parameters = filter.AsDictionary();
             parameters.AddOptionalParameter("symbols", symbols.AsStringParameterOrNull());
-            return await SendRequest<HitBtcTradeResponse>(GetUrl(TradesUrl), HttpMethod.Get, ct, parameters, false);
+
+            return await SendRequest<Dictionary<string, List<HitBtcPublicTrade>>>(GetUrl(TradesUrl), HttpMethod.Get, ct, parameters, false);
         }
 
         public WebCallResult<IEnumerable<HitBtcTrade>> GetTradesByOrderId(long orderId) => GetTradesByOrderIdAsync(orderId).Result;
@@ -604,11 +605,11 @@ namespace HitBtc.Net
         {
             //TODO change maxEntryCount if you wish less or more entries in recent history
             int maxEntryCount = 100;
-            var request = new HitBtcTradesFilterRequest(symbol, limit: maxEntryCount);
-            var foo = await GetTradesAsync(request);
+            var request = new HitBtcTradesFilterRequest(symbol, limit: maxEntryCount);           
+            var foo = await GetTradesForSymbolAsync(symbol,request);
             if (foo)
             {
-                return new WebCallResult<IEnumerable<ICommonRecentTrade>>(foo.ResponseStatusCode,foo.ResponseHeaders, foo.Data.Body[symbol],null);
+                return WebCallResult<IEnumerable<ICommonRecentTrade>>.CreateFrom(foo);                
             }
             else
             {

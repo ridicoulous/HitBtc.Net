@@ -8,6 +8,11 @@ namespace HitBtc.Net.Example
     {
         static async Task Main(string[] args)
         {
+            var c = new HitBtcClient();
+            var recent = await c.GetRecentTradesAsync("EEXBTC");
+            var recent2 = await c.GetRecentTradesAsync("BTCUSD");
+
+
             var ob = new HitBtcSymbolOrderBook("ETHBTC");
             ob.OnBestOffersChanged += Ob_OnBestOffersChanged;
             await ob.StartAsync();
