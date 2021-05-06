@@ -136,6 +136,20 @@ namespace HitBtc.Net.Enums
         [Description("marginOrderCancelReplace")]
         ReplaceMarginOrder,
 
+        [Description("subscribeTransactions")]
+        SubscribeToTransactions,
+
+        [Description("unsubscribeTransactions")]
+        UnSubscribeFromTransactions,
+
+        [Description("getBalance")]
+        GetBalance,
+
+        [Description("findTransactions")]
+        FindTransactions,
+
+        [Description("loadTransactions")]
+        LoadTransactions,
     }
     public enum HitBtcSocketEvent
     {
@@ -189,6 +203,15 @@ namespace HitBtc.Net.Enums
         MarginAccountUpdated,
 
         [Description("marginOrderReport")]
-        MarginOrderUpdated
+        MarginOrderUpdated,
+
+        /// <summary>
+        /// A transaction notification occurs each time the transaction has been changed: 
+        /// such as creating a transaction, updating the pending state (for example
+        /// the hash assigned) or completing a transaction. 
+        /// This is the easiest way to track deposits or develop real-time asset monitoring.
+        /// </summary>
+        [Description("updateTransaction")]
+        TransactionUpdated
     }
 }

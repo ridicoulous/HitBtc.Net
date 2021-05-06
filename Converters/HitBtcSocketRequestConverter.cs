@@ -6,7 +6,7 @@ namespace HitBtc.Net.Converters
 {
     public class HitBtcSocketRequestConverter : BaseConverter<HitBtcSocketRequest>
     {
-        public HitBtcSocketRequestConverter() : this(false) { }
+        public HitBtcSocketRequestConverter() : this(true) { }
         public HitBtcSocketRequestConverter(bool quotes) : base(quotes) { }
 
         protected override List<KeyValuePair<HitBtcSocketRequest, string>> Mapping => new List<KeyValuePair<HitBtcSocketRequest, string>>

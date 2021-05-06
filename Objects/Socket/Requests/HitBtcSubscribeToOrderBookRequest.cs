@@ -11,6 +11,7 @@ namespace HitBtc.Net.Objects.Socket
         public HitBtcSubscribeToOrderBookRequest(string symbol) : base(HitBtcSocketRequest.SubscribeToOrderbook, new HitBtcOrderBookParam(symbol))
         {
         }
+        public override string EndpointSuffix { get; } = "public";
     }
     internal class HitBtcOrderBookParam
     {

@@ -20,5 +20,7 @@ namespace HitBtc.Net.Objects.Socket
         public TParams Parameters { get; set; }
         [JsonProperty("id")]
         public string Id { get; set; } = Guid.NewGuid().ToString();
+        [JsonIgnore]
+        public abstract string EndpointSuffix { get;}
     }
 }
