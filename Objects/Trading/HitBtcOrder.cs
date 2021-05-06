@@ -124,7 +124,7 @@ namespace HitBtc.Net.Objects.Trading
         [JsonProperty("tradesReport")]
         public HitBtcTrade[] TradesReport { get; set; }
 
-        public string CommonId => Id.ToString();
+        public string CommonId => ClientOrderId;
 
         public string CommonSymbol => Symbol;
 

@@ -87,8 +87,10 @@ Other CryptoExchange.Net implementations:
 </table>
 
 ## Changelog
-* 02/27/2021 - v. 0.0.1
-  * initial release
+* 05/06/2021 - IExchangeClient recent trades changed to public
+* 03/18/2021 - IExchangeClient common interface implementation
+* 03/09/2021 - socket, more api methods implemented
+* 02/27/2021 - Initial release
 
 ## Donations
 Donations are greatly appreciated and a motivation to keep improving.
