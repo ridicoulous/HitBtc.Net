@@ -34,7 +34,7 @@ namespace HitBtc.Net
         private const string OrderBookWithSymbolUrl = "public/orderbook/{}";
         private const string CandlesUrl = "public/candles";
         private const string CandlesWithSymbolUrl = "public/candles/{}";
-        
+
         private const string SubAccountsUrl = "sub-acc";
         private const string ActivateSubAccountsUrl = "sub-acc/activate";
         private const string SubAccFreezeUrl = "sub-acc/freeze";
@@ -95,7 +95,7 @@ namespace HitBtc.Net
         public WebCallResult<HitBtcRequestsBoolResult> ActivateSubAccounts(List<long> ids) => ActivateSubAccountsAsync(ids, default).Result;
 
         public async Task<WebCallResult<HitBtcRequestsBoolResult>> ActivateSubAccountsAsync(List<long> ids, CancellationToken ct = default)
-        {   
+        {
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("ids", ids.AsStringParameterOrNull());
             return await SendRequest<HitBtcRequestsBoolResult>(GetUrl(ActivateSubAccountsUrl), HttpMethod.Post, ct, null, true, true);
@@ -111,7 +111,7 @@ namespace HitBtc.Net
         public WebCallResult<IEnumerable<HitBtcOrder>> CancelMarginOrders(string symbol = null) => CancelMarginOrdersAsync(symbol).Result;
         public async Task<WebCallResult<IEnumerable<HitBtcOrder>>> CancelMarginOrdersAsync(string symbol = null, CancellationToken ct = default)
         {
-            return await SendRequest<IEnumerable<HitBtcOrder>>(GetUrl(MarginOrderUrl), HttpMethod.Delete, ct, symbol == null ? null : new Dictionary<string, object> {{ "symbol", symbol }},  true, true);
+            return await SendRequest<IEnumerable<HitBtcOrder>>(GetUrl(MarginOrderUrl), HttpMethod.Delete, ct, symbol == null ? null : new Dictionary<string, object> { { "symbol", symbol } }, true, true);
         }
 
         public WebCallResult<HitBtcOrder> CancelOrderByClientOrderId(string clientOrderId) => CancelOrderByClientOrderIdAsync(clientOrderId).Result;
@@ -183,7 +183,7 @@ namespace HitBtc.Net
         }
 
         public WebCallResult<IEnumerable<HitBtcAccountBalance>> GetAccountBalance() => GetAccountBalanceAsync().Result;
- 
+
         public async Task<WebCallResult<IEnumerable<HitBtcAccountBalance>>> GetAccountBalanceAsync(CancellationToken ct = default)
         {
             return await SendRequest<IEnumerable<HitBtcAccountBalance>>(GetUrl(AccountBalanceUrl), HttpMethod.Get, ct, null, true, true);
@@ -572,13 +572,13 @@ namespace HitBtc.Net
         async Task<WebCallResult<IEnumerable<ICommonSymbol>>> IExchangeClient.GetSymbolsAsync()
         {
             var foo = await GetSymbolsAsync();
-            return WebCallResult<IEnumerable<ICommonSymbol>>.CreateFrom(foo);;
+            return WebCallResult<IEnumerable<ICommonSymbol>>.CreateFrom(foo); ;
         }
 
         async Task<WebCallResult<IEnumerable<ICommonTicker>>> IExchangeClient.GetTickersAsync()
         {
             var foo = await GetTickersAsync();
-            return WebCallResult<IEnumerable<ICommonTicker>>.CreateFrom(foo);;
+            return WebCallResult<IEnumerable<ICommonTicker>>.CreateFrom(foo); ;
         }
 
         async Task<WebCallResult<ICommonTicker>> IExchangeClient.GetTickerAsync(string symbol)
@@ -603,31 +603,38 @@ namespace HitBtc.Net
         public async Task<WebCallResult<IEnumerable<ICommonRecentTrade>>> GetRecentTradesAsync(string symbol)
         {
             //TODO change maxEntryCount if you wish less or more entries in recent history
-            int maxEntryCount = 100; 
+            int maxEntryCount = 100;
             var request = new HitBtcTradesFilterRequest(symbol, limit: maxEntryCount);
-             var foo = await GetTradesHistoryAsync(request);
-            return WebCallResult<IEnumerable<ICommonRecentTrade>>.CreateFrom(foo);    
+            var foo = await GetTradesAsync(request);
+            if (foo)
+            {
+                return new WebCallResult<IEnumerable<ICommonRecentTrade>>(foo.ResponseStatusCode,foo.ResponseHeaders, foo.Data.Body[symbol],null);
+            }
+            else
+            {
+                return new WebCallResult<IEnumerable<ICommonRecentTrade>>(foo.ResponseStatusCode, foo.ResponseHeaders, null, foo.Error);
+            }
         }
 
         public async Task<WebCallResult<ICommonOrderId>> PlaceOrderAsync(string symbol, IExchangeClient.OrderSide side, IExchangeClient.OrderType type, decimal quantity, decimal? price = null, string accountId = null)
         {
-            var  hitBtcSide = (HitBtcTradeSide)Enum.Parse(typeof(HitBtcTradeSide), side.ToString());
+            var hitBtcSide = (HitBtcTradeSide)Enum.Parse(typeof(HitBtcTradeSide), side.ToString());
             HitBtcOrderType hitBtcOType = type switch
-            {            
+            {
                 IExchangeClient.OrderType.Market => HitBtcOrderType.Market,
-                _  => HitBtcOrderType.Limit
+                _ => HitBtcOrderType.Limit
             };
             var request = new HitbtcPlaceOrderRequest(symbol, hitBtcSide, quantity, hitBtcOType, price);
             var foo = await PlaceOrderAsync(request);
-            
+
             return WebCallResult<ICommonOrderId>.CreateFrom(foo);
         }
 
         public async Task<WebCallResult<ICommonOrder>> GetOrderAsync(string orderId, string symbol = null)
         {
-           // string clientOrderId = await GetClientOrderIdById(orderId, symbol);
+            // string clientOrderId = await GetClientOrderIdById(orderId, symbol);
             var foo = await GetActiveOrderByClientOrderIdAsync(orderId);
-            return WebCallResult<ICommonOrder>.CreateFrom(foo); 
+            return WebCallResult<ICommonOrder>.CreateFrom(foo);
         }
 
         public async Task<WebCallResult<IEnumerable<ICommonTrade>>> GetTradesAsync(string orderId, string symbol = null)
@@ -640,7 +647,7 @@ namespace HitBtc.Net
             }
             else
             {
-               return WebCallResult<IEnumerable<ICommonTrade>>.CreateErrorResult(new ServerError($"Can't convert orderId {orderId} to type long"));
+                return WebCallResult<IEnumerable<ICommonTrade>>.CreateErrorResult(new ServerError($"Can't convert orderId {orderId} to type long"));
             }
         }
 
@@ -654,8 +661,8 @@ namespace HitBtc.Net
         {
             var request = HitBtcOrdersFilterRequest.CreateFilterBySymbolRequest(symbol);
             var foo = await GetOrdersHistoryAsync(request);
-            return WebCallResult<IEnumerable<ICommonOrder>>.CreateFrom(foo);     
-       }
+            return WebCallResult<IEnumerable<ICommonOrder>>.CreateFrom(foo);
+        }
 
         public async Task<WebCallResult<ICommonOrderId>> CancelOrderAsync(string orderId, string symbol = null)
         {
@@ -665,7 +672,7 @@ namespace HitBtc.Net
             //    return new WebCallResult<ICommonOrderId>(System.Net.HttpStatusCode.NotFound, null, null, new ServerError($"order {orderId} was not found"));
             //}
             var foo = await CancelOrderByClientOrderIdAsync(orderId);
-            return WebCallResult<ICommonOrderId>.CreateFrom(foo);    
+            return WebCallResult<ICommonOrderId>.CreateFrom(foo);
         }
 
         public async Task<WebCallResult<IEnumerable<ICommonBalance>>> GetBalancesAsync(string accountId = null)

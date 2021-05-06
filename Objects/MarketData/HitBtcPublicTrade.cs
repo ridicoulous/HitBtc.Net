@@ -1,4 +1,5 @@
-﻿using HitBtc.Net.Converters;
+﻿using CryptoExchange.Net.ExchangeInterfaces;
+using HitBtc.Net.Converters;
 using HitBtc.Net.Enums;
 using Newtonsoft.Json;
 using System;
@@ -7,7 +8,7 @@ using System.Text;
 
 namespace HitBtc.Net.Objects.MarketData
 {
-    public class HitBtcPublicTrade
+    public class HitBtcPublicTrade: ICommonRecentTrade
     {
         /// <summary>
         /// Trade identifier
@@ -39,5 +40,11 @@ namespace HitBtc.Net.Objects.MarketData
         /// </summary>
         [JsonProperty("timestamp")]
         public DateTime Timestamp { get; set; }
+
+        public decimal CommonPrice => Price;
+
+        public decimal CommonQuantity => Quantity;
+
+        public DateTime CommonTradeTime => Timestamp;
     }
 }
