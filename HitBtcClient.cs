@@ -603,13 +603,12 @@ namespace HitBtc.Net
 
         public async Task<WebCallResult<IEnumerable<ICommonRecentTrade>>> GetRecentTradesAsync(string symbol)
         {
-            //TODO change maxEntryCount if you wish less or more entries in recent history
-            int maxEntryCount = 100;
-            var request = new HitBtcTradesFilterRequest(symbol, limit: maxEntryCount);           
-            var foo = await GetTradesForSymbolAsync(symbol,request);
+            int maxEntryCount = 1000;
+            var request = new HitBtcTradesFilterRequest(symbol, limit: maxEntryCount);
+            var foo = await GetTradesHistoryAsync(request);
             if (foo)
             {
-                return WebCallResult<IEnumerable<ICommonRecentTrade>>.CreateFrom(foo);                
+                return WebCallResult<IEnumerable<ICommonRecentTrade>>.CreateFrom(foo);
             }
             else
             {
