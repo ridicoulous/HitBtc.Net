@@ -78,6 +78,10 @@ namespace HitBtc.Net
 
         #endregion
         static HitBtcClientOptions defaultOptions = new HitBtcClientOptions();
+
+        public event Action<ICommonOrderId> OnOrderPlaced;
+        public event Action<ICommonOrderId> OnOrderCanceled;
+
         public HitBtcClient() : this("HitBtcClient", defaultOptions, null) { }
         public HitBtcClient(string key, string secret, string clientName = "HitBtcClient", bool sandBox = false) : this(clientName, new HitBtcClientOptions(sandBox), new HitBtcAuthenticationProvider(new ApiCredentials(key, secret)))
         {
@@ -573,32 +577,46 @@ namespace HitBtc.Net
         async Task<WebCallResult<IEnumerable<ICommonSymbol>>> IExchangeClient.GetSymbolsAsync()
         {
             var foo = await GetSymbolsAsync();
-            return WebCallResult<IEnumerable<ICommonSymbol>>.CreateFrom(foo); ;
+            if (foo)
+                return foo.As<IEnumerable<ICommonSymbol>>(foo.Data);
+            else
+                return WebCallResult<IEnumerable<ICommonSymbol>>.CreateErrorResult(foo.ResponseStatusCode, foo.ResponseHeaders, foo.Error);
         }
-
         async Task<WebCallResult<IEnumerable<ICommonTicker>>> IExchangeClient.GetTickersAsync()
         {
             var foo = await GetTickersAsync();
-            return WebCallResult<IEnumerable<ICommonTicker>>.CreateFrom(foo); ;
+            if (foo)
+                return foo.As<IEnumerable<ICommonTicker>>(foo.Data);
+
+            return WebCallResult<IEnumerable<ICommonTicker>>.CreateErrorResult(foo.ResponseStatusCode, foo.ResponseHeaders, foo.Error);
+
         }
 
         async Task<WebCallResult<ICommonTicker>> IExchangeClient.GetTickerAsync(string symbol)
         {
             var foo = await GetTickerAsync(symbol);
-            return WebCallResult<ICommonTicker>.CreateFrom(foo);
+            if (foo)
+                return foo.As<ICommonTicker>(foo.Data);
+            return WebCallResult<ICommonTicker>.CreateErrorResult(foo.Error);
         }
 
         public async Task<WebCallResult<IEnumerable<ICommonKline>>> GetKlinesAsync(string symbol, TimeSpan timespan, DateTime? startTime = null, DateTime? endTime = null, int? limit = null)
         {
             var request = new HitBtcCandlesFilterRequest(timespan.AsStringTimeFrame(), "ASC", startTime, endTime, limit ?? 100, 0);
             var foo = await GetCandlesForSymbolAsync(symbol, request);
-            return WebCallResult<IEnumerable<ICommonKline>>.CreateFrom(foo);
+
+            if (foo)
+                return foo.As<IEnumerable<ICommonKline>>(foo.Data);
+            return WebCallResult<IEnumerable<ICommonKline>>.CreateErrorResult(foo.Error);
         }
 
         async Task<WebCallResult<ICommonOrderBook>> IExchangeClient.GetOrderBookAsync(string symbol)
         {
             var foo = await GetOrderBookAsync(symbol);
-            return WebCallResult<ICommonOrderBook>.CreateFrom(foo);
+            if (foo)
+                return foo.As<ICommonOrderBook>(foo.Data);
+            return WebCallResult<ICommonOrderBook>.CreateErrorResult(foo.Error);
+
         }
 
         public async Task<WebCallResult<IEnumerable<ICommonRecentTrade>>> GetRecentTradesAsync(string symbol)
@@ -607,13 +625,8 @@ namespace HitBtc.Net
             var request = new HitBtcTradesFilterRequest(symbol, limit: maxEntryCount);
             var foo = await GetTradesHistoryAsync(request);
             if (foo)
-            {
-                return WebCallResult<IEnumerable<ICommonRecentTrade>>.CreateFrom(foo);
-            }
-            else
-            {
-                return new WebCallResult<IEnumerable<ICommonRecentTrade>>(foo.ResponseStatusCode, foo.ResponseHeaders, null, foo.Error);
-            }
+                return foo.As<IEnumerable<ICommonRecentTrade>>(foo.Data);
+            return WebCallResult<IEnumerable<ICommonRecentTrade>>.CreateErrorResult(foo.Error);
         }
 
         public async Task<WebCallResult<ICommonOrderId>> PlaceOrderAsync(string symbol, IExchangeClient.OrderSide side, IExchangeClient.OrderType type, decimal quantity, decimal? price = null, string accountId = null)
@@ -626,15 +639,20 @@ namespace HitBtc.Net
             };
             var request = new HitbtcPlaceOrderRequest(symbol, hitBtcSide, quantity, hitBtcOType, price);
             var foo = await PlaceOrderAsync(request);
-
-            return WebCallResult<ICommonOrderId>.CreateFrom(foo);
+                        
+            if (foo)
+                return foo.As<ICommonOrderId>(foo.Data);
+            return WebCallResult<ICommonOrderId>.CreateErrorResult(foo.Error);
         }
 
         public async Task<WebCallResult<ICommonOrder>> GetOrderAsync(string orderId, string symbol = null)
         {
             // string clientOrderId = await GetClientOrderIdById(orderId, symbol);
             var foo = await GetActiveOrderByClientOrderIdAsync(orderId);
-            return WebCallResult<ICommonOrder>.CreateFrom(foo);
+  
+            if (foo)
+                return foo.As<ICommonOrder>(foo.Data);
+            return WebCallResult<ICommonOrder>.CreateErrorResult(foo.Error);
         }
 
         public async Task<WebCallResult<IEnumerable<ICommonTrade>>> GetTradesAsync(string orderId, string symbol = null)
@@ -643,7 +661,9 @@ namespace HitBtc.Net
             if (long.TryParse(orderId, out id))
             {
                 var foo = await GetTradesByOrderIdAsync(id);
-                return WebCallResult<IEnumerable<ICommonTrade>>.CreateFrom(foo);
+                if (foo)
+                    return foo.As<IEnumerable<ICommonTrade>>(foo.Data);
+                return WebCallResult<IEnumerable<ICommonTrade>>.CreateErrorResult(foo.Error);
             }
             else
             {
@@ -653,15 +673,20 @@ namespace HitBtc.Net
 
         public async Task<WebCallResult<IEnumerable<ICommonOrder>>> GetOpenOrdersAsync(string symbol = null)
         {
-            var foo = await GetActiveOrdersAsync(symbol);
-            return WebCallResult<IEnumerable<ICommonOrder>>.CreateFrom(foo);
+            var foo = await GetActiveOrdersAsync(symbol);    
+            if (foo)
+                return foo.As<IEnumerable<ICommonOrder>>(foo.Data);
+            return WebCallResult<IEnumerable<ICommonOrder>>.CreateErrorResult(foo.Error);
         }
 
         public async Task<WebCallResult<IEnumerable<ICommonOrder>>> GetClosedOrdersAsync(string symbol = null)
         {
             var request = HitBtcOrdersFilterRequest.CreateFilterBySymbolRequest(symbol);
             var foo = await GetOrdersHistoryAsync(request);
-            return WebCallResult<IEnumerable<ICommonOrder>>.CreateFrom(foo);
+ 
+            if (foo)
+                return foo.As<IEnumerable<ICommonOrder>>(foo.Data);
+            return WebCallResult<IEnumerable<ICommonOrder>>.CreateErrorResult(foo.Error);
         }
 
         public async Task<WebCallResult<ICommonOrderId>> CancelOrderAsync(string orderId, string symbol = null)
@@ -672,13 +697,17 @@ namespace HitBtc.Net
             //    return new WebCallResult<ICommonOrderId>(System.Net.HttpStatusCode.NotFound, null, null, new ServerError($"order {orderId} was not found"));
             //}
             var foo = await CancelOrderByClientOrderIdAsync(orderId);
-            return WebCallResult<ICommonOrderId>.CreateFrom(foo);
+            if (foo)
+                return foo.As<ICommonOrderId>(foo.Data);
+            return WebCallResult<ICommonOrderId>.CreateErrorResult(foo.Error);
         }
 
         public async Task<WebCallResult<IEnumerable<ICommonBalance>>> GetBalancesAsync(string accountId = null)
         {
-            var foo = await GetTradingBalanceAsync();
-            return WebCallResult<IEnumerable<ICommonBalance>>.CreateFrom(foo);
+            var foo = await GetTradingBalanceAsync();      
+            if (foo)
+                return foo.As<IEnumerable<ICommonBalance>>(foo.Data);
+            return WebCallResult<IEnumerable<ICommonBalance>>.CreateErrorResult(foo.Error);
         }
 
         //private async Task<string> GetClientOrderIdById(string orderId, string symbol = null)

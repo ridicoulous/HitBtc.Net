@@ -38,20 +38,32 @@ namespace HitBtc.Net
         {
             return await hitBtcSocketClient.SubscribeToOrderBookAsync(Symbol, OnObUpdate);
         }
-        private void OnObUpdate(HitBtcSocketOrderBookEvent book)
+        private void OnObUpdate(DataEvent<HitBtcSocketOrderBookEvent> book)
         {
             if (book.Data == null)
             {
                 return;
             }
-            if(book.Method== HitBtcSocketEvent.OrderbookFullSnapshot)
+            if(book.Data.Method== HitBtcSocketEvent.OrderbookFullSnapshot)
             {
-                SetInitialOrderBook(book.Data.Sequence, book.Data.Bids, book.Data.Asks);
+                SetInitialOrderBook(book.Data.Data.Sequence, book.Data.Data.Bids, book.Data.Data.Asks);
             }
             else
             {
-                UpdateOrderBook(book.Data.Sequence, book.Data.Bids, book.Data.Asks);
+                UpdateOrderBook(book.Data.Data.Sequence, book.Data.Data.Bids, book.Data.Data.Asks);
             }
         }
+        internal Task<CallResult<UpdateSubscription>> SubscribeInternal<T>(string url, IEnumerable<string> topics, Action<DataEvent<T>> onData)
+        {
+            var request = new HitBtcSocketSubscribeBaseRequest<TParams>
+            {
+                Method = "SUBSCRIBE",
+                Params = topics.ToArray(),
+                Id = NextId()
+            };
+
+            return SubscribeAsync(url, request, null, false, onData);
+        }
+
     }
 }

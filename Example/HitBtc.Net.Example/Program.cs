@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
+
 using System.Threading.Tasks;
+using CryptoExchange.Net.Interfaces;
 using HitBtc.Net.Extensions;
 using HitBtc.Net.Objects.Socket;
 using Newtonsoft.Json;
@@ -8,16 +11,26 @@ namespace HitBtc.Net.Example
 {
     class Program
     {
+      //  public static EventHandler<(IEnumerable<ISymbolOrderBookEntry> Bids, IEnumerable<ISymbolOrderBookEntry> Asks)> BookUpdate { get; private set; }
+
         static async Task Main(string[] args)
         {
-            var c = new HitBtcClient();
-            var recent = await c.GetRecentTradesAsync("EEXBTC");
-            var recent2 = await c.GetRecentTradesAsync("BTCUSD");
+            var boook = new HitBtcSymbolOrderBook("EEXBTC");
+     //       var c = new HitBtcClient();
+     //       //var recent = await c.GetRecentTradesAsync("EEXBTC");
+     //       //var recent2 = await c.GetRecentTradesAsync("BTCUSD");
 
-
-            var ob = new HitBtcSymbolOrderBook("ETHBTC");
-            ob.OnBestOffersChanged += Ob_OnBestOffersChanged;
-            await ob.StartAsync();
+     //       Observable.FromEventPattern<(IEnumerable<ISymbolOrderBookEntry> Bids, IEnumerable<ISymbolOrderBookEntry> Asks)>(
+     //h => BookUpdate += h,
+     //h => BookUpdate -= h)
+     //.Sample(TimeSpan.FromMilliseconds(555))
+     //.Select(x =>
+     //         Observable.FromAsync(async () => await FrontrunBid()))
+     //.Switch()
+     //.Subscribe();
+     //       var ob = new HitBtcSymbolOrderBook("EEXBTC");
+     //       ob.OnOrderBookUpdate += Ob_OnOrderBookUpdate; ;
+     //       await ob.StartAsync();
             //var client = new HitBtcClient("key", "secret");
 
             //var pairs = await client.GetSymbolsAsync();
@@ -37,6 +50,19 @@ namespace HitBtc.Net.Example
 
 
             Console.ReadLine();
+        }
+
+        private static void Ob_OnOrderBookUpdate((IEnumerable<ISymbolOrderBookEntry> Bids, IEnumerable<ISymbolOrderBookEntry> Asks) obj)
+        {
+            //BookUpdate?.Invoke(obj,(obj.Bids,obj.Asks));
+        }
+
+        private static  DateTime lastUpdate = DateTime.UtcNow;
+        private static async Task FrontrunBid()
+        {
+            await Task.Delay(50);
+            Console.WriteLine($"{lastUpdate:HH:mm:ss.ffffff} updated: {DateTime.UtcNow.Subtract(lastUpdate).TotalMilliseconds}");
+            lastUpdate = DateTime.UtcNow;
         }
 
         private static void Ob_OnBestOffersChanged((CryptoExchange.Net.Interfaces.ISymbolOrderBookEntry BestBid, CryptoExchange.Net.Interfaces.ISymbolOrderBookEntry BestAsk) obj)
