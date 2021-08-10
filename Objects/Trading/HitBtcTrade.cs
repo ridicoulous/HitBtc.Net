@@ -53,14 +53,9 @@ namespace HitBtc.Net.Objects.Trading
 
         public string CommonId => Id.ToString();
 
-        public decimal CommonPrice => Price;
-
-        public decimal CommonQuantity => Quantity;
-
         public decimal CommonFee => Fee;
 
         public string CommonFeeAsset => null;
 
-        public DateTime CommonTradeTime => Timestamp;
     }
 }
