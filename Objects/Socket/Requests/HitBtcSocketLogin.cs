@@ -9,7 +9,7 @@ namespace HitBtc.Net.Objects.Socket
         {
         }
 
-        public override string EndpointSuffix => "account";
+        public override string EndpointSuffix => null;
     }
 
     internal class LoginParams
