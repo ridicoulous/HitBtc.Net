@@ -31,7 +31,7 @@ namespace HitBtc.Net
 
         protected override async Task<CallResult<bool>> DoResync()
         {
-            return new CallResult<bool>(true,null);
+            return await Task.Run(() => new CallResult<bool>(true,null));
         }
 
         protected override async Task<CallResult<UpdateSubscription>> DoStart()

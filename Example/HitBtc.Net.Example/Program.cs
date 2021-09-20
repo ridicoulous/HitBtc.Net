@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using HitBtc.Net.Extensions;
 using HitBtc.Net.Objects.Socket;

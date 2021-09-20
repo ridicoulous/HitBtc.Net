@@ -29,13 +29,14 @@ namespace HitBtc.Net
         public event Action<HitBtcSocketCandlesEvent> OnCandlesSnapshot;
         public event Action<HitBtcSocketTradesEvent> OnTradesSnapshot;
         public event Action<HitBtcSocketTradesEvent> OnTradesUpdate;
-         public event Action<HitBtcSocketActiveOrdersReportEvent> OnActiveOrdersSnapshot;
-         public event Action<HitBtcSocketOrderReportEvent> OnOrderUpdate;
-         public event Action<HitBtcSocketMarginActiveOrdersReportEvent> OnMarginActiveOrdersSnapshot;
-         public event Action<HitBtcSocketMarginOrderReportEvent> OnMarginOrderUpdate;
-         public event Action<HitBtcSocketMarginAccountReportEvent> OnMarginAccountUpdate;
-         public event Action<HitBtcSocketMarginAccountsEvent> OnMarginAccountsSnapshot;
-         public event Action<HitBtcSocketAccountTransactionEvent> OnAccountTransactionUpdate;
+        public event Action<HitBtcSocketActiveOrdersReportEvent> OnActiveOrdersSnapshot;
+        public event Action<HitBtcSocketOrderReportEvent> OnOrderUpdate;
+        public event Action<HitBtcSocketMarginActiveOrdersReportEvent> OnMarginActiveOrdersSnapshot;
+        public event Action<HitBtcSocketMarginOrderReportEvent> OnMarginOrderUpdate;
+        public event Action<HitBtcSocketMarginAccountReportEvent> OnMarginAccountUpdate;
+        public event Action<HitBtcSocketMarginAccountsEvent> OnMarginAccountsSnapshot;
+        public event Action<HitBtcSocketAccountTransactionEvent> OnAccountTransactionUpdate;
+        public event Action<string> OnError;
         #endregion
 
         public HitBtcSocketClient() : this(nameof(HitBtcSocketClient), defaultOptions, null)
@@ -77,12 +78,16 @@ namespace HitBtc.Net
            {
                var token = JToken.Parse(data);
                var method = (string)token["method"];
-
+               if (method is null)
+               {
+                   ErrorHandler(token["error"].ToString());
+                   return;
+               }
                HitBtcSocketEvent responseType;
 
                if (!mappedResponses.TryGetValue(method, out responseType))
                {
-                   log.Write(LogVerbosity.Warning, $"Unknown response method [{method}] update catched at data {data}");
+                   ErrorHandler($"Unknown response method [{method}] update catched at data {data}");
                    return;
                }
 
@@ -243,13 +248,9 @@ namespace HitBtc.Net
                            break;
                        }
                    default:
-                       log.Write(LogVerbosity.Warning, $"Catched unknown method update: {data}");
+                       ErrorHandler($"Catched unknown method update: {data}");
                     break;
                }
-
-
-               
-
            });
 
             return await Subscribe(BaseAddress + subscribeRequest.EndpointSuffix, subscribeRequest, null, subscribeRequest.EndpointSuffix != MarketDataUrlSuffix, dataHandler);
@@ -307,6 +308,12 @@ namespace HitBtc.Net
         protected override Task<bool> Unsubscribe(SocketConnection connection, SocketSubscription s)
         {
             throw new NotImplementedException();
+        }
+
+        private void ErrorHandler(string errorMessage)
+        {
+            OnError?.Invoke(errorMessage);
+            log.Write(LogVerbosity.Warning, errorMessage);
         }
     }
 }
