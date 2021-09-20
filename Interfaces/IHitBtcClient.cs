@@ -138,7 +138,7 @@ namespace HitBtc.Net.Interfaces
         /// </summary>
         /// <param name="symbols">Comma-separated list of symbol codes. Optional parameter</param>
         /// <returns></returns>
-        WebCallResult<Dictionary<string, List<HitBtcPublicTrade>>> GetTrades(
+        WebCallResult<Dictionary<string, IEnumerable<HitBtcPublicTrade>>> GetTrades(
             HitbtcPublicTradesFilterRequest filter = null,
             params string[] symbols);
 
@@ -147,7 +147,7 @@ namespace HitBtc.Net.Interfaces
         /// </summary>
         /// <param name="symbols">Comma-separated list of symbol codes. Optional parameter</param>
         /// <returns></returns>
-        Task<WebCallResult<Dictionary<string, List<HitBtcPublicTrade>>>> GetTradesAsync(
+        Task<WebCallResult<Dictionary<string, IEnumerable<HitBtcPublicTrade>>>> GetTradesAsync(
             HitbtcPublicTradesFilterRequest filter = null,
             CancellationToken ct = default,
             params string[] symbols);
