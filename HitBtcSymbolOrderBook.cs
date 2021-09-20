@@ -1,11 +1,7 @@
 ﻿using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.OrderBook;
 using CryptoExchange.Net.Sockets;
-using HitBtc.Net.Enums;
 using HitBtc.Net.Objects.Socket;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace HitBtc.Net
@@ -29,29 +25,16 @@ namespace HitBtc.Net
             bids.Clear();
         }
 
-        protected override async Task<CallResult<bool>> DoResync()
+        protected override async Task<CallResult<bool>> DoResyncAsync()
         {
             return await Task.Run(() => new CallResult<bool>(true,null));
         }
 
-        protected override async Task<CallResult<UpdateSubscription>> DoStart()
+        protected override async Task<CallResult<UpdateSubscription>> DoStartAsync()
         {
-            return await hitBtcSocketClient.SubscribeToOrderBookAsync(Symbol, OnObUpdate);
-        }
-        private void OnObUpdate(HitBtcSocketOrderBookEvent book)
-        {
-            if (book.Data == null)
-            {
-                return;
-            }
-            if(book.Method== HitBtcSocketEvent.OrderbookFullSnapshot)
-            {
-                SetInitialOrderBook(book.Data.Sequence, book.Data.Bids, book.Data.Asks);
-            }
-            else
-            {
-                UpdateOrderBook(book.Data.Sequence, book.Data.Bids, book.Data.Asks);
-            }
+            hitBtcSocketClient.OnOrderBookUpdate += book => UpdateOrderBook(book.Data.Sequence, book.Data.Bids, book.Data.Asks);
+            hitBtcSocketClient.OnOrderBookSnapshot += book => SetInitialOrderBook(book.Data.Sequence, book.Data.Bids, book.Data.Asks);
+            return await hitBtcSocketClient.SubscribeAsync(new HitBtcSubscribeToOrderBookRequest(Symbol));
         }
     }
 }

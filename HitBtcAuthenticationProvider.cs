@@ -1,10 +1,8 @@
 ﻿using CryptoExchange.Net;
 using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Objects;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Security.Cryptography;
@@ -39,7 +37,7 @@ namespace HitBtc.Net
         }
         //Create hmac signature with secretKey as a key and sign request "method+timestamp+url+body"
         //Like as basic authorization add header "Authorization: HS256 " + base64(publicKey+":"+timestamp+":"+signature hex encoded)
-        public override Dictionary<string, string> AddAuthenticationToHeaders(string uri, HttpMethod method, Dictionary<string, object> parameters, bool signed, PostParameters postParameters, ArrayParametersSerialization arrayParametersSerialization)
+        public override Dictionary<string, string> AddAuthenticationToHeaders(string uri, HttpMethod method, Dictionary<string, object> parameters, bool signed, HttpMethodParameterPosition parameterPosition, ArrayParametersSerialization arrayParametersSerialization)
         {
            // var time = TimeStamp;
 
