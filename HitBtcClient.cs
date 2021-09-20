@@ -78,6 +78,10 @@ namespace HitBtc.Net
 
         #endregion
         static HitBtcClientOptions defaultOptions = new HitBtcClientOptions();
+
+        public event Action<ICommonOrderId> OnOrderPlaced;
+        public event Action<ICommonOrderId> OnOrderCanceled;
+
         public HitBtcClient() : this("HitBtcClient", defaultOptions, null) { }
         public HitBtcClient(string key, string secret, string clientName = "HitBtcClient", bool sandBox = false) : this(clientName, new HitBtcClientOptions(sandBox), new HitBtcAuthenticationProvider(new ApiCredentials(key, secret)))
         {
@@ -85,7 +89,6 @@ namespace HitBtc.Net
         }
         public HitBtcClient(string clientName, HitBtcClientOptions exchangeOptions, HitBtcAuthenticationProvider authenticationProvider) : base(clientName, exchangeOptions, authenticationProvider)
         {
-            postParametersPosition = PostParameters.InBody;
             requestBodyFormat = RequestBodyFormat.FormData;
         }
         private Uri GetUrl(string path)
@@ -98,48 +101,48 @@ namespace HitBtc.Net
         {
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("ids", ids.AsStringParameterOrNull());
-            return await SendRequest<HitBtcRequestsBoolResult>(GetUrl(ActivateSubAccountsUrl), HttpMethod.Post, ct, null, true, true);
+            return await SendRequestAsync<HitBtcRequestsBoolResult>(GetUrl(ActivateSubAccountsUrl), HttpMethod.Post, ct, null, true, true);
         }
 
         public WebCallResult<HitBtcOrder> CancelMarginOrderByClientOrderId(string clientOrderId) => CancelMarginOrderByClientOrderIdAsync(clientOrderId).Result;
 
         public async Task<WebCallResult<HitBtcOrder>> CancelMarginOrderByClientOrderIdAsync(string clientOrderId, CancellationToken ct = default)
         {
-            return await SendRequest<HitBtcOrder>(GetUrl(FillPathParameter(MarginOrderWithClientOrderIdUrl, clientOrderId)), HttpMethod.Delete, ct, null, true, true);
+            return await SendRequestAsync<HitBtcOrder>(GetUrl(FillPathParameter(MarginOrderWithClientOrderIdUrl, clientOrderId)), HttpMethod.Delete, ct, null, true, true);
         }
 
         public WebCallResult<IEnumerable<HitBtcOrder>> CancelMarginOrders(string symbol = null) => CancelMarginOrdersAsync(symbol).Result;
         public async Task<WebCallResult<IEnumerable<HitBtcOrder>>> CancelMarginOrdersAsync(string symbol = null, CancellationToken ct = default)
         {
-            return await SendRequest<IEnumerable<HitBtcOrder>>(GetUrl(MarginOrderUrl), HttpMethod.Delete, ct, symbol == null ? null : new Dictionary<string, object> { { "symbol", symbol } }, true, true);
+            return await SendRequestAsync<IEnumerable<HitBtcOrder>>(GetUrl(MarginOrderUrl), HttpMethod.Delete, ct, symbol == null ? null : new Dictionary<string, object> { { "symbol", symbol } }, true, true);
         }
 
         public WebCallResult<HitBtcOrder> CancelOrderByClientOrderId(string clientOrderId) => CancelOrderByClientOrderIdAsync(clientOrderId).Result;
 
         public async Task<WebCallResult<HitBtcOrder>> CancelOrderByClientOrderIdAsync(string clientOrderId, CancellationToken ct = default)
         {
-            return await SendRequest<HitBtcOrder>(GetUrl(FillPathParameter(OrderWithClientOrderIdUrl, clientOrderId)), HttpMethod.Delete, ct, null, true, true);
+            return await SendRequestAsync<HitBtcOrder>(GetUrl(FillPathParameter(OrderWithClientOrderIdUrl, clientOrderId)), HttpMethod.Delete, ct, null, true, true);
         }
 
         public WebCallResult<IEnumerable<HitBtcOrder>> CancelOrders(string symbol = null) => CancelOrdersAsync(symbol).Result;
 
         public async Task<WebCallResult<IEnumerable<HitBtcOrder>>> CancelOrdersAsync(string symbol = null, CancellationToken ct = default)
         {
-            return await SendRequest<IEnumerable<HitBtcOrder>>(GetUrl(OrderUrl), HttpMethod.Delete, ct, symbol == null ? null : new Dictionary<string, object> { { "symbol", symbol } }, true, true);
+            return await SendRequestAsync<IEnumerable<HitBtcOrder>>(GetUrl(OrderUrl), HttpMethod.Delete, ct, symbol == null ? null : new Dictionary<string, object> { { "symbol", symbol } }, true, true);
         }
 
         public WebCallResult<IEnumerable<HitBtcIsolatedMarginAccount>> CloseAllIsolatedMarginAccounts() => CloseAllIsolatedMarginAccountsAsync().Result;
 
         public async Task<WebCallResult<IEnumerable<HitBtcIsolatedMarginAccount>>> CloseAllIsolatedMarginAccountsAsync(CancellationToken ct = default)
         {
-            return await SendRequest<IEnumerable<HitBtcIsolatedMarginAccount>>(GetUrl(MarginAccountUrl), HttpMethod.Delete, ct, null, true, true);
+            return await SendRequestAsync<IEnumerable<HitBtcIsolatedMarginAccount>>(GetUrl(MarginAccountUrl), HttpMethod.Delete, ct, null, true, true);
         }
 
         public WebCallResult<HitBtcIsolatedMarginAccount> CloseIsolatedMarginAccount(string symbol) => CloseIsolatedMarginAccountAsync(symbol).Result;
 
         public async Task<WebCallResult<HitBtcIsolatedMarginAccount>> CloseIsolatedMarginAccountAsync(string symbol, CancellationToken ct = default)
         {
-            return await SendRequest<HitBtcIsolatedMarginAccount>(GetUrl(FillPathParameter(MarginAccountWithSymbolUrl, symbol)), HttpMethod.Delete, ct, null, true, true);
+            return await SendRequestAsync<HitBtcIsolatedMarginAccount>(GetUrl(FillPathParameter(MarginAccountWithSymbolUrl, symbol)), HttpMethod.Delete, ct, null, true, true);
         }
 
         public WebCallResult<HitBtcPosition> CloseMarginPosition(string symbol, decimal? price = null, bool strictValidate = false) => CloseMarginPositionAsync(symbol, price, strictValidate).Result;
@@ -148,20 +151,20 @@ namespace HitBtc.Net
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("price", price);
             parameters.AddOptionalParameter("strictValidate", strictValidate);
-            return await SendRequest<HitBtcPosition>(GetUrl(FillPathParameter(MarginPositionWithSymbolUrl, symbol)), HttpMethod.Delete, ct, parameters, true, true);
+            return await SendRequestAsync<HitBtcPosition>(GetUrl(FillPathParameter(MarginPositionWithSymbolUrl, symbol)), HttpMethod.Delete, ct, parameters, true, true);
         }
 
         public WebCallResult<IEnumerable<HitBtcPosition>> CloseMarginPositions() => CloseMarginPositionsAsync().Result;
         public async Task<WebCallResult<IEnumerable<HitBtcPosition>>> CloseMarginPositionsAsync(CancellationToken ct = default)
         {
-            return await SendRequest<IEnumerable<HitBtcPosition>>(GetUrl(MarginPositionUrl), HttpMethod.Delete, ct, null, true, true);
+            return await SendRequestAsync<IEnumerable<HitBtcPosition>>(GetUrl(MarginPositionUrl), HttpMethod.Delete, ct, null, true, true);
         }
 
         public WebCallResult<HitBtcRequestsBoolResult> CommitWithdrawCrypto(string id) => CommitWithdrawCryptoAsync(id).Result;
 
         public async Task<WebCallResult<HitBtcRequestsBoolResult>> CommitWithdrawCryptoAsync(string id, CancellationToken ct = default)
         {
-            return await SendRequest<HitBtcRequestsBoolResult>(GetUrl(FillPathParameter(AccountCryptoWithdrawWithIdUrl, id)), HttpMethod.Put, ct, null, true, true);
+            return await SendRequestAsync<HitBtcRequestsBoolResult>(GetUrl(FillPathParameter(AccountCryptoWithdrawWithIdUrl, id)), HttpMethod.Put, ct, null, true, true);
         }
 
         public WebCallResult<HitBtcRequestsBoolResult> FreezeSubAccounts(List<long> ids) => FreezeSubAccountsAsync(ids).Result;
@@ -170,7 +173,7 @@ namespace HitBtc.Net
         {
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("ids", ids.AsStringParameterOrNull());
-            return await SendRequest<HitBtcRequestsBoolResult>(GetUrl(SubAccFreezeUrl), HttpMethod.Post, ct, parameters, true, true);
+            return await SendRequestAsync<HitBtcRequestsBoolResult>(GetUrl(SubAccFreezeUrl), HttpMethod.Post, ct, parameters, true, true);
 
         }
 
@@ -179,14 +182,14 @@ namespace HitBtc.Net
 
         public async Task<WebCallResult<HitBtcDepositAddress>> GenerateNewDepositAddressAsync(string currency, CancellationToken ct = default)
         {
-            return await SendRequest<HitBtcDepositAddress>(GetUrl(FillPathParameter(AccountCryptoAddressWithCurrencyUrl, currency)), HttpMethod.Post, ct, null, true, true);
+            return await SendRequestAsync<HitBtcDepositAddress>(GetUrl(FillPathParameter(AccountCryptoAddressWithCurrencyUrl, currency)), HttpMethod.Post, ct, null, true, true);
         }
 
         public WebCallResult<IEnumerable<HitBtcAccountBalance>> GetAccountBalance() => GetAccountBalanceAsync().Result;
 
         public async Task<WebCallResult<IEnumerable<HitBtcAccountBalance>>> GetAccountBalanceAsync(CancellationToken ct = default)
         {
-            return await SendRequest<IEnumerable<HitBtcAccountBalance>>(GetUrl(AccountBalanceUrl), HttpMethod.Get, ct, null, true, true);
+            return await SendRequestAsync<IEnumerable<HitBtcAccountBalance>>(GetUrl(AccountBalanceUrl), HttpMethod.Get, ct, null, true, true);
         }
 
         public WebCallResult<HitBtcOrder> GetActiveOrderByClientOrderId(string clientOrderId, long? wait = null) => GetActiveOrderByClientOrderIdAsync(clientOrderId, wait).Result;
@@ -196,7 +199,7 @@ namespace HitBtc.Net
         {
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("wait", wait);
-            return await SendRequest<HitBtcOrder>(GetUrl(FillPathParameter(OrderWithClientOrderIdUrl, clientOrderId)), HttpMethod.Get, ct, parameters, true, true);
+            return await SendRequestAsync<HitBtcOrder>(GetUrl(FillPathParameter(OrderWithClientOrderIdUrl, clientOrderId)), HttpMethod.Get, ct, parameters, true, true);
         }
 
         public WebCallResult<IEnumerable<HitBtcOrder>> GetActiveOrders(string symbol = null) => GetActiveOrdersAsync(symbol).Result;
@@ -205,28 +208,28 @@ namespace HitBtc.Net
         {
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("symbol", symbol);
-            return await SendRequest<IEnumerable<HitBtcOrder>>(GetUrl(OrderUrl), HttpMethod.Get, ct, parameters, true, true);
+            return await SendRequestAsync<IEnumerable<HitBtcOrder>>(GetUrl(OrderUrl), HttpMethod.Get, ct, parameters, true, true);
         }
 
         public WebCallResult<HitBtcRequestsBoolResult> GetAddressIsMine(string address) => GetAddressIsMineAsync(address).Result;
 
         public async Task<WebCallResult<HitBtcRequestsBoolResult>> GetAddressIsMineAsync(string address, CancellationToken ct = default)
         {
-            return await SendRequest<HitBtcRequestsBoolResult>(GetUrl(FillPathParameter(AccountCryptoIsMineAddressUrl, address)), HttpMethod.Get, ct, null, true, true);
+            return await SendRequestAsync<HitBtcRequestsBoolResult>(GetUrl(FillPathParameter(AccountCryptoIsMineAddressUrl, address)), HttpMethod.Get, ct, null, true, true);
         }
 
         public WebCallResult<IEnumerable<HitBtcCandle>> GetCandlesForSymbol(string symbol, HitBtcCandlesFilterRequest filter) => GetCandlesForSymbolAsync(symbol, filter).Result;
         public async Task<WebCallResult<IEnumerable<HitBtcCandle>>> GetCandlesForSymbolAsync(string symbol, HitBtcCandlesFilterRequest filter, CancellationToken ct = default)
         {
             var parameters = filter.AsDictionary();
-            return await SendRequest<IEnumerable<HitBtcCandle>>(GetUrl(FillPathParameter(CandlesWithSymbolUrl, symbol)), HttpMethod.Get, ct, parameters, false);
+            return await SendRequestAsync<IEnumerable<HitBtcCandle>>(GetUrl(FillPathParameter(CandlesWithSymbolUrl, symbol)), HttpMethod.Get, ct, parameters, false);
         }
 
         public WebCallResult<HitBtcCandlesResponse> GetCandles(HitBtcCandlesFilterRequest filter, params string[] symbols) => GetCandlesAsync(filter, symbols: symbols).Result;
         public async Task<WebCallResult<HitBtcCandlesResponse>> GetCandlesAsync(HitBtcCandlesFilterRequest filter, CancellationToken ct = default, params string[] symbols)
         {
             var parameters = filter.AsDictionary();
-            return await SendRequest<HitBtcCandlesResponse>(GetUrl(CandlesUrl), HttpMethod.Get, ct, parameters, false);
+            return await SendRequestAsync<HitBtcCandlesResponse>(GetUrl(CandlesUrl), HttpMethod.Get, ct, parameters, false);
         }
 
         public WebCallResult<IEnumerable<HitBtcCurrency>> GetCurrencies(params string[] currencies) => GetCurrenciesAsync().Result;
@@ -235,21 +238,21 @@ namespace HitBtc.Net
         {
             var parameters = new Dictionary<string, object>();
             parameters.Add("currencies", currencies.AsStringParameterOrNull());
-            return await SendRequest<IEnumerable<HitBtcCurrency>>(GetUrl(CurrencyUrl), HttpMethod.Get, ct, parameters, false);
+            return await SendRequestAsync<IEnumerable<HitBtcCurrency>>(GetUrl(CurrencyUrl), HttpMethod.Get, ct, parameters, false);
         }
 
         public WebCallResult<HitBtcCurrency> GetCurrency(string currency) => GetCurrencyAsync(currency).Result;
 
         public async Task<WebCallResult<HitBtcCurrency>> GetCurrencyAsync(string currency, CancellationToken ct = default)
         {
-            return await SendRequest<HitBtcCurrency>(GetUrl(FillPathParameter(CurrencyWithCurrencyUrl, currency)), HttpMethod.Get, ct, null, false);
+            return await SendRequestAsync<HitBtcCurrency>(GetUrl(FillPathParameter(CurrencyWithCurrencyUrl, currency)), HttpMethod.Get, ct, null, false);
         }
 
         public WebCallResult<HitBtcDepositAddress> GetDepositAddress(string currency) => GetDepositAddressAsync(currency).Result;
 
         public async Task<WebCallResult<HitBtcDepositAddress>> GetDepositAddressAsync(string currency, CancellationToken ct = default)
         {
-            return await SendRequest<HitBtcDepositAddress>(GetUrl(FillPathParameter(AccountCryptoAddressWithCurrencyUrl, currency)), HttpMethod.Get, ct, null, true, true);
+            return await SendRequestAsync<HitBtcDepositAddress>(GetUrl(FillPathParameter(AccountCryptoAddressWithCurrencyUrl, currency)), HttpMethod.Get, ct, null, true, true);
         }
 
         public WebCallResult<HitBtcFee> GetEstimateWithdrawFee(string currency, decimal amount) => GetEstimateWithdrawFeeAsync(currency, amount).Result;
@@ -259,7 +262,7 @@ namespace HitBtc.Net
             var parameters = new Dictionary<string, object>();
             parameters.Add("currency", currency);
             parameters.Add("amount", amount);
-            return await SendRequest<HitBtcFee>(GetUrl(AccountCryptoEstimateWithrdawFeesUrl), HttpMethod.Get, ct, parameters, true, true);
+            return await SendRequestAsync<HitBtcFee>(GetUrl(AccountCryptoEstimateWithrdawFeesUrl), HttpMethod.Get, ct, parameters, true, true);
         }
 
         public WebCallResult<IEnumerable<HitBtcFeeLevel>> GetEstimateWithdrawFeeLevels(string currency, decimal amount) => GetEstimateWithdrawFeeLevelsAsync(currency, amount).Result;
@@ -269,34 +272,34 @@ namespace HitBtc.Net
             var parameters = new Dictionary<string, object>();
             parameters.Add("currency", currency);
             parameters.Add("amount", amount);
-            return await SendRequest<IEnumerable<HitBtcFeeLevel>>(GetUrl(AccountCryptoEstimateWithrdawFeesLevelsUrl), HttpMethod.Get, ct, parameters, true, true);
+            return await SendRequestAsync<IEnumerable<HitBtcFeeLevel>>(GetUrl(AccountCryptoEstimateWithrdawFeesLevelsUrl), HttpMethod.Get, ct, parameters, true, true);
         }
 
         public WebCallResult<HitBtcIsolatedMarginAccount> GetIsolatedMarginAccount(string symbol) => GetIsolatedMarginAccountAsync(symbol).Result;
 
         public async Task<WebCallResult<HitBtcIsolatedMarginAccount>> GetIsolatedMarginAccountAsync(string symbol, CancellationToken ct = default)
         {
-            return await SendRequest<HitBtcIsolatedMarginAccount>(GetUrl(FillPathParameter(MarginAccountWithSymbolUrl, symbol)), HttpMethod.Get, ct, null, true, true);
+            return await SendRequestAsync<HitBtcIsolatedMarginAccount>(GetUrl(FillPathParameter(MarginAccountWithSymbolUrl, symbol)), HttpMethod.Get, ct, null, true, true);
         }
 
         public WebCallResult<IEnumerable<HitBtcIsolatedMarginAccount>> GetIsolatedMarginAccounts() => GetIsolatedMarginAccountsAsync().Result;
 
         public async Task<WebCallResult<IEnumerable<HitBtcIsolatedMarginAccount>>> GetIsolatedMarginAccountsAsync(CancellationToken ct = default)
         {
-            return await SendRequest<IEnumerable<HitBtcIsolatedMarginAccount>>(GetUrl(MarginAccountUrl), HttpMethod.Get, ct, null, true, true);
+            return await SendRequestAsync<IEnumerable<HitBtcIsolatedMarginAccount>>(GetUrl(MarginAccountUrl), HttpMethod.Get, ct, null, true, true);
         }
 
         public WebCallResult<IEnumerable<HitBtcDepositAddress>> GetLastDepositAddresses(string currency) => GetLastDepositAddressesAsync(currency).Result;
 
         public async Task<WebCallResult<IEnumerable<HitBtcDepositAddress>>> GetLastDepositAddressesAsync(string currency, CancellationToken ct = default)
         {
-            return await SendRequest<IEnumerable<HitBtcDepositAddress>>(GetUrl(FillPathParameter(AccountCryptoAddressesWithCurrencyUrl, currency)), HttpMethod.Get, ct, null, true, true);
+            return await SendRequestAsync<IEnumerable<HitBtcDepositAddress>>(GetUrl(FillPathParameter(AccountCryptoAddressesWithCurrencyUrl, currency)), HttpMethod.Get, ct, null, true, true);
         }
 
         public WebCallResult<IEnumerable<HitBtcDepositAddress>> GetLastUsedDepositAddresses(string currency) => GetLastUsedDepositAddressesAsync(currency).Result;
         public async Task<WebCallResult<IEnumerable<HitBtcDepositAddress>>> GetLastUsedDepositAddressesAsync(string currency, CancellationToken ct = default)
         {
-            return await SendRequest<IEnumerable<HitBtcDepositAddress>>(GetUrl(FillPathParameter(AccountCryptoUsedAddressesWithCurrencyUrl, currency)), HttpMethod.Get, ct, null, true, true);
+            return await SendRequestAsync<IEnumerable<HitBtcDepositAddress>>(GetUrl(FillPathParameter(AccountCryptoUsedAddressesWithCurrencyUrl, currency)), HttpMethod.Get, ct, null, true, true);
         }
 
         public WebCallResult<HitBtcOrder> GetMarginOrder(string clientOrderId) => GetMarginOrderAsync(clientOrderId).Result;
@@ -304,7 +307,7 @@ namespace HitBtc.Net
 
         public async Task<WebCallResult<HitBtcOrder>> GetMarginOrderAsync(string clientOrderId, CancellationToken ct = default)
         {
-            return await SendRequest<HitBtcOrder>(GetUrl(FillPathParameter(MarginOrderWithClientOrderIdUrl, clientOrderId)), HttpMethod.Get, ct, null, true, true);
+            return await SendRequestAsync<HitBtcOrder>(GetUrl(FillPathParameter(MarginOrderWithClientOrderIdUrl, clientOrderId)), HttpMethod.Get, ct, null, true, true);
         }
 
         public WebCallResult<IEnumerable<HitBtcOrder>> GetMarginOrders(string symbol = null) => GetMarginOrdersAsync(symbol).Result;
@@ -313,20 +316,20 @@ namespace HitBtc.Net
         {
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("symbol", symbol);
-            return await SendRequest<IEnumerable<HitBtcOrder>>(GetUrl(MarginOrderUrl), HttpMethod.Get, ct, parameters, true, true);
+            return await SendRequestAsync<IEnumerable<HitBtcOrder>>(GetUrl(MarginOrderUrl), HttpMethod.Get, ct, parameters, true, true);
         }
 
         public WebCallResult<HitBtcPosition> GetMarginPosition(string symbol) => GetMarginPositionAsync(symbol).Result;
         public async Task<WebCallResult<HitBtcPosition>> GetMarginPositionAsync(string symbol, CancellationToken ct = default)
         {
-            return await SendRequest<HitBtcPosition>(GetUrl(FillPathParameter(MarginPositionWithSymbolUrl, symbol)), HttpMethod.Get, ct, null, true, true);
+            return await SendRequestAsync<HitBtcPosition>(GetUrl(FillPathParameter(MarginPositionWithSymbolUrl, symbol)), HttpMethod.Get, ct, null, true, true);
         }
 
         public WebCallResult<IEnumerable<HitBtcPosition>> GetMarginPositions() => GetMarginPositionsAsync().Result;
 
         public async Task<WebCallResult<IEnumerable<HitBtcPosition>>> GetMarginPositionsAsync(CancellationToken ct = default)
         {
-            return await SendRequest<IEnumerable<HitBtcPosition>>(GetUrl(MarginPositionUrl), HttpMethod.Get, ct, null, true, true);
+            return await SendRequestAsync<IEnumerable<HitBtcPosition>>(GetUrl(MarginPositionUrl), HttpMethod.Get, ct, null, true, true);
         }
 
         public WebCallResult<HitBtcOrderBook> GetOrderBook(string symbol, int limit = 100, decimal? volume = null) => GetOrderBookAsync(symbol, limit, volume).Result;
@@ -336,7 +339,7 @@ namespace HitBtc.Net
             var parameters = new Dictionary<string, object>();
             parameters.Add("limit", limit);
             parameters.AddOptionalParameter("volume", volume);
-            return await SendRequest<HitBtcOrderBook>(GetUrl(FillPathParameter(OrderBookWithSymbolUrl, symbol)), HttpMethod.Get, ct, parameters, false);
+            return await SendRequestAsync<HitBtcOrderBook>(GetUrl(FillPathParameter(OrderBookWithSymbolUrl, symbol)), HttpMethod.Get, ct, parameters, false);
         }
 
         public WebCallResult<HitBtcOrderBooksResponse> GetOrderBooks(int limit = 100, params string[] symbols) => GetOrderBooksAsync(limit, symbols: symbols).Result;
@@ -345,7 +348,7 @@ namespace HitBtc.Net
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("limit", limit);
             parameters.AddOptionalParameter("symbols", symbols.AsStringParameterOrNull());
-            return await SendRequest<HitBtcOrderBooksResponse>(GetUrl(OrderBookUrl), HttpMethod.Get, ct, parameters, false);
+            return await SendRequestAsync<HitBtcOrderBooksResponse>(GetUrl(OrderBookUrl), HttpMethod.Get, ct, parameters, false);
         }
 
         public WebCallResult<IEnumerable<HitBtcOrder>> GetOrdersHistory(HitBtcOrdersFilterRequest filter) => GetOrdersHistoryAsync(filter).Result;
@@ -353,14 +356,14 @@ namespace HitBtc.Net
         public async Task<WebCallResult<IEnumerable<HitBtcOrder>>> GetOrdersHistoryAsync(HitBtcOrdersFilterRequest filter, CancellationToken ct = default)
         {
             var parameters = filter.AsDictionary();
-            return await SendRequest<IEnumerable<HitBtcOrder>>(GetUrl(HistoryOrderUrl), HttpMethod.Get, ct, parameters, true, true);
+            return await SendRequestAsync<IEnumerable<HitBtcOrder>>(GetUrl(HistoryOrderUrl), HttpMethod.Get, ct, parameters, true, true);
         }
 
         public WebCallResult<HitBtcSubAccAddressResponse> GetSubAccAddress(long subAccountUserId, string currency) => GetSubAccAddressAsync(subAccountUserId, currency).Result;
 
         public async Task<WebCallResult<HitBtcSubAccAddressResponse>> GetSubAccAddressAsync(long subAccountUserId, string currency, CancellationToken ct = default)
         {
-            return await SendRequest<HitBtcSubAccAddressResponse>(GetUrl(FillPathParameter(SubAccDepositAddressWithUserIdCurrencyUrl, subAccountUserId.ToString(), currency)), HttpMethod.Get, ct, null, true, true);
+            return await SendRequestAsync<HitBtcSubAccAddressResponse>(GetUrl(FillPathParameter(SubAccDepositAddressWithUserIdCurrencyUrl, subAccountUserId.ToString(), currency)), HttpMethod.Get, ct, null, true, true);
         }
 
         public WebCallResult<HitBtcSubAccBalanceResponse> GetSubAccBalance(long subAccountUserID) => GetSubAccBalanceAsync(subAccountUserID).Result;
@@ -368,14 +371,14 @@ namespace HitBtc.Net
 
         public async Task<WebCallResult<HitBtcSubAccBalanceResponse>> GetSubAccBalanceAsync(long subAccountUserID, CancellationToken ct = default)
         {
-            return await SendRequest<HitBtcSubAccBalanceResponse>(GetUrl(FillPathParameter(SubAccBalanceWithUserIdUrl, subAccountUserID.ToString())), HttpMethod.Get, ct, null, true, true);
+            return await SendRequestAsync<HitBtcSubAccBalanceResponse>(GetUrl(FillPathParameter(SubAccBalanceWithUserIdUrl, subAccountUserID.ToString())), HttpMethod.Get, ct, null, true, true);
         }
 
         public WebCallResult<HitBtcSubAccountResponse> GetSubAccounts() => GetSubAccountsAsync().Result;
 
         public async Task<WebCallResult<HitBtcSubAccountResponse>> GetSubAccountsAsync(CancellationToken ct = default)
         {
-            return await SendRequest<HitBtcSubAccountResponse>(GetUrl(SubAccountsUrl), HttpMethod.Get, ct, null, true, true);
+            return await SendRequestAsync<HitBtcSubAccountResponse>(GetUrl(SubAccountsUrl), HttpMethod.Get, ct, null, true, true);
         }
 
         public WebCallResult<HitBtcSubAccSettingResponse> GetSubAccWithdrawalSettings(List<long> subAccountIds) => GetSubAccWithdrawalSettingsAsync(subAccountIds).Result;
@@ -384,14 +387,14 @@ namespace HitBtc.Net
         {
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("subAccountIds", subAccountIds.AsStringParameterOrNull());
-            return await SendRequest<HitBtcSubAccSettingResponse>(GetUrl(SubAccWithdrawSettingUrl), HttpMethod.Get, ct, parameters, true, true);
+            return await SendRequestAsync<HitBtcSubAccSettingResponse>(GetUrl(SubAccWithdrawSettingUrl), HttpMethod.Get, ct, parameters, true, true);
         }
 
         public WebCallResult<HitBtcSymbol> GetSymbol(string symbol) => GetSymbolAsync(symbol).Result;
         public async Task<WebCallResult<HitBtcSymbol>> GetSymbolAsync(string symbol, CancellationToken ct = default)
         {
 
-            return await SendRequest<HitBtcSymbol>(GetUrl(FillPathParameter(SymbolWithSymbolUrl, symbol)), HttpMethod.Get, ct, null, false);
+            return await SendRequestAsync<HitBtcSymbol>(GetUrl(FillPathParameter(SymbolWithSymbolUrl, symbol)), HttpMethod.Get, ct, null, false);
         }
 
         public WebCallResult<IEnumerable<HitBtcSymbol>> GetSymbols(params string[] symbols) => GetSymbolsAsync(default, symbols).Result; //JoinableTaskFactory.Run(async delegate { await GetSymbolsAsync(default, symbols); });
@@ -400,13 +403,13 @@ namespace HitBtc.Net
         {
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("symbols", symbols.AsStringParameterOrNull());
-            return await SendRequest<IEnumerable<HitBtcSymbol>>(GetUrl(SymbolsUrl), HttpMethod.Get, ct, parameters, false);
+            return await SendRequestAsync<IEnumerable<HitBtcSymbol>>(GetUrl(SymbolsUrl), HttpMethod.Get, ct, parameters, false);
         }
 
         public WebCallResult<HitBtcTicker> GetTicker(string symbol) => GetTickerAsync(symbol).Result;
         public async Task<WebCallResult<HitBtcTicker>> GetTickerAsync(string symbol, CancellationToken ct = default)
         {
-            return await SendRequest<HitBtcTicker>(GetUrl(FillPathParameter(TickerWithSymbolUrl, symbol)), HttpMethod.Get, ct, null, false);
+            return await SendRequestAsync<HitBtcTicker>(GetUrl(FillPathParameter(TickerWithSymbolUrl, symbol)), HttpMethod.Get, ct, null, false);
         }
 
         public WebCallResult<IEnumerable<HitBtcTicker>> GetTickers(params string[] symbols) => GetTickersAsync(symbols: symbols).Result;
@@ -414,14 +417,14 @@ namespace HitBtc.Net
         {
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("symbols", symbols.AsStringParameterOrNull());
-            return await SendRequest<IEnumerable<HitBtcTicker>>(GetUrl(TickerUrl), HttpMethod.Get, ct, parameters, false);
+            return await SendRequestAsync<IEnumerable<HitBtcTicker>>(GetUrl(TickerUrl), HttpMethod.Get, ct, parameters, false);
         }
 
         public WebCallResult<IEnumerable<HitBtcPublicTrade>> GetTradesForSymbol(string symbol, HitbtcPublicTradesFilterRequest filter) => GetTradesForSymbolAsync(symbol, filter).Result;
         public async Task<WebCallResult<IEnumerable<HitBtcPublicTrade>>> GetTradesForSymbolAsync(string symbol, HitbtcPublicTradesFilterRequest filter, CancellationToken ct = default)
         {
             var parameters = filter.AsDictionary();
-            return await SendRequest<IEnumerable<HitBtcPublicTrade>>(GetUrl(FillPathParameter(TradesWithSymbolUrl, symbol)), HttpMethod.Get, ct, parameters, false);
+            return await SendRequestAsync<IEnumerable<HitBtcPublicTrade>>(GetUrl(FillPathParameter(TradesWithSymbolUrl, symbol)), HttpMethod.Get, ct, parameters, false);
         }
 
         public WebCallResult<Dictionary<string, IEnumerable<HitBtcPublicTrade>>> GetTrades(HitbtcPublicTradesFilterRequest filter, params string[] symbols) => GetTradesAsync(filter: filter, symbols: symbols).Result;
@@ -430,14 +433,14 @@ namespace HitBtc.Net
             var parameters = filter.AsDictionary();
             parameters.AddOptionalParameter("symbols", symbols.AsStringParameterOrNull());
 
-            return await SendRequest<Dictionary<string, IEnumerable<HitBtcPublicTrade>>>(GetUrl(TradesUrl), HttpMethod.Get, ct, parameters, false);
+            return await SendRequestAsync<Dictionary<string, IEnumerable<HitBtcPublicTrade>>>(GetUrl(TradesUrl), HttpMethod.Get, ct, parameters, false);
         }
 
         public WebCallResult<IEnumerable<HitBtcTrade>> GetTradesByOrderId(long orderId) => GetTradesByOrderIdAsync(orderId).Result;
 
         public async Task<WebCallResult<IEnumerable<HitBtcTrade>>> GetTradesByOrderIdAsync(long orderId, CancellationToken ct = default)
         {
-            return await SendRequest<IEnumerable<HitBtcTrade>>(GetUrl(FillPathParameter(HistoryOrderWithOrderIdUrl, orderId.ToString())), HttpMethod.Get, ct, null, true, true);
+            return await SendRequestAsync<IEnumerable<HitBtcTrade>>(GetUrl(FillPathParameter(HistoryOrderWithOrderIdUrl, orderId.ToString())), HttpMethod.Get, ct, null, true, true);
         }
 
         public WebCallResult<IEnumerable<HitBtcTrade>> GetTradesHistory(HitBtcTradesFilterRequest filter) => GetTradesHistoryAsync(filter).Result;
@@ -450,40 +453,40 @@ namespace HitBtc.Net
         public async Task<WebCallResult<IEnumerable<HitBtcTrade>>> GetTradesHistoryAsync(HitBtcTradesFilterRequest filter, CancellationToken ct = default)
         {
             var parameters = filter.AsDictionary();
-            return await SendRequest<IEnumerable<HitBtcTrade>>(GetUrl(HistoryTradesUrl), HttpMethod.Get, ct, parameters, true, true);
+            return await SendRequestAsync<IEnumerable<HitBtcTrade>>(GetUrl(HistoryTradesUrl), HttpMethod.Get, ct, parameters, true, true);
         }
 
         public WebCallResult<List<HitBtcTradingBalance>> GetTradingBalance() => GetTradingBalanceAsync().Result;
 
         public async Task<WebCallResult<List<HitBtcTradingBalance>>> GetTradingBalanceAsync(CancellationToken ct = default)
         {
-            return await SendRequest<List<HitBtcTradingBalance>>(GetUrl(TradingBalanceUrl), HttpMethod.Get, ct, null, true, true);
+            return await SendRequestAsync<List<HitBtcTradingBalance>>(GetUrl(TradingBalanceUrl), HttpMethod.Get, ct, null, true, true);
         }
 
         public WebCallResult<HitBtcTradingCommission> GetTradingCommission(string symbol) => GetTradingCommissionAsync(symbol).Result;
         public async Task<WebCallResult<HitBtcTradingCommission>> GetTradingCommissionAsync(string symbol, CancellationToken ct = default)
         {
-            return await SendRequest<HitBtcTradingCommission>(GetUrl(FillPathParameter(TradingFeeWithSymbolUrl, symbol)), HttpMethod.Get, ct, null, true, true);
+            return await SendRequestAsync<HitBtcTradingCommission>(GetUrl(FillPathParameter(TradingFeeWithSymbolUrl, symbol)), HttpMethod.Get, ct, null, true, true);
         }
 
         public WebCallResult<HitBtcTransaction> GetTransactionById(string transactionId) => GetTransactionByIdAsync(transactionId).Result;
         public async Task<WebCallResult<HitBtcTransaction>> GetTransactionByIdAsync(string transactionId, CancellationToken ct = default)
         {
-            return await SendRequest<HitBtcTransaction>(GetUrl(FillPathParameter(AccountTransactionWithIdUrl, transactionId)), HttpMethod.Get, ct, null, true, true);
+            return await SendRequestAsync<HitBtcTransaction>(GetUrl(FillPathParameter(AccountTransactionWithIdUrl, transactionId)), HttpMethod.Get, ct, null, true, true);
         }
 
         public WebCallResult<IEnumerable<HitBtcTransaction>> GetTransactions(HitBtcTransactionsHistoryRequest request) => GetTransactionsAsync(request).Result;
         public async Task<WebCallResult<IEnumerable<HitBtcTransaction>>> GetTransactionsAsync(HitBtcTransactionsHistoryRequest request, CancellationToken ct = default)
         {
             var parameters = request.AsDictionary();
-            return await SendRequest<IEnumerable<HitBtcTransaction>>(GetUrl(AccountTransactionsUrl), HttpMethod.Get, ct, parameters, true, true);
+            return await SendRequestAsync<IEnumerable<HitBtcTransaction>>(GetUrl(AccountTransactionsUrl), HttpMethod.Get, ct, parameters, true, true);
         }
 
         public WebCallResult<HitBtcOrder> PlaceMarginOrder(HitbtcPlaceOrderRequest order) => PlaceMarginOrderAsync(order).Result;
         public async Task<WebCallResult<HitBtcOrder>> PlaceMarginOrderAsync(HitbtcPlaceOrderRequest order, CancellationToken ct = default)
         {
             var parameters = order.AsDictionary();
-            return await SendRequest<HitBtcOrder>(GetUrl(MarginOrderUrl), HttpMethod.Post, ct, parameters, true, true);
+            return await SendRequestAsync<HitBtcOrder>(GetUrl(MarginOrderUrl), HttpMethod.Post, ct, parameters, true, true);
         }
 
         public WebCallResult<HitBtcOrder> PlaceOrder(HitbtcPlaceOrderRequest order) => PlaceOrderAsync(order).Result;
@@ -491,13 +494,13 @@ namespace HitBtc.Net
         public async Task<WebCallResult<HitBtcOrder>> PlaceOrderAsync(HitbtcPlaceOrderRequest order, CancellationToken ct = default)
         {
             var parameters = order.AsDictionary();
-            return await SendRequest<HitBtcOrder>(GetUrl(OrderUrl), HttpMethod.Post, ct, parameters, true, false);
+            return await SendRequestAsync<HitBtcOrder>(GetUrl(OrderUrl), HttpMethod.Post, ct, parameters, true, false);
         }
 
         public WebCallResult<HitBtcRequestsBoolResult> RollbackWithdrawCrypto(string id) => RollbackWithdrawCryptoAsync(id).Result;
         public async Task<WebCallResult<HitBtcRequestsBoolResult>> RollbackWithdrawCryptoAsync(string id, CancellationToken ct = default)
         {
-            return await SendRequest<HitBtcRequestsBoolResult>(GetUrl(FillPathParameter(AccountCryptoWithdrawWithIdUrl, id)), HttpMethod.Delete, ct, null, true, true);
+            return await SendRequestAsync<HitBtcRequestsBoolResult>(GetUrl(FillPathParameter(AccountCryptoWithdrawWithIdUrl, id)), HttpMethod.Delete, ct, null, true, true);
         }
 
         public WebCallResult<HitBtcIsolatedMarginAccount> SetIsolatedMarginAccount(string symbol, decimal marginBalance, bool strictValidate) => SetIsolatedMarginAccountAsync(symbol, marginBalance, strictValidate).Result;
@@ -507,21 +510,21 @@ namespace HitBtc.Net
             var parameters = new Dictionary<string, object>();
             parameters.Add("marginBalance", marginBalance);
             parameters.Add("strictValidate", strictValidate);
-            return await SendRequest<HitBtcIsolatedMarginAccount>(GetUrl(FillPathParameter(MarginAccountWithSymbolUrl, symbol)), HttpMethod.Put, ct, parameters, true, true);
+            return await SendRequestAsync<HitBtcIsolatedMarginAccount>(GetUrl(FillPathParameter(MarginAccountWithSymbolUrl, symbol)), HttpMethod.Put, ct, parameters, true, true);
         }
 
         public WebCallResult<HitBtcSubAccSettingResponse> SetSubAccWithdrawalSettings(HitBtcSubAccWithdrawalSetting request) => SetSubAccWithdrawalSettingsAsync(request).Result;
         public async Task<WebCallResult<HitBtcSubAccSettingResponse>> SetSubAccWithdrawalSettingsAsync(HitBtcSubAccWithdrawalSetting request, CancellationToken ct = default)
         {
             var parameters = request.AsDictionary();
-            return await SendRequest<HitBtcSubAccSettingResponse>(GetUrl(FillPathParameter(SubAccWithdrawSettingWithUserIdUrl, request.SubAccountId.ToString())), HttpMethod.Put, ct, parameters, true, true);
+            return await SendRequestAsync<HitBtcSubAccSettingResponse>(GetUrl(FillPathParameter(SubAccWithdrawSettingWithUserIdUrl, request.SubAccountId.ToString())), HttpMethod.Put, ct, parameters, true, true);
         }
 
         public WebCallResult<HitBtcTransactionIdResponse> TransferBetweenAcc(HitBtcTransferRequest request) => TransferBetweenAccAsync(request).Result;
         public async Task<WebCallResult<HitBtcTransactionIdResponse>> TransferBetweenAccAsync(HitBtcTransferRequest transferRequest, CancellationToken ct = default)
         {
             var parameters = transferRequest.AsDictionary();
-            return await SendRequest<HitBtcTransactionIdResponse>(GetUrl(AccountTransferUrl), HttpMethod.Post, ct, parameters, true, true);
+            return await SendRequestAsync<HitBtcTransactionIdResponse>(GetUrl(AccountTransferUrl), HttpMethod.Post, ct, parameters, true, true);
         }
 
         public WebCallResult<HitBtcTransferConvertCryptoResponse> TransferConvertCrypto(string fromCurrency, string toCurrency, decimal amount) => TransferConvertCryptoAsync(fromCurrency, toCurrency, amount).Result;
@@ -531,28 +534,28 @@ namespace HitBtc.Net
             parameters.Add("fromCurrency", fromCurrency);
             parameters.Add("toCurrency", toCurrency);
             parameters.Add("amount", amount);
-            return await SendRequest<HitBtcTransferConvertCryptoResponse>(GetUrl(AccountCryptoTransferConvertUrl), HttpMethod.Post, ct, parameters, true, true);
+            return await SendRequestAsync<HitBtcTransferConvertCryptoResponse>(GetUrl(AccountCryptoTransferConvertUrl), HttpMethod.Post, ct, parameters, true, true);
         }
 
         public WebCallResult<HitBtcTransactionIdResponse> TransferToAnotherUser(HitBtcTransferToAnotherUserRequest request) => TransferToAnotherUserAsync(request).Result;
         public async Task<WebCallResult<HitBtcTransactionIdResponse>> TransferToAnotherUserAsync(HitBtcTransferToAnotherUserRequest request, CancellationToken ct = default)
         {
             var parameters = request.AsDictionary();
-            return await SendRequest<HitBtcTransactionIdResponse>(GetUrl(AccountTransferInternalUrl), HttpMethod.Post, ct, parameters, true, true);
+            return await SendRequestAsync<HitBtcTransactionIdResponse>(GetUrl(AccountTransferInternalUrl), HttpMethod.Post, ct, parameters, true, true);
         }
 
         public WebCallResult<HitBtcRequestsBoolResult> TrasferFound(HitBtcSubAccTransferRequest request) => TrasferFoundAsync(request).Result;
         public async Task<WebCallResult<HitBtcRequestsBoolResult>> TrasferFoundAsync(HitBtcSubAccTransferRequest request, CancellationToken ct = default)
         {
             var parameters = request.AsDictionary();
-            return await SendRequest<HitBtcRequestsBoolResult>(GetUrl(SubAccTransferUrl), HttpMethod.Post, ct, parameters, true, true);
+            return await SendRequestAsync<HitBtcRequestsBoolResult>(GetUrl(SubAccTransferUrl), HttpMethod.Post, ct, parameters, true, true);
         }
 
         public WebCallResult<HitBtcTransactionIdResponse> WithdrawCrypto(HitBtcWithdrawRequest request) => WithdrawCryptoAsync(request).Result;
         public async Task<WebCallResult<HitBtcTransactionIdResponse>> WithdrawCryptoAsync(HitBtcWithdrawRequest request, CancellationToken ct = default)
         {
             var parameters = request.AsDictionary();
-            return await SendRequest<HitBtcTransactionIdResponse>(GetUrl(AccountCryptoWithdrawUrl), HttpMethod.Post, ct, parameters, true, true);
+            return await SendRequestAsync<HitBtcTransactionIdResponse>(GetUrl(AccountCryptoWithdrawUrl), HttpMethod.Post, ct, parameters, true, true);
         }
 
         public WebCallResult<HitBtcRequestsBoolResult> IsOffchainTransactionAvialable(string currency, string address, string paymentId = null) => IsOffchainTransactionAvialableAsync(currency, address, paymentId, default).Result;
@@ -562,7 +565,7 @@ namespace HitBtc.Net
             parameters.Add("currency", currency);
             parameters.Add("address", address);
             parameters.AddOptionalParameter("paymentId", paymentId);
-            return await SendRequest<HitBtcRequestsBoolResult>(GetUrl(AccountCryptoCheckOffchainUrl), HttpMethod.Post, ct, parameters, true, true);
+            return await SendRequestAsync<HitBtcRequestsBoolResult>(GetUrl(AccountCryptoCheckOffchainUrl), HttpMethod.Post, ct, parameters, true, true);
         }
 
         public string GetSymbolName(string baseAsset, string quoteAsset)
@@ -573,32 +576,32 @@ namespace HitBtc.Net
         async Task<WebCallResult<IEnumerable<ICommonSymbol>>> IExchangeClient.GetSymbolsAsync()
         {
             var foo = await GetSymbolsAsync();
-            return WebCallResult<IEnumerable<ICommonSymbol>>.CreateFrom(foo); ;
+            return foo.As<IEnumerable<ICommonSymbol>>(foo.Data); ;
         }
 
         async Task<WebCallResult<IEnumerable<ICommonTicker>>> IExchangeClient.GetTickersAsync()
         {
             var foo = await GetTickersAsync();
-            return WebCallResult<IEnumerable<ICommonTicker>>.CreateFrom(foo); ;
+            return foo.As<IEnumerable<ICommonTicker>>(foo.Data); ;
         }
 
         async Task<WebCallResult<ICommonTicker>> IExchangeClient.GetTickerAsync(string symbol)
         {
             var foo = await GetTickerAsync(symbol);
-            return WebCallResult<ICommonTicker>.CreateFrom(foo);
+            return foo.As<ICommonTicker>(foo.Data);
         }
 
         public async Task<WebCallResult<IEnumerable<ICommonKline>>> GetKlinesAsync(string symbol, TimeSpan timespan, DateTime? startTime = null, DateTime? endTime = null, int? limit = null)
         {
             var request = new HitBtcCandlesFilterRequest(timespan.AsStringTimeFrame(), "ASC", startTime, endTime, limit ?? 100, 0);
             var foo = await GetCandlesForSymbolAsync(symbol, request);
-            return WebCallResult<IEnumerable<ICommonKline>>.CreateFrom(foo);
+            return foo.As<IEnumerable<ICommonKline>>(foo.Data);
         }
 
         async Task<WebCallResult<ICommonOrderBook>> IExchangeClient.GetOrderBookAsync(string symbol)
         {
             var foo = await GetOrderBookAsync(symbol);
-            return WebCallResult<ICommonOrderBook>.CreateFrom(foo);
+            return foo.As<ICommonOrderBook>(foo.Data);
         }
 
         public async Task<WebCallResult<IEnumerable<ICommonRecentTrade>>> GetRecentTradesAsync(string symbol)
@@ -608,7 +611,7 @@ namespace HitBtc.Net
             var foo = await GetTradesForSymbolAsync(symbol,request);
             if (foo)
             {
-                return WebCallResult<IEnumerable<ICommonRecentTrade>>.CreateFrom(foo);
+                return foo.As<IEnumerable<ICommonRecentTrade>>(foo.Data);
             }
             else
             {
@@ -627,14 +630,14 @@ namespace HitBtc.Net
             var request = new HitbtcPlaceOrderRequest(symbol, hitBtcSide, quantity, hitBtcOType, price);
             var foo = await PlaceOrderAsync(request);
 
-            return WebCallResult<ICommonOrderId>.CreateFrom(foo);
+            return foo.As<ICommonOrderId>(foo.Data);
         }
 
         public async Task<WebCallResult<ICommonOrder>> GetOrderAsync(string orderId, string symbol = null)
         {
             // string clientOrderId = await GetClientOrderIdById(orderId, symbol);
             var foo = await GetActiveOrderByClientOrderIdAsync(orderId);
-            return WebCallResult<ICommonOrder>.CreateFrom(foo);
+            return foo.As<ICommonOrder>(foo.Data);
         }
 
         public async Task<WebCallResult<IEnumerable<ICommonTrade>>> GetTradesAsync(string orderId, string symbol = null)
@@ -643,7 +646,7 @@ namespace HitBtc.Net
             if (long.TryParse(orderId, out id))
             {
                 var foo = await GetTradesByOrderIdAsync(id);
-                return WebCallResult<IEnumerable<ICommonTrade>>.CreateFrom(foo);
+                return foo.As<IEnumerable<ICommonTrade>>(foo.Data);
             }
             else
             {
@@ -654,14 +657,14 @@ namespace HitBtc.Net
         public async Task<WebCallResult<IEnumerable<ICommonOrder>>> GetOpenOrdersAsync(string symbol = null)
         {
             var foo = await GetActiveOrdersAsync(symbol);
-            return WebCallResult<IEnumerable<ICommonOrder>>.CreateFrom(foo);
+            return foo.As<IEnumerable<ICommonOrder>>(foo.Data);
         }
 
         public async Task<WebCallResult<IEnumerable<ICommonOrder>>> GetClosedOrdersAsync(string symbol = null)
         {
             var request = HitBtcOrdersFilterRequest.CreateFilterBySymbolRequest(symbol);
             var foo = await GetOrdersHistoryAsync(request);
-            return WebCallResult<IEnumerable<ICommonOrder>>.CreateFrom(foo);
+            return foo.As<IEnumerable<ICommonOrder>>(foo.Data);
         }
 
         public async Task<WebCallResult<ICommonOrderId>> CancelOrderAsync(string orderId, string symbol = null)
@@ -671,26 +674,13 @@ namespace HitBtc.Net
             {
                 return new WebCallResult<ICommonOrderId>(System.Net.HttpStatusCode.OK, foo.ResponseHeaders, new HitBtcOrder() { ClientOrderId = orderId }, null);
             }
-            return WebCallResult<ICommonOrderId>.CreateFrom(foo);
+            return foo.As<ICommonOrderId>(foo.Data);
         }
 
         public async Task<WebCallResult<IEnumerable<ICommonBalance>>> GetBalancesAsync(string accountId = null)
         {
             var foo = await GetTradingBalanceAsync();
-            return WebCallResult<IEnumerable<ICommonBalance>>.CreateFrom(foo);
+            return foo.As<IEnumerable<ICommonBalance>>(foo.Data);
         }
-
-        //private async Task<string> GetClientOrderIdById(string orderId, string symbol = null)
-        //{
-        //     var result = await GetActiveOrdersAsync(symbol);
-        //    foreach (HitBtcOrder order in result.Data)
-        //    {
-        //        if (order.Id.ToString().Equals(orderId))
-        //        {
-        //            return order.ClientOrderId;
-        //        }
-        //    }
-        //    return String.Empty;
-        //}
     }
 }

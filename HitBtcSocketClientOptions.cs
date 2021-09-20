@@ -1,5 +1,6 @@
 ﻿using CryptoExchange.Net.Logging;
 using CryptoExchange.Net.Objects;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -14,8 +15,7 @@ namespace HitBtc.Net
         }
         public HitBtcSocketClientOptions(string baseAddress) : base(baseAddress)
         {
-            LogVerbosity = CryptoExchange.Net.Logging.LogVerbosity.Debug;
-            LogWriters = new List<System.IO.TextWriter>() { new DebugTextWriter() };
+            LogWriters = new List<ILogger> { new DebugLogger() };
         }
     }
 }

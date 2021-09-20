@@ -132,8 +132,6 @@ namespace HitBtc.Net.Objects.Trading
 
         public decimal CommonQuantity => Quantity;
 
-        public string CommonStatus => Status.ToString();
-
         public bool IsActive
         {
             get
@@ -180,5 +178,17 @@ namespace HitBtc.Net.Objects.Trading
                 }
             }
         }
+
+        public DateTime CommonOrderTime => CreatedAt;
+
+        public IExchangeClient.OrderStatus CommonStatus => Status switch
+        {
+            HitBtcOrderStatus.New => IExchangeClient.OrderStatus.Active,
+            HitBtcOrderStatus.PartiallyFilled => IExchangeClient.OrderStatus.Active,
+            HitBtcOrderStatus.Canceled => IExchangeClient.OrderStatus.Canceled,
+            HitBtcOrderStatus.Expired => IExchangeClient.OrderStatus.Canceled,
+            HitBtcOrderStatus.Filled => IExchangeClient.OrderStatus.Filled,
+            _ => throw new NotImplementedException("Undefined order status")
+        };
     }
 }

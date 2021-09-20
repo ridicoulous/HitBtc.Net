@@ -6,6 +6,7 @@ using CryptoExchange.Net.Sockets;
 using HitBtc.Net.Enums;
 using HitBtc.Net.Interfaces;
 using HitBtc.Net.Objects.Socket;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -56,27 +57,16 @@ namespace HitBtc.Net
             mappedResponses = Objects.Socket.Helpers.SocketMapping.HitBtcSocketResponsesAsStringEnumMappedDict();
         }
 
-        public async Task<CallResult<UpdateSubscription>> SubscribeToOrderBookAsync(string symbol, Action<HitBtcSocketOrderBookEvent> dataHandler)
+        public async Task<CallResult<UpdateSubscription>> SubscribeToOrderBookAsync(string symbol, Action<DataEvent<HitBtcSocketOrderBookEvent>> dataHandler)
         {
-            return await Subscribe<HitBtcSocketOrderBookEvent>(BaseAddress+"public", new HitBtcSubscribeToOrderBookRequest(symbol), null, false, dataHandler);
+            return await SubscribeAsync<HitBtcSocketOrderBookEvent>(BaseAddress+"public", new HitBtcSubscribeToOrderBookRequest(symbol), null, false, dataHandler);
         }
-        public async Task<CallResult<UpdateSubscription>> SubscribeToTradesAsync(HitBtcSubscribeToTradesParam requestParams, Action<HitBtcSocketTradesEvent> dataHandler)
-        {
-            return await Subscribe<HitBtcSocketTradesEvent>(BaseAddress+"public", requestParams, null, false, dataHandler);
-        }
-        public async Task<CallResult<UpdateSubscription>> SubscribeToCandlesAsync(HitBtcSubscribeToCandlesParam requestParams, Action<HitBtcSocketCandlesEvent> dataHandler)
-        {
-            return await Subscribe<HitBtcSocketCandlesEvent>(BaseAddress+"public", requestParams, null, false, dataHandler);
-        }
-        public async Task<CallResult<UpdateSubscription>> SubscribeToTickerAsync(string symbol, Action<HitBtcSocketTickerEvent> dataHandler)
-        {
-            return await Subscribe<HitBtcSocketTickerEvent>(BaseAddress+"public", new HitBtcSubscribeToTickerRequest(symbol), null, false, dataHandler);
-        }
+       
         public async Task<CallResult<UpdateSubscription>> SubscribeAsync<TParams>(HitBtcSocketSubscribeBaseRequest<TParams> subscribeRequest)
         {
-            var dataHandler = new Action<string>(data =>
+            var dataHandler = new Action<DataEvent<string>>(data =>
            {
-               var token = JToken.Parse(data);
+               var token = JToken.Parse(data.Data);
                var method = (string)token["method"];
                if (method is null)
                {
@@ -101,7 +91,7 @@ namespace HitBtc.Net
                                OnOrderBookUpdate?.Invoke(result.Data);
                            }
                            else
-                               log.Write(LogVerbosity.Warning, "Couldn't deserialize data received from  stream: " + result.Error);
+                               log.Write(LogLevel.Warning, "Couldn't deserialize data received from  stream: " + result.Error);
                            break;
                        }
                    case HitBtcSocketEvent.OrderbookFullSnapshot:
@@ -112,7 +102,7 @@ namespace HitBtc.Net
                                OnOrderBookSnapshot?.Invoke(result.Data);
                            }
                            else
-                               log.Write(LogVerbosity.Warning, "Couldn't deserialize data received from  stream: " + result.Error);
+                               log.Write(LogLevel.Warning, "Couldn't deserialize data received from  stream: " + result.Error);
                            break;
                        }
                    case HitBtcSocketEvent.TradesSnapshot:
@@ -123,7 +113,7 @@ namespace HitBtc.Net
                                OnTradesSnapshot?.Invoke(result.Data);
                            }
                            else
-                               log.Write(LogVerbosity.Warning, "Couldn't deserialize data received from  stream: " + result.Error);
+                               log.Write(LogLevel.Warning, "Couldn't deserialize data received from  stream: " + result.Error);
                            break;
                        }
                    case HitBtcSocketEvent.TradesUpdated:
@@ -134,7 +124,7 @@ namespace HitBtc.Net
                                OnTradesUpdate?.Invoke(result.Data);
                            }
                            else
-                               log.Write(LogVerbosity.Warning, "Couldn't deserialize data received from  stream: " + result.Error);
+                               log.Write(LogLevel.Warning, "Couldn't deserialize data received from  stream: " + result.Error);
                            break;
                        }
                    case HitBtcSocketEvent.TickerUpdated:
@@ -145,7 +135,7 @@ namespace HitBtc.Net
                                OnTickerUpdate?.Invoke(result.Data);
                            }
                            else
-                               log.Write(LogVerbosity.Warning, "Couldn't deserialize data received from  stream: " + result.Error);
+                               log.Write(LogLevel.Warning, "Couldn't deserialize data received from  stream: " + result.Error);
                            break;
                        }
                    case HitBtcSocketEvent.CandlesSnapshot:
@@ -156,7 +146,7 @@ namespace HitBtc.Net
                                OnCandlesSnapshot?.Invoke(result.Data);
                            }
                            else
-                               log.Write(LogVerbosity.Warning, "Couldn't deserialize data received from  stream: " + result.Error);
+                               log.Write(LogLevel.Warning, "Couldn't deserialize data received from  stream: " + result.Error);
                            break;
                        }
                    case HitBtcSocketEvent.CandlesUpdated:
@@ -167,7 +157,7 @@ namespace HitBtc.Net
                                OnCandlesUpdate?.Invoke(result.Data);
                            }
                            else
-                               log.Write(LogVerbosity.Warning, "Couldn't deserialize data received from  stream: " + result.Error);
+                               log.Write(LogLevel.Warning, "Couldn't deserialize data received from  stream: " + result.Error);
                            break;
                        }
                    case HitBtcSocketEvent.ActiveOrdersSnapshot:
@@ -178,7 +168,7 @@ namespace HitBtc.Net
                                OnActiveOrdersSnapshot?.Invoke(result.Data);
                            }
                            else
-                               log.Write(LogVerbosity.Warning, "Couldn't deserialize data received from  stream: " + result.Error);
+                               log.Write(LogLevel.Warning, "Couldn't deserialize data received from  stream: " + result.Error);
                            break;
                        }
                    case HitBtcSocketEvent.OrderUpdated:
@@ -189,7 +179,7 @@ namespace HitBtc.Net
                                OnOrderUpdate?.Invoke(result.Data);
                            }
                            else
-                               log.Write(LogVerbosity.Warning, "Couldn't deserialize data received from  stream: " + result.Error);
+                               log.Write(LogLevel.Warning, "Couldn't deserialize data received from  stream: " + result.Error);
                            break;
                        }
                    case HitBtcSocketEvent.MarginOrdersSnapshot:
@@ -200,7 +190,7 @@ namespace HitBtc.Net
                                OnMarginActiveOrdersSnapshot?.Invoke(result.Data);
                            }
                            else
-                               log.Write(LogVerbosity.Warning, "Couldn't deserialize data received from  stream: " + result.Error);
+                               log.Write(LogLevel.Warning, "Couldn't deserialize data received from  stream: " + result.Error);
                            break;
                        }
                    case HitBtcSocketEvent.MarginOrderUpdated:
@@ -211,7 +201,7 @@ namespace HitBtc.Net
                                OnMarginOrderUpdate?.Invoke(result.Data);
                            }
                            else
-                               log.Write(LogVerbosity.Warning, "Couldn't deserialize data received from  stream: " + result.Error);
+                               log.Write(LogLevel.Warning, "Couldn't deserialize data received from  stream: " + result.Error);
                            break;
                        }
                    case HitBtcSocketEvent.MarginAccountsSnapshot:
@@ -222,7 +212,7 @@ namespace HitBtc.Net
                                OnMarginAccountsSnapshot?.Invoke(result.Data);
                            }
                            else
-                               log.Write(LogVerbosity.Warning, "Couldn't deserialize data received from  stream: " + result.Error);
+                               log.Write(LogLevel.Warning, "Couldn't deserialize data received from  stream: " + result.Error);
                            break;
                        }
                    case HitBtcSocketEvent.MarginAccountUpdated:
@@ -233,7 +223,7 @@ namespace HitBtc.Net
                                OnMarginAccountUpdate?.Invoke(result.Data);
                            }
                            else
-                               log.Write(LogVerbosity.Warning, "Couldn't deserialize data received from  stream: " + result.Error);
+                               log.Write(LogLevel.Warning, "Couldn't deserialize data received from  stream: " + result.Error);
                            break;
                        }
                    case HitBtcSocketEvent.TransactionUpdated:
@@ -244,7 +234,7 @@ namespace HitBtc.Net
                                OnAccountTransactionUpdate?.Invoke(result.Data);
                            }
                            else
-                               log.Write(LogVerbosity.Warning, "Couldn't deserialize data received from  stream: " + result.Error);
+                               log.Write(LogLevel.Warning, "Couldn't deserialize data received from  stream: " + result.Error);
                            break;
                        }
                    default:
@@ -253,9 +243,9 @@ namespace HitBtc.Net
                }
            });
 
-            return await Subscribe(BaseAddress + subscribeRequest.EndpointSuffix, subscribeRequest, null, subscribeRequest.EndpointSuffix != MarketDataUrlSuffix, dataHandler);
+            return await SubscribeAsync(BaseAddress + subscribeRequest.EndpointSuffix, subscribeRequest, null, subscribeRequest.EndpointSuffix != MarketDataUrlSuffix, dataHandler);
         }
-        protected override async Task<CallResult<bool>> AuthenticateSocket(SocketConnection s)
+        protected override async Task<CallResult<bool>> AuthenticateSocketAsync(SocketConnection s)
         {
             bool isSuccess = false;
             ServerError serverError = null;
@@ -266,7 +256,7 @@ namespace HitBtc.Net
                     Key = authProvider.Credentials.Key?.GetString(),
                     SecretKey = authProvider.Credentials.Secret?.GetString(),
                 });
-           await s.SendAndWait(authRequest, TimeSpan.FromSeconds(1), f =>
+           await s.SendAndWaitAsync(authRequest, TimeSpan.FromSeconds(1), f =>
               {
                   if (String.IsNullOrEmpty(f.ToString()))
                   {
@@ -305,7 +295,7 @@ namespace HitBtc.Net
             throw new NotImplementedException();
         }
 
-        protected override Task<bool> Unsubscribe(SocketConnection connection, SocketSubscription s)
+        protected override Task<bool> UnsubscribeAsync(SocketConnection connection, SocketSubscription s)
         {
             throw new NotImplementedException();
         }
@@ -313,7 +303,7 @@ namespace HitBtc.Net
         private void ErrorHandler(string errorMessage)
         {
             OnError?.Invoke(errorMessage);
-            log.Write(LogVerbosity.Warning, errorMessage);
+            log.Write(LogLevel.Warning, errorMessage);
         }
     }
 }
