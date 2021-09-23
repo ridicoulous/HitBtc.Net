@@ -6,14 +6,14 @@ using System.Text;
 
 namespace HitBtc.Net.Objects.Socket
 {
-    internal class HitBtcSubscribeToOrderBookRequest : HitBtcSocketSubscribeBaseRequest<HitBtcOrderBookParam>
+    public class HitBtcSubscribeToOrderBookRequest : HitBtcSocketSubscribeBaseRequest<HitBtcOrderBookParam>
     {
         public HitBtcSubscribeToOrderBookRequest(string symbol) : base(HitBtcSocketRequest.SubscribeToOrderbook, new HitBtcOrderBookParam(symbol))
         {
         }
         public override string EndpointSuffix { get; } = "public";
     }
-    internal class HitBtcOrderBookParam
+    public class HitBtcOrderBookParam
     {
         public HitBtcOrderBookParam(string s)
         {
