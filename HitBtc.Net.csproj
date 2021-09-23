@@ -19,7 +19,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CryptoExchange.Net" Version="4.1.0" />
+    <PackageReference Include="CryptoExchange.Net" Version="4.2.2" />
   </ItemGroup>
 
 </Project>
